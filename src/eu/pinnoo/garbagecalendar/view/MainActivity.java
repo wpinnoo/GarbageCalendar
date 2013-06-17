@@ -22,14 +22,15 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        UserModel.getInstance().setContainer(this);
-        DataModel.getInstance().setContainer(this);        
+       
         initializeModels();
         scrapeData(false);
     }
 
     private void initializeModels() {
+        UserModel.getInstance().setContainer(this);
+        DataModel.getInstance().setContainer(this);
+        
         Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
         if(s.getType().equals(AreaType.NONE)){
             promptUserData();
