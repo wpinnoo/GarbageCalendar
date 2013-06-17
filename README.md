@@ -1,4 +1,4 @@
 GarbageCalendar
 ===============
 
-Garbage calendar for Ghent based on open data (data.gent.be)
+Garbage calendar for Android based on open data (data.gent.be).
