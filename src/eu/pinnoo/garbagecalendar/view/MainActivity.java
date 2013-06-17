@@ -22,42 +22,43 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-       
+
         initializeModels();
-        scrapeData(false);
+    }
+    
+    public void scrapeDataAndCreateGUI(){
+        scrapeData(true);
+        // TODO: GUI
     }
 
     private void initializeModels() {
         UserModel.getInstance().setContainer(this);
         DataModel.getInstance().setContainer(this);
-        
+
         Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
-        if(s.getType().equals(AreaType.NONE)){
-            promptUserData();
+        if (s.getType().equals(AreaType.NONE)) {
+            new UserLocationPrompt(this).prompt();
         } else {
             UserModel.getInstance().restoreFromCache();
+            scrapeDataAndCreateGUI();
         }
     }
 
-    private void promptUserData() {
-        // TODO: show dialog
-    }
-    
-    private void isApartmentAddress(){
+    private void isApartmentAddress() {
         // TODO: notify user
     }
-    
-    private void scrapeData(boolean force){
+
+    private void scrapeData(boolean force) {
         new ApartmentsScraper().loadData(force);
-        if(UserModel.getInstance().isApartment()){
+        if (UserModel.getInstance().isApartment()) {
             isApartmentAddress();
             return;
         }
-        
-        if(force || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)){
+
+        if (force || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
             new StreetsScraper().loadData(force);
         }
-        
+
         new CalendarScraper().loadData(force);
     }
 }

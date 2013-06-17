@@ -11,4 +11,5 @@ public class LocalConstants {
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
     public static final String APARTMENTS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Appartementen.json";
     public static final String DEFAULT_SECTOR = "A00";
+    public static final String GOOGLE_MAPS_API = "http://maps.googleapis.com/maps/api/geocode/json";
 }
