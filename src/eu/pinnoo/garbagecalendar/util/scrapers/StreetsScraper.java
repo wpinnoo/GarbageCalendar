@@ -46,7 +46,7 @@ public class StreetsScraper extends Scraper {
                 String street = obj.getString("straatnaam");
 
                 if (UserModel.getInstance().getZipcode() == zipcode && UserModel.getInstance().getStreetname().equals(street)) {
-                    if (obj.getString("even van").isEmpty()) {
+                    if (!obj.has("even van") || obj.getString("even van").isEmpty()) {
                         UserModel.getInstance().setSector(new Sector(obj.getString("sector")));
                         break;
                     }

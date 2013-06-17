@@ -10,4 +10,5 @@ public class LocalConstants {
     public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
     public static final String APARTMENTS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Appartementen.json";
+    public static final String DEFAULT_SECTOR = "A00";
 }

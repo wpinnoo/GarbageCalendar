@@ -45,8 +45,20 @@ public class ApartmentsScraper extends Scraper {
                 JSONObject obj = data.getJSONObject(i);
 
                 String street = obj.getString("adres");
-                int beginNr = Integer.parseInt(obj.getString("huisnr van"));
-                int endNr = Integer.parseInt(obj.getString("huisnr tot"));
+
+                int beginNr, endNr;
+
+                try {
+                    beginNr = Integer.parseInt(obj.getString("huisnr van"));
+                } catch (NumberFormatException e) {
+                    beginNr = Integer.MIN_VALUE;
+                }
+                try {
+                    endNr = Integer.parseInt(obj.getString("huisnr tot"));
+                } catch (NumberFormatException e) {
+                    endNr = Integer.MAX_VALUE;
+                }
+
                 int zipcode = Integer.parseInt(obj.getString("pc"));
 
                 if (UserModel.getInstance().getZipcode() == zipcode

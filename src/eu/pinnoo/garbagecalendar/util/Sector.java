@@ -13,6 +13,10 @@ public class Sector {
         this.type = type;
         this.code = code;
     }
+    
+    public Sector(){
+        this(LocalConstants.DEFAULT_SECTOR);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -22,6 +26,11 @@ public class Sector {
                     && s.getType().equals(getType());
         }
         return false;
+    }
+    
+    @Override
+    public String toString(){
+        return type.toString() + code;
     }
 
     public Sector(String str) {
