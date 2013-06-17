@@ -1,3 +1,40 @@
+# Eclipse generated file
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+# Mac OSX generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
 # built application files
 *.apk
 *.ap_
@@ -18,3 +55,11 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+ant.properties
+
+*database.properties*
+*.psd
+/nbandroid/
+
+*.json
