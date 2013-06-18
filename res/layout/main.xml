@@ -4,10 +4,48 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, MainActivity"
-    />
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:stretchColumns="0,1"
+                 android:layout_height="wrap_content" 
+                 android:layout_width="match_parent" 
+                 android:background="@android:color/white" >
+        <TableRow
+            android:layout_width="fill_parent"
+            android:padding="5dip" > 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Date"
+                android:textColor="@android:color/black"
+            />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Types"
+                android:textColor="@android:color/black"
+            />
+        </TableRow>
+    </TableLayout>
+ 
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+                android:scrollbars="vertical" 
+                android:layout_weight="1"
+                android:layout_height="wrap_content" 
+                android:layout_width="fill_parent">
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:stretchColumns="0,1"
+                     android:id="@+id/main_table" 
+                     android:layout_weight="1" 
+                     android:layout_height="wrap_content" 
+                     android:layout_width="match_parent" 
+                     android:background="@android:color/white" >
+            <TableRow
+                android:layout_width="fill_parent" >
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
 </LinearLayout>
 

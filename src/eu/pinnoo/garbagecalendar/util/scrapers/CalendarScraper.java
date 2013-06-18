@@ -41,14 +41,13 @@ public class CalendarScraper extends Scraper {
         if (data == null) {
             return 1;
         }
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         DataModel.getInstance().resetCollections();
         for (int i = 0; i < data.length(); i++) {
             try {
                 JSONObject obj = data.getJSONObject(i);
                 Sector sector = new Sector(obj.getString("locatie"));
                 if (UserModel.getInstance().getSector().equals(sector)) {
-                    GarbageCollection col = new GarbageCollection(obj.getString("week"), obj.getString("dag"), formatter.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
+                    GarbageCollection col = new GarbageCollection(obj.getString("week"), obj.getString("dag"), LocalConstants.DATE_FORMATTER.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
                     DataModel.getInstance().addCollection(col);
                 }
             } catch (JSONException ex) {

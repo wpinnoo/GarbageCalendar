@@ -6,5 +6,16 @@ package eu.pinnoo.garbagecalendar.util;
  */
 public enum GarbageType {
 
-    REST, GFT, PMD, PK, GLAS, NONE
+    REST("Rest"), GFT("GFT"), PMD("PMD"), PK("Papier en karton"), GLAS("Glas"), NONE("-");
+    
+    private String strValue;
+    
+    private GarbageType(String strValue){
+        this.strValue = strValue;
+    }
+    
+    @Override
+    public final String toString(){
+        return strValue;
+    }
 }

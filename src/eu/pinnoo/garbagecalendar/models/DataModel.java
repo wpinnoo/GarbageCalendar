@@ -37,4 +37,8 @@ public class DataModel {
     public void addCollection(GarbageCollection col) {
         collections.add(col);
     }
+    
+    public ArrayList<GarbageCollection> getCollections(){
+        return collections;
+    }
 }

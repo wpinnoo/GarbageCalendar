@@ -4,13 +4,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
 import eu.pinnoo.garbagecalendar.util.AreaType;
+import eu.pinnoo.garbagecalendar.util.GarbageCollection;
 import eu.pinnoo.garbagecalendar.util.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Sector;
 import eu.pinnoo.garbagecalendar.util.scrapers.ApartmentsScraper;
@@ -23,6 +29,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,7 +65,7 @@ public class MainActivity extends Activity {
             promptUserLocation();
         } else {
             UserModel.getInstance().restoreFromCache();
-            scrapeData(true);
+            scrapeData(false);
             createGUI();
         }
     }
@@ -146,7 +154,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            scrapeData(true);
+            scrapeData(false);
             return 0;
         }
 
@@ -235,6 +243,42 @@ public class MainActivity extends Activity {
     }
 
     private void createGUI() {
-        //
+        List<GarbageCollection> collections = DataModel.getInstance().getCollections();
+        Iterator<GarbageCollection> it = collections.iterator();
+        int i = 0;
+        while(it.hasNext()){
+            GarbageCollection col = it.next();
+            if(col.getDate().before(Calendar.getInstance().getTime())) continue;
+            
+            String types = "";
+            for(int k = 0; k < col.getTypes().length; k++) types += k == 0 ? col.getTypes()[k].toString() : ", " + col.getTypes()[k].toString();
+            
+            addTableRow(LocalConstants.DATE_FORMATTER_MAIN_TABLE.format(col.getDate()), types, i++);
+        }
+    }
+    
+    private void addTableRow(String date, String types, int rowNumber) {
+        LayoutInflater inflater = getLayoutInflater();
+        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
+        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row, tl, false);
+        TextView labelTypes = (TextView) tr.findViewById(R.id.main_row_types);
+        labelTypes.setText(types);
+        labelTypes.setPadding(1, 5, 5, 5);
+        TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
+        labelDate.setText(date);
+        labelDate.setPadding(5, 5, 5, 5);
+
+        if (rowNumber % 2 == 0) {
+            tr.setBackgroundColor(Color.GRAY);
+            labelTypes.setTextColor(Color.BLACK);
+            labelDate.setTextColor(Color.BLACK);
+
+        } else {
+            tr.setBackgroundColor(Color.LTGRAY);
+            labelTypes.setTextColor(Color.BLACK);
+            labelDate.setTextColor(Color.BLACK);
+        }
+
+        tl.addView(tr);
     }
 }
