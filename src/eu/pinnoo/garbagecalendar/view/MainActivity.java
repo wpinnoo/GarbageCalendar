@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
             promptUserLocation();
         } else {
             UserModel.getInstance().restoreFromCache();
-            scrapeData(false);
+            scrapeData(true);
             createGUI();
         }
     }
@@ -107,16 +107,16 @@ public class MainActivity extends Activity {
                     }
                 }).show();
     }
-    
+
     private class AddressParser extends AsyncTask<Void, Void, Integer> {
 
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
         private String address;
-        
-        public AddressParser(String address){
+
+        public AddressParser(String address) {
             this.address = address;
         }
-        
+
         @Override
         protected void onPreExecute() {
             dialog.setMessage("Looking up your address...");
@@ -154,7 +154,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            scrapeData(false);
+            scrapeData(true);
             return 0;
         }
 
@@ -246,17 +246,21 @@ public class MainActivity extends Activity {
         List<GarbageCollection> collections = DataModel.getInstance().getCollections();
         Iterator<GarbageCollection> it = collections.iterator();
         int i = 0;
-        while(it.hasNext()){
+        while (it.hasNext()) {
             GarbageCollection col = it.next();
-            if(col.getDate().before(Calendar.getInstance().getTime())) continue;
-            
+            if (col.getDate().before(Calendar.getInstance().getTime())) {
+                continue;
+            }
+
             String types = "";
-            for(int k = 0; k < col.getTypes().length; k++) types += k == 0 ? col.getTypes()[k].toString() : ", " + col.getTypes()[k].toString();
-            
+            for (int k = 0; k < col.getTypes().length; k++) {
+                types += k == 0 ? col.getTypes()[k].toString() : ", " + col.getTypes()[k].toString();
+            }
+
             addTableRow(LocalConstants.DATE_FORMATTER_MAIN_TABLE.format(col.getDate()), types, i++);
         }
     }
-    
+
     private void addTableRow(String date, String types, int rowNumber) {
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);

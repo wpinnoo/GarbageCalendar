@@ -11,7 +11,7 @@ public class GarbageCollection {
     private final String weekCode;
     private final String day;
     private final Date date;
-    private final GarbageType[] types;
+    private GarbageType[] types;
     private final Sector sector;
 
     public GarbageCollection(String weekCode, String day, Date date, GarbageType[] types, Sector sector) {
@@ -36,6 +36,20 @@ public class GarbageCollection {
 
     public GarbageType[] getTypes() {
         return types;
+    }
+
+    public void addTypes(GarbageType[] toAdd) {
+        GarbageType[] newTypes = new GarbageType[toAdd.length + this.types.length];
+        int i = 0;
+        while (i < this.types.length) {
+            newTypes[i] = this.types[i];
+            i++;
+        }
+        while (i < this.types.length + toAdd.length) {
+            newTypes[i] = toAdd[i - this.types.length];
+            i++;
+        }
+        this.types = newTypes;
     }
 
     public Sector getSector() {
