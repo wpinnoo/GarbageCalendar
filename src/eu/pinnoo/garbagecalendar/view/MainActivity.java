@@ -75,15 +75,15 @@ public class MainActivity extends Activity {
 
     private void locationIsApartment() {
         new AlertDialog.Builder(this)
-                .setTitle("Invalid location")
-                .setMessage("There's no garbage calendar available for your address since it's an apartment.")
+                .setTitle(getString(R.string.invalidLocation))
+                .setMessage(getString(R.string.noCalendarAvailable))
                 .setCancelable(false)
-                .setPositiveButton("New location", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.newLocation), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         promptUserLocation();
                     }
                 })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         finish();
                     }
@@ -114,11 +114,11 @@ public class MainActivity extends Activity {
     public void promptUserLocation() {
         final EditText input = new EditText(this);
         new AlertDialog.Builder(this)
-                .setTitle("Your location")
-                .setMessage("Please enter your address.")
+                .setTitle(getString(R.string.yourLocation))
+                .setMessage(getString(R.string.enterAddress))
                 .setView(input)
                 .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String address = input.getText().toString();
                         new AddressParser(address).execute();
@@ -156,7 +156,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Looking up your address...");
+            dialog.setMessage(getString(R.string.lookingUp));
             dialog.show();
             dialog.setCancelable(false);
         }
@@ -204,10 +204,10 @@ public class MainActivity extends Activity {
 
     private void noInternetConnectionAvailable() {
         new AlertDialog.Builder(this)
-                .setTitle("No internet connection.")
-                .setMessage("You need an internet connection the first time you're using this app.")
+                .setTitle(getString(R.string.noCalendarAvailable))
+                .setMessage(getString(R.string.needConnection))
                 .setCancelable(false)
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         finish();
                     }
@@ -221,7 +221,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Loading calendar...");
+            dialog.setMessage(getString(R.string.loadingCalendar));
             dialog.show();
             dialog.setCancelable(false);
         }
@@ -239,7 +239,7 @@ public class MainActivity extends Activity {
             if (result == 1) {
                 locationIsApartment();
             }
-            Toast.makeText(getApplicationContext(), "Location set on " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
         }
     }
@@ -313,15 +313,15 @@ public class MainActivity extends Activity {
 
     private void addressNotFound() {
         new AlertDialog.Builder(this)
-                .setTitle("Invalid location")
-                .setMessage("This is not a valid location in Ghent.")
+                .setTitle(getString(R.string.invalidLocation))
+                .setMessage(getString(R.string.invalidLocationLong))
                 .setCancelable(false)
-                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.tryAgain), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         promptUserLocation();
                     }
                 })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         finish();
                     }
@@ -341,7 +341,7 @@ public class MainActivity extends Activity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle("Select your address")
+                .setTitle(getString(R.string.selectAddress))
                 .setCancelable(false)
                 .setSingleChoiceItems(possibilities, 0, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface d, int choice) {
@@ -404,27 +404,27 @@ public class MainActivity extends Activity {
         TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
 
         TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
-        labelRest.setText(rest ? GarbageType.REST.toString() : "");
+        labelRest.setText(rest ? GarbageType.REST.strValue(this) : "");
         labelRest.setPadding(1, 5, 5, 5);
         labelRest.setBackgroundColor(rest ? GarbageType.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
-        labelGFT.setText(gft ? GarbageType.GFT.toString() : "");
+        labelGFT.setText(gft ? GarbageType.GFT.strValue(this) : "");
         labelGFT.setPadding(1, 5, 5, 5);
         labelGFT.setBackgroundColor(gft ? GarbageType.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
-        labelPMD.setText(pmd ? GarbageType.PMD.toString() : "");
+        labelPMD.setText(pmd ? GarbageType.PMD.strValue(this) : "");
         labelPMD.setPadding(1, 5, 5, 5);
         labelPMD.setBackgroundColor(pmd ? GarbageType.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
-        labelPK.setText(pk ? GarbageType.PK.toString() : "");
+        labelPK.setText(pk ? GarbageType.PK.strValue(this) : "");
         labelPK.setPadding(1, 5, 5, 5);
         labelPK.setBackgroundColor(pk ? GarbageType.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
-        labelGlas.setText(glas ? GarbageType.GLAS.toString() : "");
+        labelGlas.setText(glas ? GarbageType.GLAS.strValue(this) : "");
         labelGlas.setPadding(1, 5, 5, 5);
         labelGlas.setBackgroundColor(glas ? GarbageType.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 

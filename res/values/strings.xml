@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">GarbageCalendar</string>
+    
+    <string name="rest">Rest</string>
+    <string name="gft">GFT</string>
+    <string name="pmd">PMD</string>
+    <string name="pk">Papier</string>
+    <string name="glas">Glas</string>
+    
+    <string name="invalidLocation">Invalid location</string>
+    <string name="invalidLocationLong">This is not a valid location in Ghent.</string>
+    <string name="noCalendarAvailable">There\'s no garbage calendar available for your address since it\'s an apartment.</string>
+    <string name="newLocation">New location</string>
+    <string name="close">Close</string>
+    
+    <string name="yourLocation">Your location</string>
+    <string name="enterAddress">Please enter your addresss.</string> 
+    
+    <string name="ok">Ok</string>
+    <string name="tryAgain">Try again</string>
+    
+    <string name="lookingUp">Looking up your address...</string>
+    <string name="loadingCalendar">Loading calendar...</string>
+    
+    <string name="noInternetConnection">No internet connection.</string>
+    <string name="needConnection">You need an internet connection the first time you\'re using this app.</string>
+    
+    <string name="locationSet">Location set on </string>
+    <string name="selectAddress">Select your address.</string>
 </resources>

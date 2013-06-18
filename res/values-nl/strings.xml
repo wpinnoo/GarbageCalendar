@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GarbageCalendar</string>
+    
+    <string name="rest">Rest</string>
+    <string name="gft">GFT</string>
+    <string name="pmd">PMD</string>
+    <string name="pk">Papier</string>
+    <string name="glas">Glas</string>
+    
+    <string name="invalidLocation">Ongeldige locatie</string>
+    <string name="invalidLocationLong">Dit is geen geldige locatie in Gent.</string>
+    <string name="noCalendarAvailable">Er is geen ophaalkalender beschikbaar op jouw adres omdat het een appartement is.</string>
+    <string name="newLocation">Nieuwe locatie</string>
+    <string name="close">Sluit</string>
+    
+    <string name="yourLocation">Jouw locatie</string>
+    <string name="enterAddress">Voer je adres in.</string> 
+    
+    <string name="ok">Ok</string>
+    <string name="tryAgain">Opnieuw</string>
+    
+    <string name="lookingUp">Adres nakijken...</string>
+    <string name="loadingCalendar">Ophaalkalender laden...</string>
+    
+    <string name="noInternetConnection">Geen internetverbinding.</string>
+    <string name="needConnection">Je hebt een internetverbinding nodig de eerste keer dat je deze app gebruikt.</string>
+    
+    <string name="locationSet">Locatie ingesteld op </string>
+    <string name="selectAddress">Selecteer jouw adres.</string>
+</resources>

@@ -1,5 +1,7 @@
 package eu.pinnoo.garbagecalendar.util;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 
 /**
@@ -8,7 +10,12 @@ import android.graphics.Color;
  */
 public enum GarbageType {
 
-    REST("Rest", Color.TRANSPARENT), GFT("GFT", Color.rgb(12, 107, 53)), PMD("PMD", Color.BLUE), PK("Papier", Color.GRAY), GLAS("Glas", Color.rgb(51, 83, 153)), NONE("-", Color.TRANSPARENT);
+    REST("rest", Color.TRANSPARENT),
+    GFT("gft", Color.rgb(12, 107, 53)),
+    PMD("pmd", Color.BLUE),
+    PK("pk", Color.GRAY),
+    GLAS("glas", Color.rgb(51, 83, 153)),
+    NONE("-", Color.TRANSPARENT);
     private String strValue;
     private int color;
 
@@ -17,9 +24,9 @@ public enum GarbageType {
         this.color = color;
     }
 
-    @Override
-    public final String toString() {
-        return strValue;
+    public final String strValue(Context c) {
+        Resources res = c.getResources();
+        return res.getString(res.getIdentifier(name(), "string", c.getPackageName()));
     }
 
     public int getColor(AreaType type) {
