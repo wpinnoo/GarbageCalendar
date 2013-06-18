@@ -18,6 +18,7 @@ import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
 import eu.pinnoo.garbagecalendar.util.AreaType;
 import eu.pinnoo.garbagecalendar.util.GarbageCollection;
+import eu.pinnoo.garbagecalendar.util.GarbageType;
 import eu.pinnoo.garbagecalendar.util.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Sector;
 import eu.pinnoo.garbagecalendar.util.scrapers.ApartmentsScraper;
@@ -204,7 +205,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            return scrapeData(true);
+            return scrapeData(false);
         }
 
         @Override
@@ -338,36 +339,82 @@ public class MainActivity extends Activity {
                 continue;
             }
 
-            String types = "";
-            for (int k = 0; k < col.getTypes().length; k++) {
-                types += k == 0 ? col.getTypes()[k].toString() : ", " + col.getTypes()[k].toString();
-            }
-
-            addTableRow(LocalConstants.DATE_FORMATTER_MAIN_TABLE.format(col.getDate()), types, i++);
+            addTableRowDate(LocalConstants.DATE_FORMATTER_MAIN_TABLE.format(col.getDate()), i);
+            addTableRowTypes(col.getTypes(), i);
+            i++;
         }
     }
 
-    private void addTableRow(String date, String types, int rowNumber) {
+    private void addTableRowTypes(GarbageType[] types, int rowNumber) {
+        boolean rest, gft, pmd, pk, glas;
+        rest = gft = pmd = pk = glas = false;
+        for (GarbageType t : types) {
+            switch (t) {
+                case REST:
+                    rest = true;
+                    break;
+                case GFT:
+                    gft = true;
+                    break;
+                case PMD:
+                    pmd = true;
+                    break;
+                case PK:
+                    pk = true;
+                    break;
+                case GLAS:
+                    glas = true;
+                    break;
+            }
+        }
+
+        int backgroundColor = rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW;
+
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row, tl, false);
-        TextView labelTypes = (TextView) tr.findViewById(R.id.main_row_types);
-        labelTypes.setText(types);
-        labelTypes.setPadding(1, 5, 5, 5);
+        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
+
+        TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
+        labelRest.setText(rest ? GarbageType.REST.toString() : "");
+        labelRest.setPadding(1, 5, 5, 5);
+        labelRest.setBackgroundColor(rest ? GarbageType.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+
+        TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
+        labelGFT.setText(gft ? GarbageType.GFT.toString() : "");
+        labelGFT.setPadding(1, 5, 5, 5);
+        labelGFT.setBackgroundColor(gft ? GarbageType.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+
+        TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
+        labelPMD.setText(pmd ? GarbageType.PMD.toString() : "");
+        labelPMD.setPadding(1, 5, 5, 5);
+        labelPMD.setBackgroundColor(pmd ? GarbageType.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+
+        TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
+        labelPK.setText(pk ? GarbageType.PK.toString() : "");
+        labelPK.setPadding(1, 5, 5, 5);
+        labelPK.setBackgroundColor(pk ? GarbageType.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+
+        TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
+        labelGlas.setText(glas ? GarbageType.GLAS.toString() : "");
+        labelGlas.setPadding(1, 5, 5, 5);
+        labelGlas.setBackgroundColor(glas ? GarbageType.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+
+        tr.setBackgroundColor(backgroundColor);
+
+        tl.addView(tr);
+    }
+
+    private void addTableRowDate(String date, int rowNumber) {
+        LayoutInflater inflater = getLayoutInflater();
+        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
+        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
+
         TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
+        labelDate.setTextColor(Color.BLACK);
 
-        if (rowNumber % 2 == 0) {
-            tr.setBackgroundColor(Color.GRAY);
-            labelTypes.setTextColor(Color.BLACK);
-            labelDate.setTextColor(Color.BLACK);
-
-        } else {
-            tr.setBackgroundColor(Color.LTGRAY);
-            labelTypes.setTextColor(Color.BLACK);
-            labelDate.setTextColor(Color.BLACK);
-        }
+        tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
 
         tl.addView(tr);
     }

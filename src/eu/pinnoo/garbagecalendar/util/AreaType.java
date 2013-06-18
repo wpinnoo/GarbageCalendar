@@ -1,26 +1,29 @@
 package eu.pinnoo.garbagecalendar.util;
 
+import android.graphics.Color;
+
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public enum AreaType {
 
-    V("V", BagType.YELLOW), L("L", BagType.GRAY), NONE("None", BagType.NONE);
-    private final BagType bagType;
+    V("V", Color.rgb(191, 201, 79)), L("L", Color.rgb(11, 150, 27)), NONE("None", Color.TRANSPARENT);
+    
     private final String str;
-
-    private AreaType(final String str, final BagType bagType) {
-        this.bagType = bagType;
+    private final int color;
+    
+    private AreaType(final String str, final int color) {
         this.str = str;
+        this.color = color;
     }
 
     @Override
     public String toString() {
         return str;
     }
-
-    public BagType getBagType() {
-        return this.bagType;
+    
+    public int getColor(){
+        return color;
     }
 }
