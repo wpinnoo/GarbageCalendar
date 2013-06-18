@@ -3,8 +3,11 @@ package eu.pinnoo.garbagecalendar.view;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -161,6 +164,10 @@ public class MainActivity extends Activity {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
+                if (!networkAvailable()) {
+                    return 3;
+                }
+
                 arr = parseAddress(address);
                 if (arr == null || arr.length() == 0) {
                     return 1;
@@ -188,8 +195,24 @@ public class MainActivity extends Activity {
                 case 2:
                     multiplePossibilities(arr);
                     break;
+                case 3:
+                    noInternetConnectionAvailable();
+                    break;
             }
         }
+    }
+
+    private void noInternetConnectionAvailable() {
+        new AlertDialog.Builder(this)
+                .setTitle("No internet connection.")
+                .setMessage("You need an internet connection the first time you're using this app.")
+                .setCancelable(false)
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     private class DataScraper extends AsyncTask<Void, Void, Integer> {
@@ -219,6 +242,12 @@ public class MainActivity extends Activity {
             Toast.makeText(getApplicationContext(), "Location set on " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
         }
+    }
+
+    private boolean networkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) DataModel.getInstance().getContainer().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
     public JSONArray parseAddress(String address) throws IOException {
