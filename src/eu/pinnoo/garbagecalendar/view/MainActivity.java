@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
@@ -28,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -65,20 +65,32 @@ public class MainActivity extends Activity {
             promptUserLocation();
         } else {
             UserModel.getInstance().restoreFromCache();
-            scrapeData(true);
-            createGUI();
+            new DataScraper().execute();
         }
     }
 
     private void locationIsApartment() {
-        // TODO: notify user
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid location")
+                .setMessage("There's no garbage calendar available for your address since it's an apartment.")
+                .setCancelable(false)
+                .setPositiveButton("New location", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        promptUserLocation();
+                    }
+                })
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
-    private void scrapeData(boolean force) {
+    private int scrapeData(boolean force) {
         new ApartmentsScraper().loadData(force);
         if (UserModel.getInstance().isApartment()) {
-            locationIsApartment();
-            return;
+            return 1;
         }
 
         if (force || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
@@ -86,6 +98,7 @@ public class MainActivity extends Activity {
         }
 
         new CalendarScraper().loadData(force);
+        return 0;
     }
 
     private InputStream getStream(String url) throws IOException {
@@ -100,18 +113,38 @@ public class MainActivity extends Activity {
                 .setTitle("Your location")
                 .setMessage("Please enter your address.")
                 .setView(input)
+                .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String address = input.getText().toString();
                         new AddressParser(address).execute();
                     }
-                }).show();
+                })
+                .show();
+    }
+
+    private JSONArray filterOnGhent(JSONArray arr) throws JSONException {
+        JSONArray newArr = new JSONArray();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            JSONArray objarr = obj.optJSONArray("address_components");
+            for (int k = 0; k < objarr.length(); k++) {
+                JSONObject subobj = objarr.getJSONObject(k);
+                if (subobj.getJSONArray("types").getString(0).equals("locality")
+                        && subobj.getString("long_name").equals("Gent")) {
+                    newArr.put(obj);
+                    break;
+                }
+            }
+        }
+        return newArr;
     }
 
     private class AddressParser extends AsyncTask<Void, Void, Integer> {
 
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
         private String address;
+        private JSONArray arr;
 
         public AddressParser(String address) {
             this.address = address;
@@ -127,7 +160,14 @@ public class MainActivity extends Activity {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                parseAddress(address);
+                arr = parseAddress(address);
+                if (arr == null || arr.length() == 0) {
+                    return 1;
+                } else if (arr.length() > 1) {
+                    return 2;
+                } else {
+                    return 0;
+                }
             } catch (IOException ex) {
                 Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -137,7 +177,17 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(Integer result) {
             dialog.dismiss();
-            new DataScraper().execute();
+            switch (result) {
+                case 0:
+                    new DataScraper().execute();
+                    break;
+                case 1:
+                    addressNotFound();
+                    break;
+                case 2:
+                    multiplePossibilities(arr);
+                    break;
+            }
         }
     }
 
@@ -154,18 +204,23 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            scrapeData(true);
-            return 0;
+            return scrapeData(true);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             dialog.dismiss();
+            DataModel m = DataModel.getInstance();
+            UserModel u = UserModel.getInstance();
+            if (result == 1) {
+                locationIsApartment();
+            }
+            Toast.makeText(getApplicationContext(), "Location set on " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
         }
     }
 
-    public void parseAddress(String address) throws IOException {
+    public JSONArray parseAddress(String address) throws IOException {
         String url = LocalConstants.GOOGLE_MAPS_API + "?";
         List<NameValuePair> params = new LinkedList<NameValuePair>();
         params.add(new BasicNameValuePair("address", address));
@@ -190,56 +245,87 @@ public class MainActivity extends Activity {
                 JSONObject obj = new JSONObject(result);
                 if (obj.has("status") && obj.getString("status").equals("OK")) {
                     arr = obj.getJSONArray("results");
+                    arr = filterOnGhent(arr);
                 }
             }
         } catch (JSONException ex) {
             Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (arr == null || arr.length() == 0) {
-                addressNotFound();
-            } else if (arr.length() > 1) {
-                multiplePossibilities(arr);
-            } else {
+            if (arr != null && arr.length() == 1) {
                 try {
-                    JSONArray addressArr = arr.getJSONObject(0).getJSONArray("address_components");
-                    for (int i = 0; i < addressArr.length(); i++) {
-                        JSONObject obj = addressArr.getJSONObject(i);
-                        String type = obj.getJSONArray("types").getString(0);
-                        if (type.equals("street_number")) {
-                            UserModel.getInstance().setNr(Integer.parseInt(obj.getString("long_name")));
-                        } else if (type.equals("route")) {
-                            UserModel.getInstance().setStreetname(obj.getString("long_name"));
-                        } else if (type.equals("sublocality")) {
-                            UserModel.getInstance().setCity(obj.getString("long_name"));
-                        } else if (type.equals("postal_code")) {
-                            UserModel.getInstance().setZipcode(Integer.parseInt(obj.getString("long_name")));
-                        }
-                    }
+                    submitAddress(arr.getJSONObject(0));
                 } catch (JSONException ex) {
                     Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (NullPointerException e) {
                     Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
+            return arr;
+        }
+    }
+
+    private void submitAddress(JSONObject addressobj) throws JSONException {
+        JSONArray addressArr = addressobj.getJSONArray("address_components");
+        for (int i = 0; i < addressArr.length(); i++) {
+            JSONObject obj = addressArr.getJSONObject(i);
+            String type = obj.getJSONArray("types").getString(0);
+            if (type.equals("street_number")) {
+                UserModel.getInstance().setNr(Integer.parseInt(obj.getString("long_name")));
+            } else if (type.equals("route")) {
+                UserModel.getInstance().setStreetname(obj.getString("long_name"));
+            } else if (type.equals("sublocality")) {
+                UserModel.getInstance().setCity(obj.getString("long_name"));
+            } else if (type.equals("postal_code")) {
+                UserModel.getInstance().setZipcode(Integer.parseInt(obj.getString("long_name")));
+            }
         }
     }
 
     private void addressNotFound() {
-        // TODO: show popup with error message
+        new AlertDialog.Builder(this)
+                .setTitle("Invalid location")
+                .setMessage("This is not a valid location in Ghent.")
+                .setCancelable(false)
+                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        promptUserLocation();
+                    }
+                })
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
-    private void multiplePossibilities(JSONArray arr) {
-        List<String> possibilities = new ArrayList<String>();
+    private void multiplePossibilities(final JSONArray arr) {
+        final CharSequence[] possibilities = new CharSequence[arr.length()];
         for (int i = 0; i < arr.length(); i++) {
             try {
                 JSONObject obj = arr.getJSONObject(i);
-                possibilities.add(obj.getString("formatted_address"));
+                possibilities[i] = obj.getString("formatted_address");
             } catch (JSONException ex) {
                 Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        // TODO: show this list of addresses so that the user can chose one
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Select your address")
+                .setCancelable(false)
+                .setSingleChoiceItems(possibilities, 0, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int choice) {
+                        try {
+                            submitAddress(arr.getJSONObject(choice));
+                            new DataScraper().execute();
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                        } finally {
+                            d.dismiss();
+                        }
+                    }
+                });
+        builder.create().show();
     }
 
     private void createGUI() {

@@ -120,4 +120,8 @@ public class UserModel {
         city = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_city", "");
         sector = new Sector(container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
     }
+    
+    public String getFormattedAddress(){
+        return getStreetname() + " " + getNr() + ", " + getZipcode() + " " + getCity();
+    }
 }
