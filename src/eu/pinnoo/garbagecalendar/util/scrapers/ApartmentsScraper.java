@@ -32,6 +32,11 @@ public class ApartmentsScraper extends Scraper {
         return "cache_apartments";
     }
 
+    /**
+     *
+     * @param data
+     * @return 0 when fetching was successful, otherwise 1
+     */
     @Override
     protected int fetchData(JSONArray data) {
         if (data == null) {
@@ -77,5 +82,10 @@ public class ApartmentsScraper extends Scraper {
             }
         }
         return 0;
+    }
+
+    @Override
+    protected String getSharedPrefName() {
+        return "data_app_update";
     }
 }

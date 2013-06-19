@@ -26,6 +26,9 @@
     <string name="noInternetConnection">Geen internetverbinding.</string>
     <string name="needConnection">Je hebt een internetverbinding nodig de eerste keer dat je deze app gebruikt.</string>
     
-    <string name="locationSet">Locatie ingesteld op </string>
+    <string name="locationSet">Locatie ingesteld op</string>
     <string name="selectAddress">Selecteer jouw adres.</string>
+    
+    <string name="loadingUnsuccessful">Fout bij het laden van de data.</string>
+    <string name="error">Fout</string>
 </resources>

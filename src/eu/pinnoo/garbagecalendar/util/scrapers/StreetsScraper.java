@@ -32,6 +32,11 @@ public class StreetsScraper extends Scraper {
         return "cache_streets";
     }
 
+    /**
+     * 
+     * @param data
+     * @return 0 when fetching was successful, otherwise 1 
+     */
     @Override
     protected int fetchData(JSONArray data) {
         if (data == null) {
@@ -81,5 +86,10 @@ public class StreetsScraper extends Scraper {
             }
         }
         return 0;
+    }
+
+    @Override
+    protected String getSharedPrefName() {
+        return "data_streets_update";
     }
 }

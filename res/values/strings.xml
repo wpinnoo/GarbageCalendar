@@ -26,6 +26,9 @@
     <string name="noInternetConnection">No internet connection.</string>
     <string name="needConnection">You need an internet connection the first time you\'re using this app.</string>
     
-    <string name="locationSet">Location set on </string>
+    <string name="locationSet">Location set on</string>
     <string name="selectAddress">Select your address.</string>
+    
+    <string name="loadingUnsuccessful">Could not load required data.</string>
+    <string name="error">Error</string>
 </resources>

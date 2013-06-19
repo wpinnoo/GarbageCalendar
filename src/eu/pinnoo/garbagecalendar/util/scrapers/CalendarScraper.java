@@ -3,13 +3,11 @@ package eu.pinnoo.garbagecalendar.util.scrapers;
 import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
 import eu.pinnoo.garbagecalendar.util.GarbageCollection;
-import eu.pinnoo.garbagecalendar.util.GarbageType;
 import eu.pinnoo.garbagecalendar.util.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Sector;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -37,6 +35,11 @@ public class CalendarScraper extends Scraper {
         return "cache_calendar";
     }
 
+    /**
+     * 
+     * @param data
+     * @return 0 when fetching was successful, otherwise 1 
+     */
     @Override
     protected int fetchData(JSONArray data) {
         if (data == null) {
@@ -69,5 +72,10 @@ public class CalendarScraper extends Scraper {
             }
         }
         return 0;
+    }
+
+    @Override
+    protected String getSharedPrefName() {
+        return "data_cal_update";
     }
 }

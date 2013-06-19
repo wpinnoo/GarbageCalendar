@@ -40,7 +40,14 @@ public abstract class Scraper {
     protected abstract String getJSONArrayName();
 
     protected abstract String getCacheName();
+    
+    protected abstract String getSharedPrefName();
 
+    /**
+     * 
+     * @param data
+     * @return 0 when fetching was successful, otherwise 1 
+     */
     protected abstract int fetchData(JSONArray data);
 
     private InputStream getStream() throws IOException {
@@ -50,7 +57,7 @@ public abstract class Scraper {
     }
 
     private boolean needsUpdate() {
-        int lastUpdate = DataModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt("data_update", 0);
+        int lastUpdate = DataModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt(getSharedPrefName(), 0);
         return lastUpdate != Calendar.getInstance().get(Calendar.YEAR);
     }
 
@@ -60,9 +67,14 @@ public abstract class Scraper {
         return activeNetworkInfo != null;
     }
 
+    /**
+     * 
+     * @param data
+     * @return 0 when fetching was successful, otherwise 1 
+     */
     public int loadData(boolean force) {
         JSONArray arr;
-        if ((force || needsUpdate()) && networkAvailable()) {
+        if (networkAvailable() && (force || needsUpdate())) {
             arr = downloadData();
         } else {
             arr = readCache();
@@ -129,7 +141,7 @@ public abstract class Scraper {
                 out.close();
                 DataModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                         .edit()
-                        .putInt("data_update", Calendar.getInstance().get(Calendar.YEAR))
+                        .putInt(getSharedPrefName(), Calendar.getInstance().get(Calendar.YEAR))
                         .commit();
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Scraper.class.getName()).log(Level.SEVERE, null, ex);

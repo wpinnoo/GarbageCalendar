@@ -91,17 +91,33 @@ public class MainActivity extends Activity {
                 .show();
     }
 
+    /**
+     *
+     * @param force
+     * @return 0 when scraping was successful 1 when the address is an apartment
+     * 2 when loading the list of apartments was unsuccessful 3 when loading the
+     * streetlist was unsuccessful 4 when loading the calendar was unsuccessful
+     */
     private int scrapeData(boolean force) {
-        new ApartmentsScraper().loadData(force);
+        int result = new ApartmentsScraper().loadData(force);
+        if (result != 0) {
+            return 2;
+        }
         if (UserModel.getInstance().isApartment()) {
             return 1;
         }
 
         if (force || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
-            new StreetsScraper().loadData(force);
+            result = new StreetsScraper().loadData(force);
+            if (result != 0) {
+                return 3;
+            }
         }
 
-        new CalendarScraper().loadData(force);
+        result = new CalendarScraper().loadData(force);
+        if (result != 0) {
+            return 4;
+        }
         return 0;
     }
 
@@ -234,14 +250,32 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(Integer result) {
             dialog.dismiss();
-            DataModel m = DataModel.getInstance();
-            UserModel u = UserModel.getInstance();
-            if (result == 1) {
-                locationIsApartment();
+            switch (result) {
+                case 1:
+                    locationIsApartment();
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    loadingUnsuccessful();
+                    break;
             }
-            Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + " " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
         }
+    }
+
+    private void loadingUnsuccessful() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.error))
+                .setMessage(getString(R.string.loadingUnsuccessful))
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     private boolean networkAvailable() {

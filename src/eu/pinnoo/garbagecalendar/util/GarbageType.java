@@ -16,6 +16,7 @@ public enum GarbageType {
     PK("pk", Color.GRAY),
     GLAS("glas", Color.rgb(51, 83, 153)),
     NONE("-", Color.TRANSPARENT);
+    
     private String strValue;
     private int color;
 
@@ -26,7 +27,7 @@ public enum GarbageType {
 
     public final String strValue(Context c) {
         Resources res = c.getResources();
-        return res.getString(res.getIdentifier(name(), "string", c.getPackageName()));
+        return res.getString(res.getIdentifier(strValue, "string", c.getPackageName()));
     }
 
     public int getColor(AreaType type) {
