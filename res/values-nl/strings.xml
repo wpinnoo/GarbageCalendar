@@ -38,5 +38,5 @@
     <string name="nextweek">volgende week</string>
     
     <string name="about">Over</string>
-    <string name="aboutMessage">Deze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
+    <string name="aboutMessage">Klik op de knop \'Nieuwe locatie\' om je adres in te stellen.\nMomenteel worden enkel Gentse adressen ondersteund.\n\nDeze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 </resources>
