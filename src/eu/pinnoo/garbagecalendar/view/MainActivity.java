@@ -568,9 +568,7 @@ public class MainActivity extends Activity {
 
                 Builder builder = new Builder(this);
                 builder.setIcon(R.drawable.about);
-                builder.setTitle(getString(R.string.about));
                 builder.setMessage(msg);
-                builder.setPositiveButton(getString(R.string.ok), null);
                 AlertDialog dialog = builder.create();
                 dialog.show();
 

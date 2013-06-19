@@ -40,7 +40,7 @@ public class TableRowListener implements OnClickListener {
                 text += ", ";
             }
             if (i == types.length - 2) {
-                text += " " + v.getContext().getString(R.string.and) + " ";
+                text += ", " + v.getContext().getString(R.string.and) + " ";
             }
         }
         text += ".";
