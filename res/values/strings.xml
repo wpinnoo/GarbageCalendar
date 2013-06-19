@@ -34,4 +34,7 @@
     
     <string name="thisweek">this</string>
     <string name="nextweek">next</string>
+    
+    <string name="about">About</string>
+    <string name="aboutMessage">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 </resources>

@@ -2,6 +2,7 @@ package eu.pinnoo.garbagecalendar.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +11,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -504,5 +512,35 @@ public class MainActivity extends Activity {
         tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
 
         tl.addView(tr);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about:
+                final SpannableString msg = new SpannableString(getString(R.string.aboutMessage));
+                Linkify.addLinks(msg, Linkify.ALL);
+
+                Builder builder = new Builder(this);
+                builder.setIcon(R.drawable.about);
+                builder.setTitle(getString(R.string.about));
+                builder.setMessage(msg);
+                builder.setPositiveButton(getString(R.string.ok), null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
