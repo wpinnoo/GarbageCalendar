@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -402,9 +403,32 @@ public class MainActivity extends Activity {
                 continue;
             }
 
-            addTableRowDate(LocalConstants.DATE_FORMATTER_MAIN_TABLE.format(col.getDate()), i);
+            addTableRowDate(beautifyDate(col.getDate()), i);
             addTableRowTypes(col.getTypes(), i);
             i++;
+        }
+    }
+
+    private String beautifyDate(Date date) {
+        Date today = Calendar.getInstance().getTime();
+        int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+
+        if (daysBetween < 7) {
+            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+                    + " ("
+                    + getString(R.string.thisweek)
+                    + " "
+                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date).toLowerCase()
+                    + ")";
+        } else if (daysBetween < 14) {
+            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+                    + " ("
+                    + getString(R.string.nextweek)
+                    + " "
+                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date).toLowerCase()
+                    + ")";
+        } else {
+            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date);
         }
     }
 

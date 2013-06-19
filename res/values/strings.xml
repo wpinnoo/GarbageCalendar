@@ -31,4 +31,7 @@
     
     <string name="loadingUnsuccessful">Could not load required data.</string>
     <string name="error">Error</string>
+    
+    <string name="thisweek">this</string>
+    <string name="nextweek">next</string>
 </resources>
