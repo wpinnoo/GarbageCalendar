@@ -24,7 +24,7 @@ public class LocalConstants {
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
     
     public enum DateFormatType {
-        MAIN_TABLE, WEEKDAY
+        MAIN_TABLE, WEEKDAY, FULL
     }
     
     public static SimpleDateFormat getDateFormatter(DateFormatType type, Context c){
@@ -32,7 +32,9 @@ public class LocalConstants {
             case MAIN_TABLE:
                 return new SimpleDateFormat("EEE, d MMMM", c.getResources().getConfiguration().locale);
             case WEEKDAY:
-                return new SimpleDateFormat("EEEE", c.getResources().getConfiguration().locale);                
+                return new SimpleDateFormat("EEEE", c.getResources().getConfiguration().locale); 
+            case FULL:
+                return new SimpleDateFormat("EEEE d MMMM", c.getResources().getConfiguration().locale); 
         }
         return null;
     }

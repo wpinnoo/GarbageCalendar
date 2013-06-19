@@ -25,9 +25,14 @@ public enum GarbageType {
         this.color = color;
     }
 
-    public final String strValue(Context c) {
+    public final String shortStrValue(Context c) {
         Resources res = c.getResources();
-        return res.getString(res.getIdentifier(strValue, "string", c.getPackageName()));
+        return res.getString(res.getIdentifier(strValue + "_short", "string", c.getPackageName()));
+    }
+
+    public final String longStrValue(Context c) {
+        Resources res = c.getResources();
+        return res.getString(res.getIdentifier(strValue + "_long", "string", c.getPackageName()));
     }
 
     public int getColor(AreaType type) {

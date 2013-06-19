@@ -2,11 +2,17 @@
 <resources>
     <string name="app_name">Garbage calendar</string>
     
-    <string name="rest">Rest</string>
-    <string name="gft">GFT</string>
-    <string name="pmd">PMD</string>
-    <string name="pk">Papier</string>
-    <string name="glas">Glas</string>
+    <string name="rest_short">MSW</string>
+    <string name="gft_short">Green</string>
+    <string name="pmd_short">Plastics</string>
+    <string name="pk_short">Paper</string>
+    <string name="glas_short">Glass</string>
+    
+    <string name="rest_long">Municipal solid waste</string>
+    <string name="gft_long">Green</string>
+    <string name="pmd_long">Plastics and metals</string>
+    <string name="pk_long">Paper and paperboard</string>
+    <string name="glas_long">Glass</string>
     
     <string name="invalidLocation">Invalid location</string>
     <string name="invalidLocationLong">This is not a valid location in Ghent.</string>
@@ -18,6 +24,7 @@
     <string name="enterAddress">Please enter your address.</string> 
     
     <string name="ok">OK</string>
+    <string name="and">and</string>
     <string name="tryAgain">Try again</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>

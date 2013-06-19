@@ -444,8 +444,8 @@ public class MainActivity extends Activity {
                 continue;
             }
 
-            addTableRowDate(beautifyDate(col.getDate()), i);
-            addTableRowTypes(col.getTypes(), i);
+            addTableRowDate(col, i);
+            addTableRowTypes(col, i);
             i++;
         }
     }
@@ -473,7 +473,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void addTableRowTypes(GarbageType[] types, int rowNumber) {
+    private void addTableRowTypes(GarbageCollection col, int rowNumber){
+        GarbageType[] types = col.getTypes();
         boolean rest, gft, pmd, pk, glas;
         rest = gft = pmd = pk = glas = false;
         for (GarbageType t : types) {
@@ -503,36 +504,39 @@ public class MainActivity extends Activity {
         TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
 
         TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
-        labelRest.setText(rest ? GarbageType.REST.strValue(this) : "");
+        labelRest.setText(rest ? GarbageType.REST.shortStrValue(this) : "");
         labelRest.setPadding(1, 5, 5, 5);
         labelRest.setBackgroundColor(rest ? GarbageType.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
-        labelGFT.setText(gft ? GarbageType.GFT.strValue(this) : "");
+        labelGFT.setText(gft ? GarbageType.GFT.shortStrValue(this) : "");
         labelGFT.setPadding(1, 5, 5, 5);
         labelGFT.setBackgroundColor(gft ? GarbageType.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
-        labelPMD.setText(pmd ? GarbageType.PMD.strValue(this) : "");
+        labelPMD.setText(pmd ? GarbageType.PMD.shortStrValue(this) : "");
         labelPMD.setPadding(1, 5, 5, 5);
         labelPMD.setBackgroundColor(pmd ? GarbageType.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
-        labelPK.setText(pk ? GarbageType.PK.strValue(this) : "");
+        labelPK.setText(pk ? GarbageType.PK.shortStrValue(this) : "");
         labelPK.setPadding(1, 5, 5, 5);
         labelPK.setBackgroundColor(pk ? GarbageType.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
-        labelGlas.setText(glas ? GarbageType.GLAS.strValue(this) : "");
+        labelGlas.setText(glas ? GarbageType.GLAS.shortStrValue(this) : "");
         labelGlas.setPadding(1, 5, 5, 5);
         labelGlas.setBackgroundColor(glas ? GarbageType.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         tr.setBackgroundColor(backgroundColor);
+        tr.setOnClickListener(new TableRowListener(col));
 
         tl.addView(tr);
     }
 
-    private void addTableRowDate(String date, int rowNumber) {
+    private void addTableRowDate(GarbageCollection col, int rowNumber) {
+        String date = beautifyDate(col.getDate());
+        
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);
         TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
@@ -543,6 +547,7 @@ public class MainActivity extends Activity {
         labelDate.setTextColor(Color.BLACK);
 
         tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
+        tr.setOnClickListener(new TableRowListener(col));
 
         tl.addView(tr);
     }

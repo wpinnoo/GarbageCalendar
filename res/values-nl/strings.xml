@@ -2,11 +2,17 @@
 <resources>
     <string name="app_name">Ophaalkalender</string>
     
-    <string name="rest">Rest</string>
-    <string name="gft">GFT</string>
-    <string name="pmd">PMD</string>
-    <string name="pk">Papier</string>
-    <string name="glas">Glas</string>
+    <string name="rest_short">Rest</string>
+    <string name="gft_short">GFT</string>
+    <string name="pmd_short">PMD</string>
+    <string name="pk_short">Papier</string>
+    <string name="glas_short">Glas</string>
+    
+    <string name="rest_long">Restafval</string>
+    <string name="gft_long">GFT</string>
+    <string name="pmd_long">PMD</string>
+    <string name="pk_long">Papier en karton</string>
+    <string name="glas_long">Glas</string>
     
     <string name="invalidLocation">Ongeldige locatie</string>
     <string name="invalidLocationLong">Dit is geen geldige locatie in Gent.</string>
@@ -18,6 +24,7 @@
     <string name="enterAddress">Voer je adres in.</string> 
     
     <string name="ok">OK</string>
+    <string name="and">en</string>
     <string name="tryAgain">Opnieuw</string>
     <string name="cancel">Annuleer</string>
     <string name="refresh">Vernieuw</string>
