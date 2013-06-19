@@ -8,7 +8,7 @@ import android.graphics.Color;
  */
 public enum AreaType {
 
-    V("V", Color.rgb(191, 201, 79)), L("L", Color.rgb(11, 150, 27)), NONE("-", Color.TRANSPARENT);
+    V("V", Color.rgb(191, 201, 79)), L("L", Color.rgb(110, 110, 110)), NONE("-", Color.TRANSPARENT);
     
     private final String str;
     private final int color;
