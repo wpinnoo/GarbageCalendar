@@ -1,12 +1,13 @@
 package eu.pinnoo.garbagecalendar.util;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class GarbageCollection {
+public class GarbageCollection implements Serializable {
 
     private final String weekCode;
     private final String day;

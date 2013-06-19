@@ -3,12 +3,13 @@ package eu.pinnoo.garbagecalendar.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import java.io.Serializable;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public enum GarbageType {
+public enum GarbageType implements Serializable {
 
     REST("rest", Color.TRANSPARENT),
     GFT("gft", Color.rgb(12, 107, 53)),
@@ -16,7 +17,6 @@ public enum GarbageType {
     PK("pk", Color.GRAY),
     GLAS("glas", Color.rgb(51, 83, 153)),
     NONE("-", Color.TRANSPARENT);
-    
     private String strValue;
     private int color;
 

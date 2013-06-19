@@ -1,10 +1,12 @@
 package eu.pinnoo.garbagecalendar.util;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class Sector {
+public class Sector implements Serializable {
 
     private AreaType type;
     private String code;
@@ -13,8 +15,8 @@ public class Sector {
         this.type = type;
         this.code = code;
     }
-    
-    public Sector(){
+
+    public Sector() {
         this(LocalConstants.DEFAULT_SECTOR);
     }
 
@@ -27,9 +29,9 @@ public class Sector {
         }
         return false;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return type.toString() + code;
     }
 

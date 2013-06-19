@@ -17,6 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name="eu.pinnoo.garbagecalendar.receivers.EventReceiver"
+                  android:process=":remote">
+        </receiver>
     </application>
     
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,5 +29,6 @@
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+
 
 </manifest>

@@ -1,11 +1,14 @@
 package eu.pinnoo.garbagecalendar.view;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
+import eu.pinnoo.garbagecalendar.receivers.NotificationRaiser;
 import eu.pinnoo.garbagecalendar.util.AreaType;
 import eu.pinnoo.garbagecalendar.util.GarbageCollection;
 import eu.pinnoo.garbagecalendar.util.GarbageType;
@@ -66,6 +70,20 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
 
         initializeModels();
+    }
+
+    private void setUpAlarms() {
+        for (GarbageCollection col : DataModel.getInstance().getCollections()) {
+            Intent intent = new Intent(getBaseContext(), NotificationRaiser.class);
+            intent.putExtra("collection", col);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(col.getDate());
+            calendar.add(Calendar.HOUR, -4);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
     }
 
     private void initializeModels() {
@@ -292,6 +310,7 @@ public class MainActivity extends Activity {
             }
             Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + " " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
+            setUpAlarms();
         }
     }
 
@@ -454,7 +473,12 @@ public class MainActivity extends Activity {
         Date today = Calendar.getInstance().getTime();
         int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
 
-        if (daysBetween < 7) {
+        if (daysBetween <= 1) {
+            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+                    + " ("
+                    + getString(R.string.tomorrow)
+                    + ")";
+        } else if (daysBetween < 7) {
             return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
                     + " ("
                     + getString(R.string.thisweek)
@@ -473,7 +497,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void addTableRowTypes(GarbageCollection col, int rowNumber){
+    private void addTableRowTypes(GarbageCollection col, int rowNumber) {
         GarbageType[] types = col.getTypes();
         boolean rest, gft, pmd, pk, glas;
         rest = gft = pmd = pk = glas = false;
@@ -536,7 +560,7 @@ public class MainActivity extends Activity {
 
     private void addTableRowDate(GarbageCollection col, int rowNumber) {
         String date = beautifyDate(col.getDate());
-        
+
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);
         TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
