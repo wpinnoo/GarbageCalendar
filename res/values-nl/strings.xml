@@ -10,7 +10,7 @@
     
     <string name="invalidLocation">Ongeldige locatie</string>
     <string name="invalidLocationLong">Dit is geen geldige locatie in Gent.</string>
-    <string name="noCalendarAvailable">Er is geen ophaalkalender beschikbaar op jouw adres omdat het een appartement is.</string>
+    <string name="noCalendarAvailable">Er is geen ophaalkalender beschikbaar voor jouw adres omdat het een appartement is.</string>
     <string name="newLocation">Nieuwe locatie</string>
     <string name="close">Sluit</string>
     
