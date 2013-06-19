@@ -17,12 +17,13 @@
     <string name="yourLocation">Jouw locatie</string>
     <string name="enterAddress">Voer je adres in.</string> 
     
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="tryAgain">Opnieuw</string>
     <string name="cancel">Annuleer</string>
+    <string name="refresh">Vernieuw</string>
     
-    <string name="lookingUp">Adres nakijken...</string>
-    <string name="loadingCalendar">Ophaalkalender laden...</string>
+    <string name="lookingUp">Adres nakijken&#8230;</string>
+    <string name="loadingCalendar">Ophaalkalender laden&#8230;</string>
     
     <string name="noInternetConnection">Geen internetverbinding.</string>
     <string name="needConnection">Je hebt een internetverbinding nodig de eerste keer dat je deze app gebruikt.</string>
