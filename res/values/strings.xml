@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GarbageCalendar</string>
+    <string name="app_name">Garbage calendar</string>
     
     <string name="rest">Rest</string>
     <string name="gft">GFT</string>
