@@ -19,6 +19,7 @@
     
     <string name="ok">Ok</string>
     <string name="tryAgain">Opnieuw</string>
+    <string name="cancel">Annuleer</string>
     
     <string name="lookingUp">Adres nakijken...</string>
     <string name="loadingCalendar">Ophaalkalender laden...</string>

@@ -136,7 +136,7 @@ public abstract class Scraper {
             Logger.getLogger(Scraper.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                BufferedWriter out = new BufferedWriter(new FileWriter(new File(DataModel.getInstance().getContainer().getCacheDir(), "") + getCacheName() + ".srl"));
+                BufferedWriter out = new BufferedWriter(new FileWriter(new File(DataModel.getInstance().getContainer().getCacheDir(), "") + getCacheName() + ".srl", false));
                 out.write(arr.toString());
                 out.close();
                 DataModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)

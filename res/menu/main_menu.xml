@@ -5,4 +5,9 @@
           android:title="@string/about"
           android:showAsAction="ifRoom"
     />
+    <item android:id="@+id/newlocation"
+          android:icon="@drawable/newlocation"
+          android:title="@string/newLocation"
+          android:showAsAction="ifRoom"
+    />
 </menu>

@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,29 +74,29 @@ public class MainActivity extends Activity {
 
         Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
         if (s.getType().equals(AreaType.NONE)) {
-            promptUserLocation();
+            promptUserLocation(false, false, true);
         } else {
             UserModel.getInstance().restoreFromCache();
-            new DataScraper().execute();
+            new DataScraper(false, false, false).execute();
         }
     }
 
-    private void locationIsApartment() {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.invalidLocation))
-                .setMessage(getString(R.string.noCalendarAvailable))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.newLocation), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        promptUserLocation();
-                    }
-                })
-                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
-                .show();
+    private void locationIsApartment(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+        Builder b = new AlertDialog.Builder(this);
+        b.setTitle(getString(R.string.invalidLocation));
+        b.setMessage(getString(R.string.noCalendarAvailable));
+        b.setCancelable(false);
+        b.setPositiveButton(getString(R.string.newLocation), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                promptUserLocation(cancelable, force, forceStreetSearch);
+            }
+        });
+        b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        });
+        b.show();
     }
 
     /**
@@ -107,7 +106,7 @@ public class MainActivity extends Activity {
      * 2 when loading the list of apartments was unsuccessful 3 when loading the
      * streetlist was unsuccessful 4 when loading the calendar was unsuccessful
      */
-    private int scrapeData(boolean force) {
+    private int scrapeData(boolean force, boolean forceStreetSearch) {
         int result = new ApartmentsScraper().loadData(force);
         if (result != 0) {
             return 2;
@@ -116,7 +115,7 @@ public class MainActivity extends Activity {
             return 1;
         }
 
-        if (force || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
+        if (forceStreetSearch || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
             result = new StreetsScraper().loadData(force);
             if (result != 0) {
                 return 3;
@@ -136,20 +135,27 @@ public class MainActivity extends Activity {
         return urlConnection.getInputStream();
     }
 
-    public void promptUserLocation() {
+    public void promptUserLocation(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
         final EditText input = new EditText(this);
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.yourLocation))
-                .setMessage(getString(R.string.enterAddress))
-                .setView(input)
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String address = input.getText().toString();
-                        new AddressParser(address).execute();
-                    }
-                })
-                .show();
+        Builder b = new AlertDialog.Builder(this);
+        b.setTitle(getString(R.string.yourLocation));
+        b.setMessage(getString(R.string.enterAddress));
+        b.setView(input);
+        b.setCancelable(cancelable);
+        b.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String address = input.getText().toString();
+                new AddressParser(address, cancelable, force, forceStreetSearch).execute();
+            }
+        });
+        if (cancelable) {
+            b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialog.dismiss();
+                }
+            });
+        }
+        b.show();
     }
 
     private JSONArray filterOnGhent(JSONArray arr) throws JSONException {
@@ -174,9 +180,15 @@ public class MainActivity extends Activity {
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
         private String address;
         private JSONArray arr;
+        private boolean cancelable;
+        private boolean force;
+        private boolean forceStreetSearch;
 
-        public AddressParser(String address) {
+        public AddressParser(String address, boolean cancelable, boolean force, boolean forceStreetSearch) {
             this.address = address;
+            this.cancelable = cancelable;
+            this.force = force;
+            this.forceStreetSearch = forceStreetSearch;
         }
 
         @Override
@@ -212,13 +224,13 @@ public class MainActivity extends Activity {
             dialog.dismiss();
             switch (result) {
                 case 0:
-                    new DataScraper().execute();
+                    new DataScraper(cancelable, force, forceStreetSearch).execute();
                     break;
                 case 1:
-                    addressNotFound();
+                    addressNotFound(cancelable, force, forceStreetSearch);
                     break;
                 case 2:
-                    multiplePossibilities(arr);
+                    multiplePossibilities(arr, cancelable, force, forceStreetSearch);
                     break;
                 case 3:
                     noInternetConnectionAvailable();
@@ -233,16 +245,25 @@ public class MainActivity extends Activity {
                 .setMessage(getString(R.string.needConnection))
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        })
                 .show();
     }
 
     private class DataScraper extends AsyncTask<Void, Void, Integer> {
 
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        private boolean cancelable;
+        private boolean force;
+        private boolean forceStreetSearch;
+
+        private DataScraper(boolean cancelable, boolean force, boolean forceStreetSearch) {
+            this.cancelable = cancelable;
+            this.force = force;
+            this.forceStreetSearch = forceStreetSearch;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -253,7 +274,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            return scrapeData(false);
+            return scrapeData(force, forceStreetSearch);
         }
 
         @Override
@@ -261,7 +282,7 @@ public class MainActivity extends Activity {
             dialog.dismiss();
             switch (result) {
                 case 1:
-                    locationIsApartment();
+                    locationIsApartment(cancelable, force, forceStreetSearch);
                     break;
                 case 2:
                 case 3:
@@ -280,10 +301,10 @@ public class MainActivity extends Activity {
                 .setMessage(getString(R.string.loadingUnsuccessful))
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
+            public void onClick(DialogInterface dialog, int whichButton) {
+                finish();
+            }
+        })
                 .show();
     }
 
@@ -343,7 +364,8 @@ public class MainActivity extends Activity {
             JSONObject obj = addressArr.getJSONObject(i);
             String type = obj.getJSONArray("types").getString(0);
             if (type.equals("street_number")) {
-                UserModel.getInstance().setNr(Integer.parseInt(obj.getString("long_name")));
+                int receivedNr = Integer.parseInt(obj.getString("long_name"));
+                UserModel.getInstance().setNr(Math.max(receivedNr, 1));
             } else if (type.equals("route")) {
                 UserModel.getInstance().setStreetname(obj.getString("long_name"));
             } else if (type.equals("sublocality")) {
@@ -354,25 +376,33 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void addressNotFound() {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.invalidLocation))
-                .setMessage(getString(R.string.invalidLocationLong))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.tryAgain), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        promptUserLocation();
-                    }
-                })
-                .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
-                .show();
+    private void addressNotFound(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+        Builder b = new AlertDialog.Builder(this);
+        b.setTitle(getString(R.string.invalidLocation));
+        b.setMessage(getString(R.string.invalidLocationLong));
+        b.setCancelable(cancelable);
+        b.setPositiveButton(getString(R.string.tryAgain), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                promptUserLocation(cancelable, force, forceStreetSearch);
+            }
+        });
+        if (cancelable) {
+            b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialog.dismiss();
+                }
+            });
+        } else {
+            b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    finish();
+                }
+            });
+        }
+        b.show();
     }
 
-    private void multiplePossibilities(final JSONArray arr) {
+    private void multiplePossibilities(final JSONArray arr, final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
         final CharSequence[] possibilities = new CharSequence[arr.length()];
         for (int i = 0; i < arr.length(); i++) {
             try {
@@ -387,21 +417,24 @@ public class MainActivity extends Activity {
                 .setTitle(getString(R.string.selectAddress))
                 .setCancelable(false)
                 .setSingleChoiceItems(possibilities, 0, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface d, int choice) {
-                        try {
-                            submitAddress(arr.getJSONObject(choice));
-                            new DataScraper().execute();
-                        } catch (JSONException ex) {
-                            Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
-                        } finally {
-                            d.dismiss();
-                        }
-                    }
-                });
+            public void onClick(DialogInterface d, int choice) {
+                try {
+                    submitAddress(arr.getJSONObject(choice));
+                    new DataScraper(cancelable, force, forceStreetSearch).execute();
+                } catch (JSONException ex) {
+                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    d.dismiss();
+                }
+            }
+        });
         builder.create().show();
     }
 
     private void createGUI() {
+        TableLayout table = (TableLayout) findViewById(R.id.main_table);
+        table.removeViews(0, table.getChildCount());
+
         List<GarbageCollection> collections = DataModel.getInstance().getCollections();
         Iterator<GarbageCollection> it = collections.iterator();
         int i = 0;
@@ -537,8 +570,9 @@ public class MainActivity extends Activity {
                 dialog.show();
 
                 ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-
                 return true;
+            case R.id.newlocation:
+                promptUserLocation(true, false, true);
             default:
                 return super.onOptionsItemSelected(item);
         }

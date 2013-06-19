@@ -19,6 +19,7 @@
     
     <string name="ok">Ok</string>
     <string name="tryAgain">Try again</string>
+    <string name="cancel">Cancel</string>
     
     <string name="lookingUp">Looking up your address...</string>
     <string name="loadingCalendar">Loading calendar...</string>
