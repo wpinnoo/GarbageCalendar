@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public class LocalConstants {
+    
+    public static final boolean DEBUG = true;
 
     public static final String ENCODING = "iso-8859-1";
     public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";

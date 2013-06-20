@@ -28,6 +28,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.models.DataModel;
 import eu.pinnoo.garbagecalendar.models.UserModel;
@@ -71,9 +72,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        if (LocalConstants.DEBUG) {
+            GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
+            googleAnalytics.setAppOptOut(true);
+        }
+
         initializeModels();
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
