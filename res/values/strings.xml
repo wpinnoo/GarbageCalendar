@@ -49,4 +49,7 @@
     <string name="aboutMessage">Click on the \'New location\' button to set your home address. Currently, only addresses in Ghent are supported.\n\n\nThis app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 
     <string name="putOutTrash">Put out the trash</string>
+    <string name="notif">Notifications (beta)</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>

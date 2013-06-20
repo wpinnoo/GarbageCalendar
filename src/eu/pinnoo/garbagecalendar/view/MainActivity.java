@@ -7,6 +7,7 @@ import android.app.AlertDialog.Builder;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import static android.content.Context.ALARM_SERVICE;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -72,17 +73,23 @@ public class MainActivity extends Activity {
         initializeModels();
     }
 
-    private void setUpAlarms() {
+    private void toggleNotifications(boolean state) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        int i = 0;
         for (GarbageCollection col : DataModel.getInstance().getCollections()) {
             Intent intent = new Intent(getBaseContext(), NotificationRaiser.class);
             intent.putExtra("collection", col);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), i++, intent, 0);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(col.getDate());
             calendar.add(Calendar.HOUR, -4);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+            if (state) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.cancel(pendingIntent);
+            }
         }
     }
 
@@ -310,7 +317,7 @@ public class MainActivity extends Activity {
             }
             Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + " " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
             createGUI();
-            setUpAlarms();
+            toggleNotifications(false);
         }
     }
 
@@ -603,6 +610,24 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.refresh:
                 new DataScraper(true, true, true).execute();
+                return true;
+            case R.id.notif:
+                final CharSequence[] choices = new CharSequence[]{getString(R.string.on), getString(R.string.off)};
+                boolean initialValue = getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean("notif", false);
+                AlertDialog.Builder b = new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.notif))
+                        .setCancelable(true)
+                        .setSingleChoiceItems(choices, initialValue ? 0 : 1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int choice) {
+                        toggleNotifications(choice == 0);
+                        getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+                                .edit()
+                                .putBoolean("notif", (choice == 0))
+                                .commit();
+                        d.dismiss();
+                    }
+                });
+                b.create().show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

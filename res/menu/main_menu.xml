@@ -15,4 +15,9 @@
           android:title="@string/refresh"
           android:showAsAction="ifRoom"
     />
+    <item android:id="@+id/notif"
+          android:icon="@drawable/notif"
+          android:title="@string/notif"
+          android:showAsAction="ifRoom"
+    />
 </menu>

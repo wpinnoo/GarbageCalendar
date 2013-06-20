@@ -49,4 +49,7 @@
     <string name="aboutMessage">Klik op de knop \'Nieuwe locatie\' om je adres in te stellen. Momenteel worden enkel Gentse adressen ondersteund.\n\n\nDeze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 
     <string name="putOutTrash">Zet het vuilnis buiten</string>
+    <string name="notif">Notificaties (beta)</string>
+    <string name="on">Aan</string>
+    <string name="off">Uit</string>
 </resources>
