@@ -279,7 +279,7 @@ public class MainActivity extends Activity {
 
     private void noInternetConnectionAvailable() {
         Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.noCalendarAvailable));
+        b.setTitle(getString(R.string.noInternetConnection));
         b.setMessage(getString(R.string.needConnection));
         b.setCancelable(false);
         b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
