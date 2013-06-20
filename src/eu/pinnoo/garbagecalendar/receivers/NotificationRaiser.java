@@ -23,7 +23,7 @@ public class NotificationRaiser extends BroadcastReceiver {
         String title = context.getString(R.string.putOutTrash);
         String msg = "";
         try {
-            GarbageCollection col = (GarbageCollection) intent.getSerializableExtra("collection");
+            GarbageCollection col = (GarbageCollection) intent.getSerializableExtra(LocalConstants.NOTIF_INTENT_COL);
             
             msg += "(" + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.SHORT_WEEKDAY, context).format(col.getDate()) + ") ";
             

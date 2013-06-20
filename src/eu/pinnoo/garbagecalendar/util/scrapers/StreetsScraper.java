@@ -29,7 +29,7 @@ public class StreetsScraper extends Scraper {
 
     @Override
     protected String getCacheName() {
-        return "cache_streets";
+        return LocalConstants.CacheName.STREETS.toString();
     }
 
     /**
@@ -90,6 +90,6 @@ public class StreetsScraper extends Scraper {
 
     @Override
     protected String getSharedPrefName() {
-        return "data_streets_update";
+        return LocalConstants.CacheName.UPDATE_STREETS.toString();
     }
 }

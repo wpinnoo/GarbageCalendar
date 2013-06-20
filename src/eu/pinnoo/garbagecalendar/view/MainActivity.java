@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         int i = 0;
         for (GarbageCollection col : DataModel.getInstance().getCollections()) {
             Intent intent = new Intent(getBaseContext(), NotificationRaiser.class);
-            intent.putExtra("collection", col);
+            intent.putExtra(LocalConstants.NOTIF_INTENT_COL, col);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), i++, intent, 0);
 
             Calendar calendar = Calendar.getInstance();
@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
         UserModel.getInstance().setContainer(this);
         DataModel.getInstance().setContainer(this);
 
-        Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
+        Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_SECTOR.toString(), LocalConstants.DEFAULT_SECTOR));
         if (s.getType().equals(AreaType.NONE)) {
             promptUserLocation(false, false, true);
         } else {
@@ -613,7 +613,7 @@ public class MainActivity extends Activity {
                 return true;
             case R.id.notif:
                 final CharSequence[] choices = new CharSequence[]{getString(R.string.on), getString(R.string.off)};
-                boolean initialValue = getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean("notif", false);
+                boolean initialValue = getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), false);
                 AlertDialog.Builder b = new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.notif))
                         .setCancelable(true)
@@ -622,7 +622,7 @@ public class MainActivity extends Activity {
                         toggleNotifications(choice == 0);
                         getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                                 .edit()
-                                .putBoolean("notif", (choice == 0))
+                                .putBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), (choice == 0))
                                 .commit();
                         d.dismiss();
                     }

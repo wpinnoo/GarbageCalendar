@@ -29,7 +29,7 @@ public class ApartmentsScraper extends Scraper {
 
     @Override
     protected String getCacheName() {
-        return "cache_apartments";
+        return LocalConstants.CacheName.APARTMENTS.toString();
     }
 
     /**
@@ -86,6 +86,6 @@ public class ApartmentsScraper extends Scraper {
 
     @Override
     protected String getSharedPrefName() {
-        return "data_app_update";
+        return LocalConstants.CacheName.UPDATE_APARTMENTS.toString();
     }
 }

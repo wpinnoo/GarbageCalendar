@@ -32,7 +32,7 @@ public class CalendarScraper extends Scraper {
 
     @Override
     protected String getCacheName() {
-        return "cache_calendar";
+        return LocalConstants.CacheName.CALENDAR.toString();
     }
 
     /**
@@ -76,6 +76,6 @@ public class CalendarScraper extends Scraper {
 
     @Override
     protected String getSharedPrefName() {
-        return "data_cal_update";
+        return LocalConstants.CacheName.UPDATE_CALENDAR.toString();
     }
 }

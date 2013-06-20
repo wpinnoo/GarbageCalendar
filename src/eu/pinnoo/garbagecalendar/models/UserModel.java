@@ -48,7 +48,7 @@ public class UserModel {
         isApartment = b;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putBoolean("user_apartment", isApartment)
+                .putBoolean(LocalConstants.CacheName.USER_APARTMENT.toString(), isApartment)
                 .commit();
     }
 
@@ -60,7 +60,7 @@ public class UserModel {
         this.streetname = streetname;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putString("user_street", streetname)
+                .putString(LocalConstants.CacheName.USER_STREET.toString(), streetname)
                 .commit();
     }
 
@@ -72,7 +72,7 @@ public class UserModel {
         this.nr = nr;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putInt("user_nr", nr)
+                .putInt(LocalConstants.CacheName.USER_NR.toString(), nr)
                 .commit();
     }
 
@@ -84,7 +84,7 @@ public class UserModel {
         this.zipcode = zipcode;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putInt("user_pc", zipcode)
+                .putInt(LocalConstants.CacheName.USER_PC.toString(), zipcode)
                 .commit();
     }
 
@@ -96,7 +96,7 @@ public class UserModel {
         this.city = city;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putString("user_city", city)
+                .putString(LocalConstants.CacheName.USER_CITY.toString(), city)
                 .commit();
     }
 
@@ -108,17 +108,17 @@ public class UserModel {
         this.sector = sector;
         getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
                 .edit()
-                .putString("user_sector", sector.toString())
+                .putString(LocalConstants.CacheName.USER_SECTOR.toString(), sector.toString())
                 .commit();
     }
     
     public void restoreFromCache(){
-        isApartment = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean("user_apartment", false);
-        streetname = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_street", "");
-        nr = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt("user_nr", 0);
-        zipcode = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt("user_pc", 0);
-        city = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_city", "");
-        sector = new Sector(container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("user_sector", LocalConstants.DEFAULT_SECTOR));
+        isApartment = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.USER_APARTMENT.toString(), false);
+        streetname = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_STREET.toString(), "");
+        nr = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt(LocalConstants.CacheName.USER_NR.toString(), 0);
+        zipcode = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getInt(LocalConstants.CacheName.USER_PC.toString(), 0);
+        city = container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_CITY.toString(), "");
+        sector = new Sector(container.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_SECTOR.toString(), LocalConstants.DEFAULT_SECTOR));
     }
     
     public String getFormattedAddress(){
