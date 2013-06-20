@@ -9,5 +9,8 @@ This app uses open data from [data.gent.be](http://data.gent.be/datasets/ivago-i
 #### Authors
 * Wouter Pinnoo ([@wpinnoo](http://github.com/wpinnoo))
 
+#### Google PlayStore
+This app is available on the [Google PlayStore](https://play.google.com/store/apps/details?id=eu.pinnoo.garbagecalendar).
+
 #### Screenshot
 ![Screenshot of GarbageCalendar](https://raw.github.com/wpinnoo/GarbageCalendar/master/images/screenshot.png)
