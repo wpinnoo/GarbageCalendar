@@ -59,7 +59,6 @@ local.properties
 ant.properties
 
 *database.properties*
-*.psd
 /nbandroid/
 
 *.json
