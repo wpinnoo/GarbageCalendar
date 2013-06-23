@@ -1,5 +1,6 @@
 package eu.pinnoo.garbagecalendar.ui;
 
+import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -30,6 +32,7 @@ import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.receivers.TrashDayReceiver;
 import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
+import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Sector;
@@ -70,15 +73,15 @@ public class CollectionListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        AddressCache.initialize(this);
-        CollectionCache.initialize(this);
-        
+        //AddressCache.initialize(this);
+        //CollectionCache.initialize(this);
+
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
             googleAnalytics.setAppOptOut(true);
         }
 
-        initializeModels();
+        //initializeModels();
     }
 
     @Override
@@ -92,57 +95,58 @@ public class CollectionListActivity extends Activity {
         super.onStop();
         EasyTracker.getInstance().activityStop(this);
     }
+    /*
+     private void toggleNotifications(boolean state) {
+     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+     int i = 0;
+     for (Collection col : CollectionsData.getInstance().getCollections()) {
+     Intent intent = new Intent(getBaseContext(), TrashDayReceiver.class);
+     intent.putExtra(LocalConstants.NOTIF_INTENT_COL, col);
+     PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), i++, intent, 0);
 
-    private void toggleNotifications(boolean state) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int i = 0;
-        for (Collection col : DataModel.getInstance().getCollections()) {
-            Intent intent = new Intent(getBaseContext(), TrashDayReceiver.class);
-            intent.putExtra(LocalConstants.NOTIF_INTENT_COL, col);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), i++, intent, 0);
+     Calendar calendar = Calendar.getInstance();
+     calendar.setTime(col.getDate());
+     calendar.add(Calendar.HOUR, -4);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(col.getDate());
-            calendar.add(Calendar.HOUR, -4);
+     if (state) {
+     alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+     } else {
+     alarmManager.cancel(pendingIntent);
+     }
+     }
+     }
 
-            if (state) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmManager.cancel(pendingIntent);
-            }
-        }
-    }
+     private void initializeModels() {
+     UserModel.getInstance().setContainer(this);
+     DataModel.getInstance().setContainer(this);
 
-    private void initializeModels() {
-        UserModel.getInstance().setContainer(this);
-        DataModel.getInstance().setContainer(this);
+     Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_SECTOR.toString(), LocalConstants.DEFAULT_SECTOR));
+     if (s.getType().equals(AreaType.NONE)) {
+     promptUserLocation(false, false, true);
+     } else {
+     UserModel.getInstance().restoreFromCache();
+     new DataScraper(false, false, false).execute();
+     }
+     }
 
-        Sector s = new Sector(UserModel.getInstance().getContainer().getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString(LocalConstants.CacheName.USER_SECTOR.toString(), LocalConstants.DEFAULT_SECTOR));
-        if (s.getType().equals(AreaType.NONE)) {
-            promptUserLocation(false, false, true);
-        } else {
-            UserModel.getInstance().restoreFromCache();
-            new DataScraper(false, false, false).execute();
-        }
-    }
-
-    private void locationIsApartment(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
-        Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.invalidLocation));
-        b.setMessage(getString(R.string.noCalendarAvailable));
-        b.setCancelable(false);
-        b.setPositiveButton(getString(R.string.newLocation), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                promptUserLocation(cancelable, force, forceStreetSearch);
-            }
-        });
-        b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                finish();
-            }
-        });
-        b.show();
-    }
+     private void locationIsApartment(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+     Builder b = new AlertDialog.Builder(this);
+     b.setTitle(getString(R.string.invalidLocation));
+     b.setMessage(getString(R.string.noCalendarAvailable));
+     b.setCancelable(false);
+     b.setPositiveButton(getString(R.string.newLocation), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     promptUserLocation(cancelable, force, forceStreetSearch);
+     }
+     });
+     b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     finish();
+     }
+     });
+     b.show();
+     }
+     */
 
     /**
      *
@@ -151,448 +155,448 @@ public class CollectionListActivity extends Activity {
      * 2 when loading the list of apartments was unsuccessful 3 when loading the
      * streetlist was unsuccessful 4 when loading the calendar was unsuccessful
      */
-    private int scrapeData(boolean force, boolean forceStreetSearch) {
-        int result = new ApartmentsParser().loadData(force);
-        if (result != 0) {
-            return 2;
-        }
-        if (UserModel.getInstance().isApartment()) {
-            return 1;
-        }
+    /*  private int scrapeData(boolean force, boolean forceStreetSearch) {
+     int result = new ApartmentsParser().loadData(force);
+     if (result != 0) {
+     return 2;
+     }
+     if (UserModel.getInstance().isApartment()) {
+     return 1;
+     }
 
-        if (forceStreetSearch || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
-            result = new StreetsParser().loadData(force);
-            if (result != 0) {
-                return 3;
-            }
-        }
+     if (forceStreetSearch || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
+     result = new StreetsParser().loadData(force);
+     if (result != 0) {
+     return 3;
+     }
+     }
 
-        result = new CalendarParser().loadData(force);
-        if (result != 0) {
-            return 4;
-        }
-        return 0;
-    }
+     result = new CalendarParser().loadData(force);
+     if (result != 0) {
+     return 4;
+     }
+     return 0;
+     }
 
-    public void promptUserLocation(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
-        final EditText input = new EditText(this);
-        Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.yourLocation));
-        b.setMessage(getString(R.string.enterAddress));
-        b.setView(input);
-        b.setCancelable(cancelable);
-        b.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String address = input.getText().toString();
-                new AddressParser(address, cancelable, force, forceStreetSearch).execute();
-            }
-        });
-        if (cancelable) {
-            b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        b.show();
-    }
+     public void promptUserLocation(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+     final EditText input = new EditText(this);
+     Builder b = new AlertDialog.Builder(this);
+     b.setTitle(getString(R.string.yourLocation));
+     b.setMessage(getString(R.string.enterAddress));
+     b.setView(input);
+     b.setCancelable(cancelable);
+     b.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     String address = input.getText().toString();
+     new AddressParser(address, cancelable, force, forceStreetSearch).execute();
+     }
+     });
+     if (cancelable) {
+     b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     dialog.dismiss();
+     }
+     });
+     }
+     b.show();
+     }
 
-    private JSONArray filterOnGhent(JSONArray arr) throws JSONException {
-        JSONArray newArr = new JSONArray();
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-            JSONArray objarr = obj.optJSONArray("address_components");
-            for (int k = 0; k < objarr.length(); k++) {
-                JSONObject subobj = objarr.getJSONObject(k);
-                if (subobj.getJSONArray("types").getString(0).equals("locality")
-                        && subobj.getString("long_name").equals("Gent")) {
-                    newArr.put(obj);
-                    break;
-                }
-            }
-        }
-        return newArr;
-    }
+     private JSONArray filterOnGhent(JSONArray arr) throws JSONException {
+     JSONArray newArr = new JSONArray();
+     for (int i = 0; i < arr.length(); i++) {
+     JSONObject obj = arr.getJSONObject(i);
+     JSONArray objarr = obj.optJSONArray("address_components");
+     for (int k = 0; k < objarr.length(); k++) {
+     JSONObject subobj = objarr.getJSONObject(k);
+     if (subobj.getJSONArray("types").getString(0).equals("locality")
+     && subobj.getString("long_name").equals("Gent")) {
+     newArr.put(obj);
+     break;
+     }
+     }
+     }
+     return newArr;
+     }
 
-    private class AddressParser extends AsyncTask<Void, Void, Integer> {
+     private class AddressParser extends AsyncTask<Void, Void, Integer> {
 
-        private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
-        private String address;
-        private JSONArray arr;
-        private boolean cancelable;
-        private boolean force;
-        private boolean forceStreetSearch;
+     private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
+     private String address;
+     private JSONArray arr;
+     private boolean cancelable;
+     private boolean force;
+     private boolean forceStreetSearch;
 
-        public AddressParser(String address, boolean cancelable, boolean force, boolean forceStreetSearch) {
-            this.address = address;
-            this.cancelable = cancelable;
-            this.force = force;
-            this.forceStreetSearch = forceStreetSearch;
-        }
+     public AddressParser(String address, boolean cancelable, boolean force, boolean forceStreetSearch) {
+     this.address = address;
+     this.cancelable = cancelable;
+     this.force = force;
+     this.forceStreetSearch = forceStreetSearch;
+     }
 
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage(getString(R.string.lookingUp));
-            dialog.show();
-            dialog.setCancelable(false);
-        }
+     @Override
+     protected void onPreExecute() {
+     dialog.setMessage(getString(R.string.lookingUp));
+     dialog.show();
+     dialog.setCancelable(false);
+     }
 
-        @Override
-        protected Integer doInBackground(Void... params) {
-            try {
-                if (!Network.networkAvailable(CollectionListActivity.this)) {
-                    return 3;
-                }
+     @Override
+     protected Integer doInBackground(Void... params) {
+     try {
+     if (!Network.networkAvailable(CollectionListActivity.this)) {
+     return 3;
+     }
 
-                arr = parseAddress(address);
-                if (arr == null || arr.length() == 0) {
-                    return 1;
-                } else if (arr.length() > 1) {
-                    return 2;
-                } else {
-                    return 0;
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return 0;
-        }
+     arr = parseAddress(address);
+     if (arr == null || arr.length() == 0) {
+     return 1;
+     } else if (arr.length() > 1) {
+     return 2;
+     } else {
+     return 0;
+     }
+     } catch (IOException ex) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
+     }
+     return 0;
+     }
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            dialog.dismiss();
-            switch (result) {
-                case 0:
-                    new DataScraper(cancelable, force, forceStreetSearch).execute();
-                    break;
-                case 1:
-                    addressNotFound(cancelable, force, forceStreetSearch);
-                    break;
-                case 2:
-                    multiplePossibilities(arr, cancelable, force, forceStreetSearch);
-                    break;
-                case 3:
-                    noInternetConnectionAvailable();
-                    break;
-            }
-        }
-    }
+     @Override
+     protected void onPostExecute(Integer result) {
+     dialog.dismiss();
+     switch (result) {
+     case 0:
+     new DataScraper(cancelable, force, forceStreetSearch).execute();
+     break;
+     case 1:
+     addressNotFound(cancelable, force, forceStreetSearch);
+     break;
+     case 2:
+     multiplePossibilities(arr, cancelable, force, forceStreetSearch);
+     break;
+     case 3:
+     noInternetConnectionAvailable();
+     break;
+     }
+     }
+     }
 
-    private void noInternetConnectionAvailable() {
-        Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.noInternetConnection));
-        b.setMessage(getString(R.string.needConnection));
-        b.setCancelable(false);
-        b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                finish();
-            }
-        });
-        b.show();
-    }
+     private void noInternetConnectionAvailable() {
+     Builder b = new AlertDialog.Builder(this);
+     b.setTitle(getString(R.string.noInternetConnection));
+     b.setMessage(getString(R.string.needConnection));
+     b.setCancelable(false);
+     b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     finish();
+     }
+     });
+     b.show();
+     }
 
-    private class DataScraper extends AsyncTask<Void, Void, Integer> {
+     private class DataScraper extends AsyncTask<Void, Void, Integer> {
 
-        private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
-        private boolean cancelable;
-        private boolean force;
-        private boolean forceStreetSearch;
+     private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
+     private boolean cancelable;
+     private boolean force;
+     private boolean forceStreetSearch;
 
-        private DataScraper(boolean cancelable, boolean force, boolean forceStreetSearch) {
-            this.cancelable = cancelable;
-            this.force = force;
-            this.forceStreetSearch = forceStreetSearch;
-        }
+     private DataScraper(boolean cancelable, boolean force, boolean forceStreetSearch) {
+     this.cancelable = cancelable;
+     this.force = force;
+     this.forceStreetSearch = forceStreetSearch;
+     }
 
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage(getString(R.string.loadingCalendar));
-            dialog.show();
-            dialog.setCancelable(false);
-        }
+     @Override
+     protected void onPreExecute() {
+     dialog.setMessage(getString(R.string.loadingCalendar));
+     dialog.show();
+     dialog.setCancelable(false);
+     }
 
-        @Override
-        protected Integer doInBackground(Void... params) {
-            return scrapeData(force, forceStreetSearch);
-        }
+     @Override
+     protected Integer doInBackground(Void... params) {
+     return scrapeData(force, forceStreetSearch);
+     }
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            dialog.dismiss();
-            switch (result) {
-                case 1:
-                    locationIsApartment(cancelable, force, forceStreetSearch);
-                    break;
-                case 2:
-                case 3:
-                case 4:
-                    loadingUnsuccessful();
-                    break;
-            }
-            Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + " " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
-            createGUI();
-            toggleNotifications(false);
-        }
-    }
+     @Override
+     protected void onPostExecute(Integer result) {
+     dialog.dismiss();
+     switch (result) {
+     case 1:
+     locationIsApartment(cancelable, force, forceStreetSearch);
+     break;
+     case 2:
+     case 3:
+     case 4:
+     loadingUnsuccessful();
+     break;
+     }
+     Toast.makeText(getApplicationContext(), getString(R.string.locationSet) + " " + UserModel.getInstance().getFormattedAddress(), Toast.LENGTH_LONG).show();
+     createGUI();
+     toggleNotifications(false);
+     }
+     }
 
-    private void loadingUnsuccessful() {
-        Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.error));
-        b.setMessage(getString(R.string.loadingUnsuccessful));
-        b.setCancelable(false);
-        b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                finish();
-            }
-        });
-        b.show();
-    }
+     private void loadingUnsuccessful() {
+     Builder b = new AlertDialog.Builder(this);
+     b.setTitle(getString(R.string.error));
+     b.setMessage(getString(R.string.loadingUnsuccessful));
+     b.setCancelable(false);
+     b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     finish();
+     }
+     });
+     b.show();
+     }
 
     
 
-    public JSONArray parseAddress(String address) throws IOException {
-        String url = LocalConstants.GOOGLE_MAPS_API + "?";
-        List<NameValuePair> params = new LinkedList<NameValuePair>();
-        params.add(new BasicNameValuePair("address", address));
-        params.add(new BasicNameValuePair("sensor", "false"));
-        url += URLEncodedUtils.format(params, "utf-8");
+     public JSONArray parseAddress(String address) throws IOException {
+     String url = LocalConstants.GOOGLE_MAPS_API + "?";
+     List<NameValuePair> params = new LinkedList<NameValuePair>();
+     params.add(new BasicNameValuePair("address", address));
+     params.add(new BasicNameValuePair("sensor", "false"));
+     url += URLEncodedUtils.format(params, "utf-8");
 
-        InputStream inp = Network.getStream(url);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inp, LocalConstants.ENCODING), 8);
-        StringBuilder builder = new StringBuilder();
-        builder.append(reader.readLine()).append("\n");
+     InputStream inp = Network.getStream(url);
+     BufferedReader reader = new BufferedReader(new InputStreamReader(inp, LocalConstants.ENCODING), 8);
+     StringBuilder builder = new StringBuilder();
+     builder.append(reader.readLine()).append("\n");
 
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line).append("\n");
-        }
-        inp.close();
-        String result = builder.toString();
+     String line;
+     while ((line = reader.readLine()) != null) {
+     builder.append(line).append("\n");
+     }
+     inp.close();
+     String result = builder.toString();
 
-        JSONArray arr = null;
-        try {
-            if (!result.isEmpty() && !result.equals("null\n")) {
-                JSONObject obj = new JSONObject(result);
-                if (obj.has("status") && obj.getString("status").equals("OK")) {
-                    arr = obj.getJSONArray("results");
-                    arr = filterOnGhent(arr);
-                }
-            }
-        } catch (JSONException ex) {
-            Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (arr != null && arr.length() == 1) {
-                try {
-                    submitAddress(arr.getJSONObject(0));
-                } catch (JSONException ex) {
-                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NullPointerException e) {
-                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
-            return arr;
-        }
-    }
+     JSONArray arr = null;
+     try {
+     if (!result.isEmpty() && !result.equals("null\n")) {
+     JSONObject obj = new JSONObject(result);
+     if (obj.has("status") && obj.getString("status").equals("OK")) {
+     arr = obj.getJSONArray("results");
+     arr = filterOnGhent(arr);
+     }
+     }
+     } catch (JSONException ex) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
+     } finally {
+     if (arr != null && arr.length() == 1) {
+     try {
+     submitAddress(arr.getJSONObject(0));
+     } catch (JSONException ex) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
+     } catch (NullPointerException e) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, e);
+     }
+     }
+     return arr;
+     }
+     }
 
-    private void submitAddress(JSONObject addressobj) throws JSONException {
-        JSONArray addressArr = addressobj.getJSONArray("address_components");
-        for (int i = 0; i < addressArr.length(); i++) {
-            JSONObject obj = addressArr.getJSONObject(i);
-            String type = obj.getJSONArray("types").getString(0);
-            if (type.equals("street_number")) {
-                int receivedNr = Integer.parseInt(obj.getString("long_name"));
-                UserModel.getInstance().setNr(Math.max(receivedNr, 1));
-            } else if (type.equals("route")) {
-                UserModel.getInstance().setStreetname(obj.getString("long_name"));
-            } else if (type.equals("sublocality")) {
-                UserModel.getInstance().setCity(obj.getString("long_name"));
-            } else if (type.equals("postal_code")) {
-                UserModel.getInstance().setZipcode(Integer.parseInt(obj.getString("long_name")));
-            }
-        }
-    }
+     private void submitAddress(JSONObject addressobj) throws JSONException {
+     JSONArray addressArr = addressobj.getJSONArray("address_components");
+     for (int i = 0; i < addressArr.length(); i++) {
+     JSONObject obj = addressArr.getJSONObject(i);
+     String type = obj.getJSONArray("types").getString(0);
+     if (type.equals("street_number")) {
+     int receivedNr = Integer.parseInt(obj.getString("long_name"));
+     UserModel.getInstance().setNr(Math.max(receivedNr, 1));
+     } else if (type.equals("route")) {
+     UserModel.getInstance().setStreetname(obj.getString("long_name"));
+     } else if (type.equals("sublocality")) {
+     UserModel.getInstance().setCity(obj.getString("long_name"));
+     } else if (type.equals("postal_code")) {
+     UserModel.getInstance().setZipcode(Integer.parseInt(obj.getString("long_name")));
+     }
+     }
+     }
 
-    private void addressNotFound(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
-        Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.invalidLocation));
-        b.setMessage(getString(R.string.invalidLocationLong));
-        b.setCancelable(cancelable);
-        b.setPositiveButton(getString(R.string.tryAgain), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                promptUserLocation(cancelable, force, forceStreetSearch);
-            }
-        });
-        if (cancelable) {
-            b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    dialog.dismiss();
-                }
-            });
-        } else {
-            b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    finish();
-                }
-            });
-        }
-        b.show();
-    }
+     private void addressNotFound(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+     Builder b = new AlertDialog.Builder(this);
+     b.setTitle(getString(R.string.invalidLocation));
+     b.setMessage(getString(R.string.invalidLocationLong));
+     b.setCancelable(cancelable);
+     b.setPositiveButton(getString(R.string.tryAgain), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     promptUserLocation(cancelable, force, forceStreetSearch);
+     }
+     });
+     if (cancelable) {
+     b.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     dialog.dismiss();
+     }
+     });
+     } else {
+     b.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface dialog, int whichButton) {
+     finish();
+     }
+     });
+     }
+     b.show();
+     }
 
-    private void multiplePossibilities(final JSONArray arr, final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
-        final CharSequence[] possibilities = new CharSequence[arr.length()];
-        for (int i = 0; i < arr.length(); i++) {
-            try {
-                JSONObject obj = arr.getJSONObject(i);
-                possibilities[i] = obj.getString("formatted_address");
-            } catch (JSONException ex) {
-                Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+     private void multiplePossibilities(final JSONArray arr, final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
+     final CharSequence[] possibilities = new CharSequence[arr.length()];
+     for (int i = 0; i < arr.length(); i++) {
+     try {
+     JSONObject obj = arr.getJSONObject(i);
+     possibilities[i] = obj.getString("formatted_address");
+     } catch (JSONException ex) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
+     }
+     }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.selectAddress))
-                .setCancelable(false)
-                .setSingleChoiceItems(possibilities, 0, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface d, int choice) {
-                try {
-                    submitAddress(arr.getJSONObject(choice));
-                    new DataScraper(cancelable, force, forceStreetSearch).execute();
-                } catch (JSONException ex) {
-                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
-                    d.dismiss();
-                }
-            }
-        });
-        builder.create().show();
-    }
+     AlertDialog.Builder builder = new AlertDialog.Builder(this)
+     .setTitle(getString(R.string.selectAddress))
+     .setCancelable(false)
+     .setSingleChoiceItems(possibilities, 0, new DialogInterface.OnClickListener() {
+     public void onClick(DialogInterface d, int choice) {
+     try {
+     submitAddress(arr.getJSONObject(choice));
+     new DataScraper(cancelable, force, forceStreetSearch).execute();
+     } catch (JSONException ex) {
+     Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
+     } finally {
+     d.dismiss();
+     }
+     }
+     });
+     builder.create().show();
+     }
 
-    private void createGUI() {
-        TableLayout table = (TableLayout) findViewById(R.id.main_table);
-        table.removeViews(0, table.getChildCount());
+     private void createGUI() {
+     TableLayout table = (TableLayout) findViewById(R.id.main_table);
+     table.removeViews(0, table.getChildCount());
 
-        List<Collection> collections = DataModel.getInstance().getCollections();
-        Iterator<Collection> it = collections.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            Collection col = it.next();
-            if (col.getDate().before(Calendar.getInstance().getTime())) {
-                continue;
-            }
+     List<Collection> collections = DataModel.getInstance().getCollections();
+     Iterator<Collection> it = collections.iterator();
+     int i = 0;
+     while (it.hasNext()) {
+     Collection col = it.next();
+     if (col.getDate().before(Calendar.getInstance().getTime())) {
+     continue;
+     }
 
-            addTableRowDate(col, i);
-            addTableRowTypes(col, i);
-            i++;
-        }
-    }
+     addTableRowDate(col, i);
+     addTableRowTypes(col, i);
+     i++;
+     }
+     }
 
-    private String beautifyDate(Date date) {
-        Date today = Calendar.getInstance().getTime();
-        int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+     private String beautifyDate(Date date) {
+     Date today = Calendar.getInstance().getTime();
+     int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
 
-        if (daysBetween <= 1) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
-                    + " ("
-                    + getString(R.string.tomorrow)
-                    + ")";
-        } else if (daysBetween < 7) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
-                    + " ("
-                    + getString(R.string.thisweek)
-                    + " "
-                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
-                    + ")";
-        } else if (daysBetween < 14) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
-                    + " ("
-                    + getString(R.string.nextweek)
-                    + " "
-                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
-                    + ")";
-        } else {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date);
-        }
-    }
+     if (daysBetween <= 1) {
+     return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+     + " ("
+     + getString(R.string.tomorrow)
+     + ")";
+     } else if (daysBetween < 7) {
+     return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+     + " ("
+     + getString(R.string.thisweek)
+     + " "
+     + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
+     + ")";
+     } else if (daysBetween < 14) {
+     return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+     + " ("
+     + getString(R.string.nextweek)
+     + " "
+     + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
+     + ")";
+     } else {
+     return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date);
+     }
+     }
 
-    private void addTableRowTypes(Collection col, int rowNumber) {
-        Type[] types = col.getTypes();
-        boolean rest, gft, pmd, pk, glas;
-        rest = gft = pmd = pk = glas = false;
-        for (Type t : types) {
-            switch (t) {
-                case REST:
-                    rest = true;
-                    break;
-                case GFT:
-                    gft = true;
-                    break;
-                case PMD:
-                    pmd = true;
-                    break;
-                case PK:
-                    pk = true;
-                    break;
-                case GLAS:
-                    glas = true;
-                    break;
-            }
-        }
+     private void addTableRowTypes(Collection col, int rowNumber) {
+     Type[] types = col.getTypes();
+     boolean rest, gft, pmd, pk, glas;
+     rest = gft = pmd = pk = glas = false;
+     for (Type t : types) {
+     switch (t) {
+     case REST:
+     rest = true;
+     break;
+     case GFT:
+     gft = true;
+     break;
+     case PMD:
+     pmd = true;
+     break;
+     case PK:
+     pk = true;
+     break;
+     case GLAS:
+     glas = true;
+     break;
+     }
+     }
 
-        int backgroundColor = rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW;
+     int backgroundColor = rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW;
 
-        LayoutInflater inflater = getLayoutInflater();
-        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
+     LayoutInflater inflater = getLayoutInflater();
+     TableLayout tl = (TableLayout) findViewById(R.id.main_table);
+     TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
 
-        TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
-        labelRest.setText(rest ? Type.REST.shortStrValue(this) : "");
-        labelRest.setPadding(1, 5, 5, 5);
-        labelRest.setBackgroundColor(rest ? Type.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+     TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
+     labelRest.setText(rest ? Type.REST.shortStrValue(this) : "");
+     labelRest.setPadding(1, 5, 5, 5);
+     labelRest.setBackgroundColor(rest ? Type.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
-        TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
-        labelGFT.setText(gft ? Type.GFT.shortStrValue(this) : "");
-        labelGFT.setPadding(1, 5, 5, 5);
-        labelGFT.setBackgroundColor(gft ? Type.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+     TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
+     labelGFT.setText(gft ? Type.GFT.shortStrValue(this) : "");
+     labelGFT.setPadding(1, 5, 5, 5);
+     labelGFT.setBackgroundColor(gft ? Type.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
-        TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
-        labelPMD.setText(pmd ? Type.PMD.shortStrValue(this) : "");
-        labelPMD.setPadding(1, 5, 5, 5);
-        labelPMD.setBackgroundColor(pmd ? Type.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+     TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
+     labelPMD.setText(pmd ? Type.PMD.shortStrValue(this) : "");
+     labelPMD.setPadding(1, 5, 5, 5);
+     labelPMD.setBackgroundColor(pmd ? Type.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
-        TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
-        labelPK.setText(pk ? Type.PK.shortStrValue(this) : "");
-        labelPK.setPadding(1, 5, 5, 5);
-        labelPK.setBackgroundColor(pk ? Type.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+     TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
+     labelPK.setText(pk ? Type.PK.shortStrValue(this) : "");
+     labelPK.setPadding(1, 5, 5, 5);
+     labelPK.setBackgroundColor(pk ? Type.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
-        TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
-        labelGlas.setText(glas ? Type.GLAS.shortStrValue(this) : "");
-        labelGlas.setPadding(1, 5, 5, 5);
-        labelGlas.setBackgroundColor(glas ? Type.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+     TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
+     labelGlas.setText(glas ? Type.GLAS.shortStrValue(this) : "");
+     labelGlas.setPadding(1, 5, 5, 5);
+     labelGlas.setBackgroundColor(glas ? Type.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
-        tr.setBackgroundColor(backgroundColor);
-        tr.setOnClickListener(new TableRowListener(col));
+     tr.setBackgroundColor(backgroundColor);
+     tr.setOnClickListener(new TableRowListener(col));
 
-        tl.addView(tr);
-    }
+     tl.addView(tr);
+     }
 
-    private void addTableRowDate(Collection col, int rowNumber) {
-        String date = beautifyDate(col.getDate());
+     private void addTableRowDate(Collection col, int rowNumber) {
+     String date = beautifyDate(col.getDate());
 
-        LayoutInflater inflater = getLayoutInflater();
-        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
+     LayoutInflater inflater = getLayoutInflater();
+     TableLayout tl = (TableLayout) findViewById(R.id.main_table);
+     TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
 
-        TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
-        labelDate.setText(date);
-        labelDate.setPadding(5, 5, 5, 5);
-        labelDate.setTextColor(Color.BLACK);
+     TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
+     labelDate.setText(date);
+     labelDate.setPadding(5, 5, 5, 5);
+     labelDate.setTextColor(Color.BLACK);
 
-        tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
-        tr.setOnClickListener(new TableRowListener(col));
+     tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
+     tr.setOnClickListener(new TableRowListener(col));
 
-        tl.addView(tr);
-    }
-
+     tl.addView(tr);
+     }
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -603,42 +607,49 @@ public class CollectionListActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.about:
-                final SpannableString msg = new SpannableString(getString(R.string.aboutMessage));
-                Linkify.addLinks(msg, Linkify.ALL);
+            case R.id.preferences:
+                Intent intent = new Intent();
+                intent.setClass(this, PreferenceActivity.class);
+                startActivityForResult(intent, 0);
 
-                Builder builder = new Builder(this);
-                builder.setIcon(R.drawable.about);
-                builder.setMessage(msg);
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                return true;
+            /*
+             case R.id.about:
+             final SpannableString msg = new SpannableString(getString(R.string.aboutMessage));
+             Linkify.addLinks(msg, Linkify.ALL);
 
-                ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-                return true;
-            case R.id.newlocation:
-                promptUserLocation(true, false, true);
-                return true;
-            case R.id.refresh:
-                new DataScraper(true, true, true).execute();
-                return true;
-            case R.id.notif:
-                final CharSequence[] choices = new CharSequence[]{getString(R.string.on), getString(R.string.off)};
-                boolean initialValue = getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), false);
-                AlertDialog.Builder b = new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.notif))
-                        .setCancelable(true)
-                        .setSingleChoiceItems(choices, initialValue ? 0 : 1, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface d, int choice) {
-                        toggleNotifications(choice == 0);
-                        getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
-                                .edit()
-                                .putBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), (choice == 0))
-                                .commit();
-                        d.dismiss();
-                    }
-                });
-                b.create().show();
-                return true;
+             Builder builder = new Builder(this);
+             builder.setIcon(R.drawable.about);
+             builder.setMessage(msg);
+             AlertDialog dialog = builder.create();
+             dialog.show();
+
+             ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+             return true;
+             case R.id.newlocation:
+             promptUserLocation(true, false, true);
+             return true;
+             case R.id.refresh:
+             new DataScraper(true, true, true).execute();
+             return true;
+             case R.id.notif:
+             final CharSequence[] choices = new CharSequence[]{getString(R.string.on), getString(R.string.off)};
+             boolean initialValue = getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), false);
+             AlertDialog.Builder b = new AlertDialog.Builder(this)
+             .setTitle(getString(R.string.notif))
+             .setCancelable(true)
+             .setSingleChoiceItems(choices, initialValue ? 0 : 1, new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface d, int choice) {
+             toggleNotifications(choice == 0);
+             getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+             .edit()
+             .putBoolean(LocalConstants.CacheName.NOTIFICATION.toString(), (choice == 0))
+             .commit();
+             d.dismiss();
+             }
+             });
+             b.create().show();
+             return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

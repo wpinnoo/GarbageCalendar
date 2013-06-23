@@ -1,0 +1,36 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/yourLocation">
+
+        <ListPreference
+            android:key="address"
+            android:title="@string/choseAddress" />
+        <EditTextPreference
+            android:key="nr"
+            android:title="@string/nr"
+            android:dialogTitle="@string/enterNr" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/appsettings">
+
+        <CheckBoxPreference
+            android:key="notif_pref"
+            android:title="@string/notif"
+            android:summary="@string/notif_descr" />
+
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="@string/about">
+
+        <Preference
+            android:title="@string/aboutDescription">
+            <intent android:action=".ui.AboutActivity"/>
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
