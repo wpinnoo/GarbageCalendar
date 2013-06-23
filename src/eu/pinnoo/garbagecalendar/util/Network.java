@@ -13,7 +13,7 @@ import java.net.URLConnection;
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public final class Network {
-
+    
     public static InputStream getStream(String url) throws IOException {
         URLConnection urlConnection = new URL(url).openConnection();
         urlConnection.setConnectTimeout(1000);

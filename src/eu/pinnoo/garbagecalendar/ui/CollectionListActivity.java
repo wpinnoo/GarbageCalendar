@@ -27,18 +27,20 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.data.models.DataModel;
-import eu.pinnoo.garbagecalendar.data.models.UserModel;
 import eu.pinnoo.garbagecalendar.receivers.TrashDayReceiver;
 import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Sector;
+import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.util.Network;
-import eu.pinnoo.garbagecalendar.util.scrapers.ApartmentsScraper;
-import eu.pinnoo.garbagecalendar.util.scrapers.CalendarScraper;
-import eu.pinnoo.garbagecalendar.util.scrapers.StreetsScraper;
+import eu.pinnoo.garbagecalendar.util.parsers.ApartmentsParser;
+import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
+import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
+import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
+import eu.pinnoo.garbagecalendar.util.tasks.ResultHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,6 +70,9 @@ public class CollectionListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        AddressCache.initialize(this);
+        CollectionCache.initialize(this);
+        
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
             googleAnalytics.setAppOptOut(true);
@@ -147,7 +152,7 @@ public class CollectionListActivity extends Activity {
      * streetlist was unsuccessful 4 when loading the calendar was unsuccessful
      */
     private int scrapeData(boolean force, boolean forceStreetSearch) {
-        int result = new ApartmentsScraper().loadData(force);
+        int result = new ApartmentsParser().loadData(force);
         if (result != 0) {
             return 2;
         }
@@ -156,13 +161,13 @@ public class CollectionListActivity extends Activity {
         }
 
         if (forceStreetSearch || UserModel.getInstance().getSector().toString().equals(LocalConstants.DEFAULT_SECTOR)) {
-            result = new StreetsScraper().loadData(force);
+            result = new StreetsParser().loadData(force);
             if (result != 0) {
                 return 3;
             }
         }
 
-        result = new CalendarScraper().loadData(force);
+        result = new CalendarParser().loadData(force);
         if (result != 0) {
             return 4;
         }

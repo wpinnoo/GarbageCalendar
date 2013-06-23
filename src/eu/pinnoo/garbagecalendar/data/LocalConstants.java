@@ -30,23 +30,6 @@ public class LocalConstants {
     }
     
     public enum CacheName {
-        NOTIFICATION("notif"),
-        USER_APARTMENT("user_apartment"),
-        USER_STREET("user_street"),
-        USER_NR("user_nr"),
-        USER_PC("user_pc"),
-        USER_CITY("user_city"),
-        USER_SECTOR("user_sector"),
-        STREETS("cache_streets"),
-        CALENDAR("cache_calendar"),
-        APARTMENTS("cache_apartments"),
-        UPDATE_STREETS("data_streets_update"),
-        UPDATE_CALENDAR("data_cal_update"),
-        UPDATE_APARTMENTS("data_app_update"),
-        
-        /*
-         * new caching method:
-         */
         COLLECTIONS_DATA("collectionsdata"),
         USER_DATA("userdata");
         

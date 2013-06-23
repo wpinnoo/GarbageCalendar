@@ -1,10 +1,9 @@
-package eu.pinnoo.garbagecalendar.util.scrapers;
+package eu.pinnoo.garbagecalendar.util.parsers;
 
-import eu.pinnoo.garbagecalendar.data.models.UserModel;
+import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Sector;
-import java.net.MalformedURLException;
-import java.net.URL;
+import eu.pinnoo.garbagecalendar.data.UserData;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -15,11 +14,11 @@ import org.json.JSONObject;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class StreetsScraper extends Scraper {
+public class StreetsParser extends Parser {
 
     @Override
-    protected URL getURL() throws MalformedURLException {
-        return new URL(LocalConstants.STREETS_URL);
+    protected String getURL() {
+        return LocalConstants.STREETS_URL;
     }
 
     @Override
@@ -27,21 +26,18 @@ public class StreetsScraper extends Scraper {
         return "IVAGO-Stratenlijst";
     }
 
-    @Override
-    protected String getCacheName() {
-        return LocalConstants.CacheName.STREETS.toString();
-    }
-
     /**
-     * 
+     *
      * @param data
-     * @return 0 when fetching was successful, otherwise 1 
+     * @return 0 when fetching was successful, otherwise 1
      */
     @Override
     protected int fetchData(JSONArray data) {
         if (data == null) {
             return 1;
         }
+
+        Address address = UserData.getInstance().getAddress();
 
         for (int i = 0; i < data.length(); i++) {
             try {
@@ -50,9 +46,9 @@ public class StreetsScraper extends Scraper {
                 int zipcode = Integer.parseInt(obj.getString("postcode"));
                 String street = obj.getString("straatnaam");
 
-                if (UserModel.getInstance().getZipcode() == zipcode && UserModel.getInstance().getStreetname().equals(street)) {
+                if (address.getZipcode() == zipcode && address.getStreetname().equals(street)) {
                     if (!obj.has("even van") || obj.getString("even van").isEmpty()) {
-                        UserModel.getInstance().setSector(new Sector(obj.getString("sector")));
+                        address.setSector(new Sector(obj.getString("sector")));
                         break;
                     }
 
@@ -61,35 +57,30 @@ public class StreetsScraper extends Scraper {
                     int beginOdd = Integer.parseInt(obj.getString("oneven van"));
                     int endOdd = Integer.parseInt(obj.getString("oneven tot"));
 
-                    if (UserModel.getInstance().getNr() % 2 == 0
+                    if (address.getNr() % 2 == 0
                             && beginEven != -1
-                            && beginEven <= UserModel.getInstance().getNr()
-                            && endEven >= UserModel.getInstance().getNr()) {
-                        UserModel.getInstance().setSector(new Sector(obj.getString("sector")));
+                            && beginEven <= address.getNr()
+                            && endEven >= address.getNr()) {
+                        address.setSector(new Sector(obj.getString("sector")));
                         break;
                     }
 
-                    if (UserModel.getInstance().getNr() % 2 != 0
+                    if (address.getNr() % 2 != 0
                             && beginOdd != -1
-                            && beginOdd <= UserModel.getInstance().getNr()
-                            && endOdd >= UserModel.getInstance().getNr()) {
-                        UserModel.getInstance().setSector(new Sector(obj.getString("sector")));
+                            && beginOdd <= address.getNr()
+                            && endOdd >= address.getNr()) {
+                        address.setSector(new Sector(obj.getString("sector")));
                         break;
                     }
                 }
             } catch (JSONException ex) {
-                Logger.getLogger(CalendarScraper.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
                 return 1;
             } catch (NullPointerException e) {
-                Logger.getLogger(CalendarScraper.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, e);
                 return 1;
             }
         }
         return 0;
-    }
-
-    @Override
-    protected String getSharedPrefName() {
-        return LocalConstants.CacheName.UPDATE_STREETS.toString();
     }
 }

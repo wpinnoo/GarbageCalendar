@@ -26,6 +26,10 @@ public class Collection implements Serializable {
     public String getWeekCode() {
         return weekCode;
     }
+    
+    public String getCollectionCode(){
+        return getWeekCode() + getSector().getCode();
+    }
 
     public String getDay() {
         return day;

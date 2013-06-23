@@ -1,8 +1,9 @@
-package eu.pinnoo.garbagecalendar.util.scrapers;
+package eu.pinnoo.garbagecalendar.util.parsers;
 
-import eu.pinnoo.garbagecalendar.util.scrapers.CalendarScraper;
-import eu.pinnoo.garbagecalendar.data.models.UserModel;
+import eu.pinnoo.garbagecalendar.data.Address;
+import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.UserData;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -15,21 +16,16 @@ import org.json.JSONObject;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class ApartmentsScraper extends Scraper {
+public class ApartmentsParser extends Parser {
 
     @Override
-    protected URL getURL() throws MalformedURLException {
-        return new URL(LocalConstants.APARTMENTS_URL);
+    protected String getURL() {
+        return LocalConstants.APARTMENTS_URL;
     }
 
     @Override
     protected String getJSONArrayName() {
         return "IVAGO-Appartementen";
-    }
-
-    @Override
-    protected String getCacheName() {
-        return LocalConstants.CacheName.APARTMENTS.toString();
     }
 
     /**
@@ -42,8 +38,6 @@ public class ApartmentsScraper extends Scraper {
         if (data == null) {
             return 1;
         }
-
-        UserModel.getInstance().markAsApartment(false);
 
         for (int i = 0; i < data.length(); i++) {
             try {
@@ -63,29 +57,24 @@ public class ApartmentsScraper extends Scraper {
                 } catch (NumberFormatException e) {
                     endNr = Integer.MAX_VALUE;
                 }
-
                 int zipcode = Integer.parseInt(obj.getString("pc"));
 
-                if (UserModel.getInstance().getZipcode() == zipcode
-                        && UserModel.getInstance().getStreetname().equals(street)
-                        && UserModel.getInstance().getNr() >= beginNr
-                        && UserModel.getInstance().getNr() <= endNr) {
-                    UserModel.getInstance().markAsApartment(true);
+                Address address = UserData.getInstance().getAddress();
+                if (address.getZipcode() == zipcode
+                        && address.getStreetname().equals(street)
+                        && address.getNr() >= beginNr
+                        && address.getNr() <= endNr) {
+                    address.markAsApartment(true);
                     break;
                 }
             } catch (JSONException ex) {
-                Logger.getLogger(CalendarScraper.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
                 return 1;
             } catch (NullPointerException e) {
-                Logger.getLogger(CalendarScraper.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, e);
                 return 1;
             }
         }
         return 0;
-    }
-
-    @Override
-    protected String getSharedPrefName() {
-        return LocalConstants.CacheName.UPDATE_APARTMENTS.toString();
     }
 }
