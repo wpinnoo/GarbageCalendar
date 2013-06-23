@@ -22,7 +22,7 @@
     
     <string name="yourLocation">Your location</string>
     <string name="enterAddress">Please enter your address.</string> 
-    <string name="choseAddress">Chose your adres</string>
+    <string name="choseAddress">Address</string>
     <string name="nr">House number</string>
     <string name="enterNr">Enter your house number</string>
     
@@ -50,7 +50,8 @@
     
     <string name="about">About</string>
     <string name="aboutDescription">About this app</string>
-    <string name="aboutMessage">Click on the \'New location\' button to set your home address. Currently, only addresses in Ghent are supported.\n\n\nThis app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
+    <string name="aboutMessage">Set your address in Preferences.\nCurrently, only addresses in Ghent are supported.</string>
+    <string name="aboutMessageAuthor">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 
     <string name="putOutTrash">Put out the trash</string>
     <string name="notif">Notifications (beta)</string>

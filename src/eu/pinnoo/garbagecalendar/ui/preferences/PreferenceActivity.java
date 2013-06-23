@@ -51,15 +51,14 @@ public class PreferenceActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     public class Preferences extends PreferenceFragment {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preferences);
+            addPreferencesFromResource(R.xml.preferences);
+        }
     }
-}
-
 }
