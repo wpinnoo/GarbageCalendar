@@ -1,7 +1,7 @@
-package eu.pinnoo.garbagecalendar.models;
+package eu.pinnoo.garbagecalendar.data.models;
 
 import android.app.Activity;
-import eu.pinnoo.garbagecalendar.util.GarbageCollection;
+import eu.pinnoo.garbagecalendar.data.Collection;
 import java.util.ArrayList;
 
 /**
@@ -12,10 +12,10 @@ public class DataModel {
 
     private static final DataModel instance = new DataModel();
     private Activity container;
-    private ArrayList<GarbageCollection> collections;
+    private ArrayList<Collection> collections;
 
     private DataModel() {
-        collections = new ArrayList<GarbageCollection>();
+        collections = new ArrayList<Collection>();
     }
 
     public static DataModel getInstance() {
@@ -34,15 +34,15 @@ public class DataModel {
         collections.clear();
     }
 
-    public void addCollection(GarbageCollection col) {
+    public void addCollection(Collection col) {
         collections.add(col);
     }
 
-    public ArrayList<GarbageCollection> getCollections() {
+    public ArrayList<Collection> getCollections() {
         return collections;
     }
 
-    public GarbageCollection getLastCollection() {
+    public Collection getLastCollection() {
         return collections.get(collections.size() - 1);
     }
 }

@@ -1,10 +1,10 @@
 package eu.pinnoo.garbagecalendar.util.scrapers;
 
-import eu.pinnoo.garbagecalendar.models.DataModel;
-import eu.pinnoo.garbagecalendar.models.UserModel;
-import eu.pinnoo.garbagecalendar.util.GarbageCollection;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
-import eu.pinnoo.garbagecalendar.util.Sector;
+import eu.pinnoo.garbagecalendar.data.models.DataModel;
+import eu.pinnoo.garbagecalendar.data.models.UserModel;
+import eu.pinnoo.garbagecalendar.data.Collection;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.Sector;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -55,7 +55,7 @@ public class CalendarScraper extends Scraper {
                     if (obj.getString("datum").equals(previousDate)) {
                         DataModel.getInstance().getLastCollection().addTypes(parseGarbageType(obj.getString("fractie")));
                     } else {
-                        GarbageCollection col = new GarbageCollection(obj.getString("week"), obj.getString("dag"), LocalConstants.DATE_FORMATTER.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
+                        Collection col = new Collection(obj.getString("week"), obj.getString("dag"), LocalConstants.DATE_FORMATTER.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
                         DataModel.getInstance().addCollection(col);
                     }
                     previousDate = obj.getString("datum");

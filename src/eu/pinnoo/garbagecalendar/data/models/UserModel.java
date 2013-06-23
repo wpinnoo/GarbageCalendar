@@ -1,8 +1,8 @@
-package eu.pinnoo.garbagecalendar.models;
+package eu.pinnoo.garbagecalendar.data.models;
 
 import android.app.Activity;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
-import eu.pinnoo.garbagecalendar.util.Sector;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.Sector;
 
 /**
  *

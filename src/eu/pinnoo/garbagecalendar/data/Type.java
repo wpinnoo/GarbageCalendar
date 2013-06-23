@@ -1,5 +1,6 @@
-package eu.pinnoo.garbagecalendar.util;
+package eu.pinnoo.garbagecalendar.data;
 
+import eu.pinnoo.garbagecalendar.data.AreaType;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -9,7 +10,7 @@ import java.io.Serializable;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public enum GarbageType implements Serializable {
+public enum Type implements Serializable {
 
     REST("rest", Color.TRANSPARENT),
     GFT("gft", Color.rgb(12, 107, 53)),
@@ -20,7 +21,7 @@ public enum GarbageType implements Serializable {
     private String strValue;
     private int color;
 
-    private GarbageType(String strValue, int color) {
+    private Type(String strValue, int color) {
         this.strValue = strValue;
         this.color = color;
     }

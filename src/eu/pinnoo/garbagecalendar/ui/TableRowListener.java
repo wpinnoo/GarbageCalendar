@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.view;
+package eu.pinnoo.garbagecalendar.ui;
 
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.util.GarbageCollection;
-import eu.pinnoo.garbagecalendar.util.GarbageType;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.Collection;
+import eu.pinnoo.garbagecalendar.data.Type;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.text.SimpleDateFormat;
 
 /**
@@ -17,9 +17,9 @@ import java.text.SimpleDateFormat;
  */
 public class TableRowListener implements OnClickListener {
 
-    private GarbageCollection col;
+    private Collection col;
 
-    public TableRowListener(GarbageCollection col) {
+    public TableRowListener(Collection col) {
         this.col = col;
     }
 
@@ -32,7 +32,7 @@ public class TableRowListener implements OnClickListener {
         textview.setText(formatter.format(col.getDate()) + ":");
 
         TextView typesview = (TextView) customView.findViewById(R.id.rowDialogTypes);
-        GarbageType[] types = col.getTypes();
+        Type[] types = col.getTypes();
         String text = "";
         for (int i = 0; i < types.length; i++) {
             text += types[i].longStrValue(v.getContext());

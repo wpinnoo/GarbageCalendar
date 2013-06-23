@@ -1,5 +1,6 @@
-package eu.pinnoo.garbagecalendar.util;
+package eu.pinnoo.garbagecalendar.data;
 
+import eu.pinnoo.garbagecalendar.data.AreaType;
 import java.io.Serializable;
 
 /**

@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.util;
+package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -42,7 +42,14 @@ public class LocalConstants {
         APARTMENTS("cache_apartments"),
         UPDATE_STREETS("data_streets_update"),
         UPDATE_CALENDAR("data_cal_update"),
-        UPDATE_APARTMENTS("data_app_update");
+        UPDATE_APARTMENTS("data_app_update"),
+        
+        /*
+         * new caching method:
+         */
+        COLLECTIONS_DATA("collectionsdata"),
+        USER_DATA("userdata");
+        
         
         private String s;
         

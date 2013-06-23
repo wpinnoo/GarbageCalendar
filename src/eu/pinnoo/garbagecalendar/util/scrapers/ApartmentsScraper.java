@@ -1,8 +1,8 @@
 package eu.pinnoo.garbagecalendar.util.scrapers;
 
 import eu.pinnoo.garbagecalendar.util.scrapers.CalendarScraper;
-import eu.pinnoo.garbagecalendar.models.UserModel;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.models.UserModel;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;

@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.util;
+package eu.pinnoo.garbagecalendar.data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -7,15 +7,15 @@ import java.util.Date;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class GarbageCollection implements Serializable {
+public class Collection implements Serializable {
 
     private final String weekCode;
     private final String day;
     private final Date date;
-    private GarbageType[] types;
+    private Type[] types;
     private final Sector sector;
 
-    public GarbageCollection(String weekCode, String day, Date date, GarbageType[] types, Sector sector) {
+    public Collection(String weekCode, String day, Date date, Type[] types, Sector sector) {
         this.weekCode = weekCode;
         this.day = day;
         this.date = date;
@@ -35,12 +35,12 @@ public class GarbageCollection implements Serializable {
         return date;
     }
 
-    public GarbageType[] getTypes() {
+    public Type[] getTypes() {
         return types;
     }
 
-    public void addTypes(GarbageType[] toAdd) {
-        GarbageType[] newTypes = new GarbageType[toAdd.length + this.types.length];
+    public void addTypes(Type[] toAdd) {
+        Type[] newTypes = new Type[toAdd.length + this.types.length];
         int i = 0;
         while (i < this.types.length) {
             newTypes[i] = this.types[i];

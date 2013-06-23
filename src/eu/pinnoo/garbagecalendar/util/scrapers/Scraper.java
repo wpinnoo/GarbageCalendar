@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import eu.pinnoo.garbagecalendar.models.DataModel;
-import eu.pinnoo.garbagecalendar.util.GarbageType;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.models.DataModel;
+import eu.pinnoo.garbagecalendar.data.Type;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -153,16 +153,16 @@ public abstract class Scraper {
         }
     }
 
-    protected GarbageType[] parseGarbageType(String str) {
-        HashMap<String, GarbageType> map = new HashMap<String, GarbageType>();
-        map.put("Rest", GarbageType.REST);
-        map.put("GFT", GarbageType.GFT);
-        map.put("PMD", GarbageType.PMD);
-        map.put("Papier & karton", GarbageType.PK);
-        map.put("Glas", GarbageType.GLAS);
+    protected Type[] parseGarbageType(String str) {
+        HashMap<String, Type> map = new HashMap<String, Type>();
+        map.put("Rest", Type.REST);
+        map.put("GFT", Type.GFT);
+        map.put("PMD", Type.PMD);
+        map.put("Papier & karton", Type.PK);
+        map.put("Glas", Type.GLAS);
 
         String[] types = str.split("/");
-        GarbageType[] results = new GarbageType[types.length];
+        Type[] results = new Type[types.length];
         for (int i = 0; i < types.length; i++) {
             if (map.containsKey(types[i].trim())) {
                 results[i] = map.get(types[i].trim());

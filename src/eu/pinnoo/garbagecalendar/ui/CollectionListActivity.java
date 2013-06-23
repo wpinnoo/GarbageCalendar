@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.view;
+package eu.pinnoo.garbagecalendar.ui;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -6,13 +6,10 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import static android.content.Context.ALARM_SERVICE;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -30,14 +27,15 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.models.DataModel;
-import eu.pinnoo.garbagecalendar.models.UserModel;
-import eu.pinnoo.garbagecalendar.receivers.NotificationRaiser;
-import eu.pinnoo.garbagecalendar.util.AreaType;
-import eu.pinnoo.garbagecalendar.util.GarbageCollection;
-import eu.pinnoo.garbagecalendar.util.GarbageType;
-import eu.pinnoo.garbagecalendar.util.LocalConstants;
-import eu.pinnoo.garbagecalendar.util.Sector;
+import eu.pinnoo.garbagecalendar.data.models.DataModel;
+import eu.pinnoo.garbagecalendar.data.models.UserModel;
+import eu.pinnoo.garbagecalendar.receivers.TrashDayReceiver;
+import eu.pinnoo.garbagecalendar.data.AreaType;
+import eu.pinnoo.garbagecalendar.data.Collection;
+import eu.pinnoo.garbagecalendar.data.Type;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.Sector;
+import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.scrapers.ApartmentsScraper;
 import eu.pinnoo.garbagecalendar.util.scrapers.CalendarScraper;
 import eu.pinnoo.garbagecalendar.util.scrapers.StreetsScraper;
@@ -45,8 +43,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -65,7 +61,7 @@ import org.json.JSONObject;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class MainActivity extends Activity {
+public class CollectionListActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,8 +91,8 @@ public class MainActivity extends Activity {
     private void toggleNotifications(boolean state) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int i = 0;
-        for (GarbageCollection col : DataModel.getInstance().getCollections()) {
-            Intent intent = new Intent(getBaseContext(), NotificationRaiser.class);
+        for (Collection col : DataModel.getInstance().getCollections()) {
+            Intent intent = new Intent(getBaseContext(), TrashDayReceiver.class);
             intent.putExtra(LocalConstants.NOTIF_INTENT_COL, col);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), i++, intent, 0);
 
@@ -173,12 +169,6 @@ public class MainActivity extends Activity {
         return 0;
     }
 
-    private InputStream getStream(String url) throws IOException {
-        URLConnection urlConnection = new URL(url).openConnection();
-        urlConnection.setConnectTimeout(1000);
-        return urlConnection.getInputStream();
-    }
-
     public void promptUserLocation(final boolean cancelable, final boolean force, final boolean forceStreetSearch) {
         final EditText input = new EditText(this);
         Builder b = new AlertDialog.Builder(this);
@@ -221,7 +211,7 @@ public class MainActivity extends Activity {
 
     private class AddressParser extends AsyncTask<Void, Void, Integer> {
 
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
         private String address;
         private JSONArray arr;
         private boolean cancelable;
@@ -245,7 +235,7 @@ public class MainActivity extends Activity {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                if (!networkAvailable()) {
+                if (!Network.networkAvailable(CollectionListActivity.this)) {
                     return 3;
                 }
 
@@ -258,7 +248,7 @@ public class MainActivity extends Activity {
                     return 0;
                 }
             } catch (IOException ex) {
-                Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
             return 0;
         }
@@ -298,7 +288,7 @@ public class MainActivity extends Activity {
 
     private class DataScraper extends AsyncTask<Void, Void, Integer> {
 
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(CollectionListActivity.this);
         private boolean cancelable;
         private boolean force;
         private boolean forceStreetSearch;
@@ -353,11 +343,7 @@ public class MainActivity extends Activity {
         b.show();
     }
 
-    private boolean networkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) DataModel.getInstance().getContainer().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null;
-    }
+    
 
     public JSONArray parseAddress(String address) throws IOException {
         String url = LocalConstants.GOOGLE_MAPS_API + "?";
@@ -366,7 +352,7 @@ public class MainActivity extends Activity {
         params.add(new BasicNameValuePair("sensor", "false"));
         url += URLEncodedUtils.format(params, "utf-8");
 
-        InputStream inp = getStream(url);
+        InputStream inp = Network.getStream(url);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inp, LocalConstants.ENCODING), 8);
         StringBuilder builder = new StringBuilder();
         builder.append(reader.readLine()).append("\n");
@@ -388,15 +374,15 @@ public class MainActivity extends Activity {
                 }
             }
         } catch (JSONException ex) {
-            Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (arr != null && arr.length() == 1) {
                 try {
                     submitAddress(arr.getJSONObject(0));
                 } catch (JSONException ex) {
-                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (NullPointerException e) {
-                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, e);
+                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, e);
                 }
             }
             return arr;
@@ -454,7 +440,7 @@ public class MainActivity extends Activity {
                 JSONObject obj = arr.getJSONObject(i);
                 possibilities[i] = obj.getString("formatted_address");
             } catch (JSONException ex) {
-                Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -467,7 +453,7 @@ public class MainActivity extends Activity {
                     submitAddress(arr.getJSONObject(choice));
                     new DataScraper(cancelable, force, forceStreetSearch).execute();
                 } catch (JSONException ex) {
-                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CollectionListActivity.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     d.dismiss();
                 }
@@ -480,11 +466,11 @@ public class MainActivity extends Activity {
         TableLayout table = (TableLayout) findViewById(R.id.main_table);
         table.removeViews(0, table.getChildCount());
 
-        List<GarbageCollection> collections = DataModel.getInstance().getCollections();
-        Iterator<GarbageCollection> it = collections.iterator();
+        List<Collection> collections = DataModel.getInstance().getCollections();
+        Iterator<Collection> it = collections.iterator();
         int i = 0;
         while (it.hasNext()) {
-            GarbageCollection col = it.next();
+            Collection col = it.next();
             if (col.getDate().before(Calendar.getInstance().getTime())) {
                 continue;
             }
@@ -523,11 +509,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void addTableRowTypes(GarbageCollection col, int rowNumber) {
-        GarbageType[] types = col.getTypes();
+    private void addTableRowTypes(Collection col, int rowNumber) {
+        Type[] types = col.getTypes();
         boolean rest, gft, pmd, pk, glas;
         rest = gft = pmd = pk = glas = false;
-        for (GarbageType t : types) {
+        for (Type t : types) {
             switch (t) {
                 case REST:
                     rest = true;
@@ -554,29 +540,29 @@ public class MainActivity extends Activity {
         TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
 
         TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
-        labelRest.setText(rest ? GarbageType.REST.shortStrValue(this) : "");
+        labelRest.setText(rest ? Type.REST.shortStrValue(this) : "");
         labelRest.setPadding(1, 5, 5, 5);
-        labelRest.setBackgroundColor(rest ? GarbageType.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+        labelRest.setBackgroundColor(rest ? Type.REST.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
-        labelGFT.setText(gft ? GarbageType.GFT.shortStrValue(this) : "");
+        labelGFT.setText(gft ? Type.GFT.shortStrValue(this) : "");
         labelGFT.setPadding(1, 5, 5, 5);
-        labelGFT.setBackgroundColor(gft ? GarbageType.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+        labelGFT.setBackgroundColor(gft ? Type.GFT.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
-        labelPMD.setText(pmd ? GarbageType.PMD.shortStrValue(this) : "");
+        labelPMD.setText(pmd ? Type.PMD.shortStrValue(this) : "");
         labelPMD.setPadding(1, 5, 5, 5);
-        labelPMD.setBackgroundColor(pmd ? GarbageType.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+        labelPMD.setBackgroundColor(pmd ? Type.PMD.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
-        labelPK.setText(pk ? GarbageType.PK.shortStrValue(this) : "");
+        labelPK.setText(pk ? Type.PK.shortStrValue(this) : "");
         labelPK.setPadding(1, 5, 5, 5);
-        labelPK.setBackgroundColor(pk ? GarbageType.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+        labelPK.setBackgroundColor(pk ? Type.PK.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
-        labelGlas.setText(glas ? GarbageType.GLAS.shortStrValue(this) : "");
+        labelGlas.setText(glas ? Type.GLAS.shortStrValue(this) : "");
         labelGlas.setPadding(1, 5, 5, 5);
-        labelGlas.setBackgroundColor(glas ? GarbageType.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
+        labelGlas.setBackgroundColor(glas ? Type.GLAS.getColor(UserModel.getInstance().getSector().getType()) : backgroundColor);
 
         tr.setBackgroundColor(backgroundColor);
         tr.setOnClickListener(new TableRowListener(col));
@@ -584,7 +570,7 @@ public class MainActivity extends Activity {
         tl.addView(tr);
     }
 
-    private void addTableRowDate(GarbageCollection col, int rowNumber) {
+    private void addTableRowDate(Collection col, int rowNumber) {
         String date = beautifyDate(col.getDate());
 
         LayoutInflater inflater = getLayoutInflater();

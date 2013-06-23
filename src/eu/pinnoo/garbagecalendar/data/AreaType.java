@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.util;
+package eu.pinnoo.garbagecalendar.data;
 
 import android.graphics.Color;
 import java.io.Serializable;
