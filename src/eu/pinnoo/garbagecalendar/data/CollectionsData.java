@@ -42,4 +42,8 @@ public class CollectionsData implements Serializable{
     public Collection getLastCollection() {
         return collections.get(collections.size() - 1);
     }
+
+    public boolean isSet() {
+        return collections != null && !collections.isEmpty();
+    }
 }

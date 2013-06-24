@@ -24,6 +24,10 @@ public class AddressData implements Serializable{
     public static AddressData getInstance() {
         return instance;
     }
+    
+    public boolean isSet(){
+        return addresses != null && !addresses.isEmpty();
+    }
 
     public void resetAddresses() {
         addresses.clear();

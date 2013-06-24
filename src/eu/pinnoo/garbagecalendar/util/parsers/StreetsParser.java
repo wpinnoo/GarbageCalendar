@@ -4,7 +4,6 @@ import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Sector;
-import eu.pinnoo.garbagecalendar.data.UserData;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;

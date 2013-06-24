@@ -21,6 +21,7 @@
     <string name="close">Close</string>
     
     <string name="yourLocation">Your location</string>
+    <string name="setAddress">Please set your address in Preferences first.</string>
     <string name="enterAddress">Please enter your address.</string> 
     <string name="choseAddress">Address</string>
     <string name="nr">number</string>

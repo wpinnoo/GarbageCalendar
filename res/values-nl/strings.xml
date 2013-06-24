@@ -22,6 +22,7 @@
     
     <string name="yourLocation">Jouw locatie</string>
     <string name="enterAddress">Voer je adres in.</string> 
+    <string name="setAddress">Stel je adres eerst in bij Voorkeuren.</string>
     <string name="choseAddress">Adres</string>
     <string name="nr">nummer</string>
     <string name="nrs">nummers</string>

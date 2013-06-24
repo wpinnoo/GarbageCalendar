@@ -1,6 +1,5 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -8,10 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -40,8 +37,6 @@ public class AddressListActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_address);
-
-        fillList();
 
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
@@ -86,6 +81,12 @@ public class AddressListActivity extends ListActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        fillList();
+    }
 
     @Override
     public void onStart() {
@@ -100,7 +101,8 @@ public class AddressListActivity extends ListActivity {
     }
 
     public void fillList() {
-        list = AddressData.getInstance().getAddresses();
+        list = new ArrayList<Address>();
+        list.addAll(AddressData.getInstance().getAddresses());
         Collections.sort(list, new AddressComparator());
         adapter = new AddressAdapter(this, R.layout.list_item, list);
         setListAdapter(adapter);

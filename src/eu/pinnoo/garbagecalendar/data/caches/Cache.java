@@ -1,6 +1,5 @@
 package eu.pinnoo.garbagecalendar.data.caches;
 
-import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -53,6 +52,11 @@ public class Cache<T extends Serializable> {
         } catch (IOException ex) {
             Logger.getLogger(Cache.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public boolean isSet(String key) {
+        File cached = new File(dir, key);
+        return cached.length() > 0;
     }
 
     public long lastModified(String key) {

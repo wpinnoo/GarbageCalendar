@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
+import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.receivers.TrashDayReceiver;
 import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
@@ -76,14 +77,98 @@ public class CollectionListActivity extends Activity {
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
 
-        new ParserTask(this, "Loading...").execute(new ApartmentsParser(), new StreetsParser());
-
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
             googleAnalytics.setAppOptOut(true);
         }
+    }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+        loadStreets();
+    }
 
-        //initializeModels();
+    public void checkAddress() {
+        if (UserData.getInstance().isSet()) {
+            loadCollections(UserData.getInstance().isChanged());
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.yourLocation))
+                    .setMessage(getString(R.string.setAddress))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    dialog.dismiss();
+                    Intent i = new Intent(getBaseContext(), PreferenceActivity.class);
+                    startActivity(i);
+                }
+            })
+                    .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    finish();
+                }
+            })
+                    .create().show();
+        }
+    }
+
+    public void loadStreets() {
+        if (!AddressData.getInstance().isSet()) {
+            if (!Network.networkAvailable(this)) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.noInternetConnection))
+                        .setMessage(getString(R.string.needConnection))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                        .create().show();
+            } else {
+                new ParserTask(this, "Loading street list...") {
+                    @Override
+                    protected void onPostExecute(Integer[] result) {
+                        super.onPostExecute(result);
+                        checkAddress();
+                    }
+                }.execute(new StreetsParser(), new ApartmentsParser());
+            }
+        } else {
+            checkAddress();
+        }
+    }
+
+    public void loadCollections(boolean force) {
+        if (!force && CollectionsData.getInstance().isSet()) {
+            createGUI();
+        } else {
+            if(!UserData.getInstance().isSet()){
+                return;
+            }
+            if (Network.networkAvailable(this)) {
+                new ParserTask(this, "Loading calendar...") {
+                    @Override
+                    protected void onPostExecute(Integer[] result) {
+                        super.onPostExecute(result);
+                        UserData.getInstance().changeCommitted();
+                        createGUI();
+                    }
+                }.execute(new CalendarParser());
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.noInternetConnection))
+                        .setMessage(getString(R.string.needConnection))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                    }
+                })
+                        .create().show();
+            }
+        }
     }
 
     @Override
@@ -473,16 +558,6 @@ public class CollectionListActivity extends Activity {
      builder.create().show();
      }
      */
-    private void refresh() {
-        new ParserTask(this, "Loading calendar...") {
-            @Override
-            protected void onPostExecute(Integer[] result) {
-                dialog.dismiss();
-                createGUI();
-            }
-        }.execute(new CalendarParser());
-    }
-
     private void createGUI() {
         TableLayout table = (TableLayout) findViewById(R.id.main_table);
         table.removeViews(0, table.getChildCount());
@@ -620,7 +695,7 @@ public class CollectionListActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                refresh();
+                loadCollections(true);
                 return true;
             case R.id.preferences:
                 Intent intent = new Intent();
