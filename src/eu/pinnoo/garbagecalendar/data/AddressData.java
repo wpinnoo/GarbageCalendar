@@ -1,7 +1,6 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
-import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
