@@ -43,7 +43,6 @@ import eu.pinnoo.garbagecalendar.util.parsers.ApartmentsParser;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
-import eu.pinnoo.garbagecalendar.util.tasks.ResultHandler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,9 +72,11 @@ public class CollectionListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        //AddressCache.initialize(this);
-        //CollectionCache.initialize(this);
+        AddressCache.initialize(this);
+        CollectionCache.initialize(this);
 
+        new ParserTask(this, "Loading...").execute(new ApartmentsParser(), new StreetsParser(), new CalendarParser());
+        
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
             googleAnalytics.setAppOptOut(true);

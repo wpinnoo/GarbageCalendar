@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.ui;
+package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;

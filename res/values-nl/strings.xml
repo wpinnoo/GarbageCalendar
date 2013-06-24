@@ -23,11 +23,14 @@
     <string name="yourLocation">Jouw locatie</string>
     <string name="enterAddress">Voer je adres in.</string> 
     <string name="choseAddress">Adres</string>
-    <string name="nr">Huisnummer</string>
+    <string name="nr">nummer</string>
+    <string name="nrs">nummers</string>
+    <string name="allNrs">alle nummers</string>
     <string name="enterNr">Vul je huisnummer in</string>
     
     <string name="ok">OK</string>
     <string name="and">en</string>
+    <string name="to">tot</string>
     <string name="tryAgain">Opnieuw</string>
     <string name="cancel">Annuleer</string>
     <string name="refresh">Vernieuw</string>
@@ -60,4 +63,6 @@
     
     <string name="preferences">Voorkeuren</string>
     <string name="appsettings">App voorkeuren</string>
+    
+    <string name="none">(Geen)</string>
 </resources>

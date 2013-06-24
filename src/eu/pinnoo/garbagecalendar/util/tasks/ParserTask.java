@@ -12,16 +12,14 @@ import eu.pinnoo.garbagecalendar.util.parsers.Parser;
  */
 public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
 
-    private ProgressDialog dialog;
+    protected ProgressDialog dialog;
     private Context context;
     private String msg;
-    private ResultHandler resulthandler;
 
-    public ParserTask(Context context, String msg, ResultHandler<Integer[]> resulthandler) {
+    public ParserTask(Context context, String msg) {
         dialog = new ProgressDialog(context);
         this.context = context;
         this.msg = msg;
-        this.resulthandler = resulthandler;
     }
 
     @Override
@@ -43,13 +41,7 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     }
     
     @Override
-    protected void onProgressUpdate(Integer... progress){
-        resulthandler.onProgressUpdate(progress);
-    }
-    
-    @Override
     protected void onPostExecute(Integer[] result) {
         dialog.dismiss();
-        resulthandler.handle(result);
     }
 }

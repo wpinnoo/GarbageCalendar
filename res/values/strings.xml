@@ -23,11 +23,14 @@
     <string name="yourLocation">Your location</string>
     <string name="enterAddress">Please enter your address.</string> 
     <string name="choseAddress">Address</string>
-    <string name="nr">House number</string>
+    <string name="nr">number</string>
+    <string name="nrs">numbers</string>
+    <string name="allNrs">all numbers</string>
     <string name="enterNr">Enter your house number</string>
     
     <string name="ok">OK</string>
     <string name="and">and</string>
+    <string name="to">to</string>
     <string name="tryAgain">Try again</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
@@ -61,4 +64,6 @@
     
     <string name="preferences">Preferences</string>
     <string name="appsettings">App preferences</string>
+    
+    <string name="none">(None)</string>
 </resources>

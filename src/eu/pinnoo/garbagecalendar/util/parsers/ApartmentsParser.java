@@ -60,13 +60,13 @@ public class ApartmentsParser extends Parser {
                 int zipcode = Integer.parseInt(obj.getString("pc"));
 
                 Address address = UserData.getInstance().getAddress();
-                if (address.getZipcode() == zipcode
-                        && address.getStreetname().equals(street)
-                        && address.getNr() >= beginNr
-                        && address.getNr() <= endNr) {
-                    address.markAsApartment(true);
-                    break;
-                }
+//                if (address.getZipcode() == zipcode
+//                        && address.getStreetname().equals(street)
+//                        && address.getNr() >= beginNr
+//                        && address.getNr() <= endNr) {
+//                    address.markAsApartment(true);
+//                    break;
+//                }
             } catch (JSONException ex) {
                 Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
                 return 1;

@@ -4,13 +4,10 @@
     <PreferenceCategory
         android:title="@string/yourLocation">
 
-        <ListPreference
-            android:key="address"
-            android:title="@string/choseAddress" />
-        <EditTextPreference
-            android:key="nr"
-            android:title="@string/nr"
-            android:dialogTitle="@string/enterNr" />
+        <Preference
+            android:title="@string/choseAddress">
+            <intent android:action=".ui.preferences.AddressListActivity"/>
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -28,7 +25,7 @@
 
         <Preference
             android:title="@string/aboutDescription">
-            <intent android:action=".ui.AboutActivity"/>
+            <intent android:action=".ui.preferences.AboutActivity"/>
         </Preference>
 
     </PreferenceCategory>

@@ -1,6 +1,7 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
 import eu.pinnoo.garbagecalendar.data.Address;
+import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Sector;
 import eu.pinnoo.garbagecalendar.data.UserData;
@@ -37,42 +38,23 @@ public class StreetsParser extends Parser {
             return 1;
         }
 
-        Address address = UserData.getInstance().getAddress();
-
         for (int i = 0; i < data.length(); i++) {
             try {
                 JSONObject obj = data.getJSONObject(i);
 
-                int zipcode = Integer.parseInt(obj.getString("postcode"));
-                String street = obj.getString("straatnaam");
+                Address address = new Address();
 
-                if (address.getZipcode() == zipcode && address.getStreetname().equals(street)) {
-                    if (!obj.has("even van") || obj.getString("even van").isEmpty()) {
-                        address.setSector(new Sector(obj.getString("sector")));
-                        break;
-                    }
+                address.setZipcode(Integer.parseInt(obj.optString("postcode")));
+                address.setStreetname(obj.optString("straatnaam"));
+                address.setCode(obj.optString("straatcode"));
+                address.setSector(new Sector(obj.optString("sector")));
+                address.setNrEvenBegin(obj.optString("even van "));
+                address.setNrEvenEnd(obj.optString("even tot"));
+                address.setNrOddBegin(obj.optString("oneven van "));
+                address.setNrOddEnd(obj.optString("oneven tot"));
+                address.setCity(obj.optString("gemeente"));
 
-                    int beginEven = Integer.parseInt(obj.getString("even van"));
-                    int endEven = Integer.parseInt(obj.getString("even tot"));
-                    int beginOdd = Integer.parseInt(obj.getString("oneven van"));
-                    int endOdd = Integer.parseInt(obj.getString("oneven tot"));
-
-                    if (address.getNr() % 2 == 0
-                            && beginEven != -1
-                            && beginEven <= address.getNr()
-                            && endEven >= address.getNr()) {
-                        address.setSector(new Sector(obj.getString("sector")));
-                        break;
-                    }
-
-                    if (address.getNr() % 2 != 0
-                            && beginOdd != -1
-                            && beginOdd <= address.getNr()
-                            && endOdd >= address.getNr()) {
-                        address.setSector(new Sector(obj.getString("sector")));
-                        break;
-                    }
-                }
+                AddressData.getInstance().addAddress(address);
             } catch (JSONException ex) {
                 Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
                 return 1;
