@@ -20,6 +20,7 @@ import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +70,8 @@ public class AddressListActivity extends ListActivity {
         final ListView lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
-                //InfoPopup.showPopup(SearchActivity.this, (Pharmacy) (lv.getItemAtPosition(i)));
+                UserData.getInstance().setAddress((Address) lv.getItemAtPosition(i));
+                finish();
             }
         });
     }

@@ -2,13 +2,16 @@ package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
+import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.UserData;
 
 /**
  *
@@ -59,6 +62,23 @@ public class PreferenceActivity extends Activity {
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.preferences);
+            updateAddressSummary();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            updateAddressSummary();
+        }
+
+        public void updateAddressSummary() {
+            Preference pref = (Preference) findPreference("address");
+            Address address = UserData.getInstance().getAddress();
+            if (address == null || address.getCode() == null || address.getCode().isEmpty()) {
+                pref.setSummary("No address set yet.");
+            } else {
+                pref.setSummary("Set on " + address.getStreetname() + ", " + address.getCity());
+            }
         }
     }
 }

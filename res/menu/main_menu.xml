@@ -18,7 +18,7 @@
     <item android:id="@+id/refresh"
           android:icon="@drawable/refresh"
           android:title="@string/refresh"
-          android:showAsAction="never"
+          android:showAsAction="ifRoom"
     />
     <item android:id="@+id/notif"
           android:icon="@drawable/notif"

@@ -5,6 +5,7 @@
         android:title="@string/yourLocation">
 
         <Preference
+            android:key="address"
             android:title="@string/choseAddress">
             <intent android:action=".ui.preferences.AddressListActivity"/>
         </Preference>

@@ -1,5 +1,6 @@
 package eu.pinnoo.garbagecalendar.data.caches;
 
+import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

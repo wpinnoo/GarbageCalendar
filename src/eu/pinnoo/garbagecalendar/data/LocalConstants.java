@@ -31,7 +31,8 @@ public class LocalConstants {
     
     public enum CacheName {
         COLLECTIONS_DATA("collectionsdata"),
-        USER_DATA("userdata");
+        USER_DATA("userdata"),
+        ADDRESS_DATA("addressdata");
         
         
         private String s;
