@@ -9,14 +9,14 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionsData implements Serializable{
+public class CollectionsData implements Serializable {
 
     private static final CollectionsData instance = new CollectionsData();
     private List<Collection> collections;
 
     private CollectionsData() {
         collections = CollectionCache.getInstance().getAll();
-        if(collections == null){
+        if (collections == null) {
             collections = new ArrayList<Collection>();
         }
     }
@@ -39,8 +39,10 @@ public class CollectionsData implements Serializable{
         return collections;
     }
 
-    public Collection getLastCollection() {
-        return collections.get(collections.size() - 1);
+    public void addToLastCollection(Type[] types) {
+        Collection last = collections.get(collections.size() - 1);
+        last.addTypes(types);
+        CollectionCache.getInstance().put(last.getCollectionCode(), last);
     }
 
     public boolean isSet() {

@@ -46,7 +46,7 @@ public class CalendarParser extends Parser {
                 Sector sector = new Sector(obj.getString("locatie"));
                 if (UserData.getInstance().getAddress().getSector().equals(sector)) {
                     if (obj.getString("datum").equals(previousDate)) {
-                        CollectionsData.getInstance().getLastCollection().addTypes(parseGarbageType(obj.getString("fractie")));
+                        CollectionsData.getInstance().addToLastCollection(parseGarbageType(obj.getString("fractie")));
                     } else {
                         Collection col = new Collection(obj.getString("week"), obj.getString("dag"), LocalConstants.DATE_FORMATTER.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
                         CollectionsData.getInstance().addCollection(col);
