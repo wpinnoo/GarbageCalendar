@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/about"
-          android:icon="@drawable/about"
-          android:title="@string/about"
-          android:showAsAction="ifRoom"
-    />
-    <item android:id="@+id/newlocation"
-          android:icon="@drawable/newlocation"
-          android:title="@string/newLocation"
-          android:showAsAction="ifRoom"
+    <item android:id="@+id/preferences"
+          android:icon="@drawable/preferences"
+          android:title="@string/preferences"
+          android:showAsAction="always"
     />
     <item android:id="@+id/refresh"
           android:icon="@drawable/refresh"
           android:title="@string/refresh"
-          android:showAsAction="ifRoom"
-    />
-    <item android:id="@+id/notif"
-          android:icon="@drawable/notif"
-          android:title="@string/notif"
           android:showAsAction="ifRoom"
     />
 </menu>
