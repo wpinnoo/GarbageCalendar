@@ -26,7 +26,6 @@ import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.util.Network;
-import eu.pinnoo.garbagecalendar.util.parsers.ApartmentsParser;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
@@ -116,7 +115,7 @@ public class CollectionListActivity extends Activity {
                         super.onPostExecute(result);
                         checkAddress();
                     }
-                }.execute(new StreetsParser(), new ApartmentsParser());
+                }.execute(new StreetsParser());
             }
         } else {
             checkAddress();

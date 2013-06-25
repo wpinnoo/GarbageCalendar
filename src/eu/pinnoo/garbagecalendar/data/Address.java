@@ -20,7 +20,6 @@ public class Address implements Serializable {
     private int zipcode;
     private String city;
     private Sector sector;
-    private boolean isApartment;
 
     public Address() {
         streetname = "";
@@ -32,21 +31,11 @@ public class Address implements Serializable {
         zipcode = 0;
         city = "";
         sector = new Sector();
-        isApartment = false;
     }
 
     public boolean matches(String s) {
         s = s.toLowerCase();
         return streetname.toLowerCase().contains(s) || city.toLowerCase().contains(s);
-    }
-
-    public boolean isApartment() {
-        return isApartment;
-    }
-
-    public void markAsApartment(boolean b) {
-        isApartment = b;
-        AddressCache.getInstance().put(city, this);
     }
 
     public String getStreetname() {
