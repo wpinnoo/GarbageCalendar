@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +42,8 @@ import java.util.List;
  */
 public class CollectionListActivity extends Activity {
 
+    private boolean loading = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,14 +61,24 @@ public class CollectionListActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        initializeCacheAndLoadData();
+        if (!loading) {
+            Log.i("============================================[Cache]", "onresume");
+            initializeCacheAndLoadData();
+        }
     }
 
     public void initializeCacheAndLoadData() {
         new CacheTask(this, "Loading calendar...") {
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = true;
+            }
+
+            @Override
             protected void onPostExecute(Integer[] result) {
                 super.onPostExecute(result);
+                loading = false;
                 loadStreets();
             }
         }.execute(AddressData.getInstance(), CollectionsData.getInstance(), UserData.getInstance());
@@ -75,6 +88,7 @@ public class CollectionListActivity extends Activity {
         if (UserData.getInstance().isSet()) {
             loadCollections(UserData.getInstance().isChanged());
         } else {
+            loading = true;
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.yourLocation))
                     .setMessage(getString(R.string.setAddress))
@@ -82,12 +96,14 @@ public class CollectionListActivity extends Activity {
                     .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     dialog.dismiss();
+                    loading = false;
                     Intent i = new Intent(getBaseContext(), PreferenceActivity.class);
                     startActivity(i);
                 }
             })
                     .setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
+                    loading = false;
                     finish();
                 }
             })
@@ -111,8 +127,15 @@ public class CollectionListActivity extends Activity {
             } else {
                 new ParserTask(this, "Loading street list...") {
                     @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        loading = true;
+                    }
+
+                    @Override
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
+                        loading = false;
                         checkAddress();
                     }
                 }.execute(new StreetsParser());
@@ -132,8 +155,15 @@ public class CollectionListActivity extends Activity {
             if (Network.networkAvailable(this)) {
                 new ParserTask(this, "Loading calendar...") {
                     @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        loading = true;
+                    }
+
+                    @Override
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
+                        loading = false;
                         UserData.getInstance().changeCommitted();
                         createGUI();
                     }
@@ -256,7 +286,7 @@ public class CollectionListActivity extends Activity {
         labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
         labelGlas.setPadding(1, 5, 5, 5);
         labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-        
+
         tl.addView(tr);
     }
 
