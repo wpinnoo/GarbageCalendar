@@ -22,9 +22,16 @@
     
     <string name="yourLocation">Jouw locatie</string>
     <string name="enterAddress">Voer je adres in.</string> 
+    <string name="setAddress">Stel je adres eerst in bij Voorkeuren.</string>
+    <string name="choseAddress">Adres</string>
+    <string name="nr">nummer</string>
+    <string name="nrs">nummers</string>
+    <string name="allNrs">alle nummers</string>
+    <string name="enterNr">Vul je huisnummer in</string>
     
     <string name="ok">OK</string>
     <string name="and">en</string>
+    <string name="to">tot</string>
     <string name="tryAgain">Opnieuw</string>
     <string name="cancel">Annuleer</string>
     <string name="refresh">Vernieuw</string>
@@ -46,10 +53,17 @@
     <string name="tomorrow">morgen</string>
     
     <string name="about">Over</string>
-    <string name="aboutMessage">Klik op de knop \'Nieuwe locatie\' om je adres in te stellen. Momenteel worden enkel Gentse adressen ondersteund.\n\n\nDeze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
+    <string name="aboutDescription">Over deze app</string>
+    <string name="aboutMessage">Stel je adres in bij Voorkeuren.\n Momenteel worden enkel Gentse adressen ondersteund.\n\n\n\nDeze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
 
     <string name="putOutTrash">Zet het vuilnis buiten</string>
     <string name="notif">Notificaties (beta)</string>
+    <string name="notif_descr">Herinnert je eraan het vuil buiten te zetten</string>
     <string name="on">Aan</string>
     <string name="off">Uit</string>
+    
+    <string name="preferences">Voorkeuren</string>
+    <string name="appsettings">App voorkeuren</string>
+    
+    <string name="none">(Geen)</string>
 </resources>
