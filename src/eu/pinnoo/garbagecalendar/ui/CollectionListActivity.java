@@ -20,8 +20,8 @@ import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
-import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
@@ -178,8 +178,7 @@ public class CollectionListActivity extends Activity {
                 continue;
             }
 
-            addTableRowDate(col, i);
-            addTableRowTypes(col, i);
+            addTableRow(col, i);
             i++;
         }
     }
@@ -212,82 +211,52 @@ public class CollectionListActivity extends Activity {
         }
     }
 
-    private void addTableRowTypes(Collection col, int rowNumber) {
-        Type[] types = col.getTypes();
-        boolean rest, gft, pmd, pk, glas;
-        rest = gft = pmd = pk = glas = false;
-        for (Type t : types) {
-            switch (t) {
-                case REST:
-                    rest = true;
-                    break;
-                case GFT:
-                    gft = true;
-                    break;
-                case PMD:
-                    pmd = true;
-                    break;
-                case PK:
-                    pk = true;
-                    break;
-                case GLAS:
-                    glas = true;
-                    break;
-            }
-        }
-
+    private void addTableRow(Collection col, int rowNumber) {
+        String date = beautifyDate(col.getDate());
         int backgroundColor = rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW;
 
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_types, tl, false);
-
-        TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
-        labelRest.setText(rest ? Type.REST.shortStrValue(this) : "");
-        labelRest.setPadding(1, 5, 5, 5);
-        labelRest.setBackgroundColor(rest ? Type.REST.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-
-        TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
-        labelGFT.setText(gft ? Type.GFT.shortStrValue(this) : "");
-        labelGFT.setPadding(1, 5, 5, 5);
-        labelGFT.setBackgroundColor(gft ? Type.GFT.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-
-        TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
-        labelPMD.setText(pmd ? Type.PMD.shortStrValue(this) : "");
-        labelPMD.setPadding(1, 5, 5, 5);
-        labelPMD.setBackgroundColor(pmd ? Type.PMD.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-
-        TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
-        labelPK.setText(pk ? Type.PK.shortStrValue(this) : "");
-        labelPK.setPadding(1, 5, 5, 5);
-        labelPK.setBackgroundColor(pk ? Type.PK.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-
-        TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
-        labelGlas.setText(glas ? Type.GLAS.shortStrValue(this) : "");
-        labelGlas.setPadding(1, 5, 5, 5);
-        labelGlas.setBackgroundColor(glas ? Type.GLAS.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
-
-        tr.setBackgroundColor(backgroundColor);
-        tr.setOnClickListener(new TableRowListener(col));
-
-        tl.addView(tr);
-    }
-
-    private void addTableRowDate(Collection col, int rowNumber) {
-        String date = beautifyDate(col.getDate());
-
-        LayoutInflater inflater = getLayoutInflater();
-        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row_date, tl, false);
+        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row, tl, false);
 
         TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
         labelDate.setTextColor(Color.BLACK);
 
-        tr.setBackgroundColor(rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW);
+        tr.setBackgroundColor(backgroundColor);
         tr.setOnClickListener(new TableRowListener(col));
 
+        boolean hasType = col.hasType(Type.REST);
+        TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
+        labelRest.setText(hasType ? Type.REST.shortStrValue(this) : "");
+        labelRest.setPadding(1, 5, 5, 5);
+        labelRest.setBackgroundColor(hasType ? Type.REST.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+
+        hasType = col.hasType(Type.GFT);
+        TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
+        labelGFT.setText(hasType ? Type.GFT.shortStrValue(this) : "");
+        labelGFT.setPadding(1, 5, 5, 5);
+        labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+
+        hasType = col.hasType(Type.PMD);
+        TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
+        labelPMD.setText(hasType ? Type.PMD.shortStrValue(this) : "");
+        labelPMD.setPadding(1, 5, 5, 5);
+        labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+
+        hasType = col.hasType(Type.PK);
+        TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
+        labelPK.setText(hasType ? Type.PK.shortStrValue(this) : "");
+        labelPK.setPadding(1, 5, 5, 5);
+        labelPK.setBackgroundColor(hasType ? Type.PK.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+
+        hasType = col.hasType(Type.GLAS);
+        TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
+        labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
+        labelGlas.setPadding(1, 5, 5, 5);
+        labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        
         tl.addView(tr);
     }
 

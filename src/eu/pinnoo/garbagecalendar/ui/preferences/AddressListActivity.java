@@ -104,7 +104,7 @@ public class AddressListActivity extends ListActivity {
         list = new ArrayList<Address>();
         list.addAll(AddressData.getInstance().getAddresses());
         Collections.sort(list, new AddressComparator());
-        adapter = new AddressAdapter(this, R.layout.list_item, list);
+        adapter = new AddressAdapter(this, R.layout.address_table_row, list);
         setListAdapter(adapter);
     }
 }

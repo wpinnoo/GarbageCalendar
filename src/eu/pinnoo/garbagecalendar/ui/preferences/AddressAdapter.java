@@ -34,7 +34,7 @@ public class AddressAdapter extends ArrayAdapter<Address>{
         View v = convertView;
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.list_item, null);
+            v = inflater.inflate(R.layout.address_table_row, null);
         }
         TextView addressText = (TextView) v.findViewById(R.id.toptext);
         try {

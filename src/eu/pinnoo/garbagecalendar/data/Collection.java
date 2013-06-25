@@ -26,8 +26,8 @@ public class Collection implements Serializable {
     public String getWeekCode() {
         return weekCode;
     }
-    
-    public String getCollectionCode(){
+
+    public String getCollectionCode() {
         return getWeekCode() + getSector().getCode();
     }
 
@@ -55,6 +55,15 @@ public class Collection implements Serializable {
             i++;
         }
         this.types = newTypes;
+    }
+
+    public boolean hasType(Type t) {
+        for (Type type : getTypes()) {
+            if (type.equals(t)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Sector getSector() {
