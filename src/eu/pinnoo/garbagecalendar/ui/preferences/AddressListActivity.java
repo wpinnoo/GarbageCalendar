@@ -36,7 +36,7 @@ public class AddressListActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_address);
+        setContentView(R.layout.addresses);
 
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());

@@ -1,6 +1,7 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Filter;
 import android.widget.TextView;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class AddressAdapter extends ArrayAdapter<Address>{
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.address_table_row, null);
         }
+        v.setBackgroundColor(position % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : Color.WHITE);
         TextView addressText = (TextView) v.findViewById(R.id.toptext);
         try {
             addressText.setText(objects.get(position).getStreetname() + ", " + objects.get(position).getCity());

@@ -115,7 +115,7 @@ public class Address implements Serializable {
         if (nrEvenBegin != -1) {
             str += nrEvenBegin;
             if (nrEvenEnd != -1 && nrEvenBegin != nrEvenEnd) {
-                str += " " + c.getString(R.string.to) + " " + nrEvenEnd;
+                str += "-" + nrEvenEnd;
             }
         } else {
             if (nrEvenEnd != -1) {
@@ -125,25 +125,25 @@ public class Address implements Serializable {
 
         if (nrOddBegin != -1) {
             if (!str.isEmpty()) {
-                str += " " + c.getString(R.string.and) + " ";
+                str += ", ";
             }
             str += nrOddBegin;
             if (nrOddEnd != -1 && nrOddBegin != nrOddEnd) {
-                str += " " + c.getString(R.string.to) + " " + nrOddEnd;
+                str += "-" + nrOddEnd;
             }
         } else {
             if (nrOddEnd != -1) {
                 if (!str.isEmpty()) {
-                    str += " " + c.getString(R.string.and) + " ";
+                    str += ", ";
                 }
                 str += nrOddEnd;
             }
         }
 
         if(str.isEmpty()){
-            return c.getString(R.string.allNrs);
+            return str;
         } else {
-            return (str.contains(" ") ? c.getString(R.string.nrs) : c.getString(R.string.nr)) + " " + str;
+            return (str.contains(" ") || str.contains("-") ? c.getString(R.string.nrs) : c.getString(R.string.nr)) + " " + str;
         }
     }
 
