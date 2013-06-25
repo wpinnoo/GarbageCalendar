@@ -15,7 +15,6 @@ public class LocalConstants {
     public static final String ENCODING = "iso-8859-1";
     public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
-    public static final String APARTMENTS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Appartementen.json";
     public static final String GOOGLE_MAPS_API = "http://maps.googleapis.com/maps/api/geocode/json";
     public static final String DEFAULT_SECTOR = "-00";
     public static final String NOTIF_INTENT_COL = "collection";

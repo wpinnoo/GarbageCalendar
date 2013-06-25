@@ -1,7 +1,6 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +8,12 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionsData implements Serializable {
+public class CollectionsData implements DataContainer {
 
     private static final CollectionsData instance = new CollectionsData();
     private List<Collection> collections;
 
     private CollectionsData() {
-        collections = CollectionCache.getInstance().getAll();
         if (collections == null) {
             collections = new ArrayList<Collection>();
         }
@@ -23,6 +21,16 @@ public class CollectionsData implements Serializable {
 
     public static CollectionsData getInstance() {
         return instance;
+    }
+    
+    @Override
+    public int initialize(){
+        if(collections == null || collections.isEmpty()){
+            collections = CollectionCache.getInstance().getAll();
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     public void resetCollections() {
