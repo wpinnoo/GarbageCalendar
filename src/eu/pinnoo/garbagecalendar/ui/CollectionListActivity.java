@@ -2,41 +2,26 @@ package eu.pinnoo.garbagecalendar.ui;
 
 import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import static android.content.Context.ALARM_SERVICE;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AddressData;
-import eu.pinnoo.garbagecalendar.receivers.TrashDayReceiver;
-import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
-import eu.pinnoo.garbagecalendar.data.Sector;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
@@ -44,24 +29,12 @@ import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.ApartmentsParser;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
+import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -86,7 +59,17 @@ public class CollectionListActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        loadStreets();
+        initializeCacheAndLoadData();
+    }
+
+    public void initializeCacheAndLoadData() {
+        new CacheTask(this, "Loading calendar...") {
+            @Override
+            protected void onPostExecute(Integer[] result) {
+                super.onPostExecute(result);
+                loadStreets();
+            }
+        }.execute(AddressData.getInstance(), CollectionsData.getInstance(), UserData.getInstance());
     }
 
     public void checkAddress() {
