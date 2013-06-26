@@ -222,14 +222,14 @@ public class CollectionListActivity extends Activity {
                     + " ("
                     + getString(R.string.tomorrow)
                     + ")";
-        } else if (daysBetween < 7) {
+        } else if (daysBetween < 6) {
             return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
                     + " ("
                     + getString(R.string.thisweek)
                     + " "
                     + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
                     + ")";
-        } else if (daysBetween < 14) {
+        } else if (daysBetween < 13) {
             return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
                     + " ("
                     + getString(R.string.nextweek)
