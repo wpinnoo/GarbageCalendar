@@ -1,7 +1,12 @@
 package eu.pinnoo.garbagecalendar.data;
 
+import android.app.Activity;
+import android.content.Context;
+import android.preference.PreferenceManager;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.util.Network;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,10 +27,10 @@ public class CollectionsData implements DataContainer {
     public static CollectionsData getInstance() {
         return instance;
     }
-    
+
     @Override
-    public int initialize(){
-        if(collections == null || collections.isEmpty()){
+    public int initialize() {
+        if (collections == null || collections.isEmpty()) {
             collections = CollectionCache.getInstance().getAll();
             return 0;
         } else {
@@ -55,5 +60,20 @@ public class CollectionsData implements DataContainer {
 
     public boolean isSet() {
         return collections != null && !collections.isEmpty();
+    }
+
+    public boolean needsUpdate(Context c) {
+        Date lastModified = Network.getLastModifiedDate(LocalConstants.CALENDAR_URL, c);
+        if (lastModified != null) {
+            long lastUpdated = c.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getLong(LocalConstants.CacheName.LAST_MOD_COL.toString(), 0);
+            if (lastUpdated < lastModified.getTime()) {
+                PreferenceManager.getDefaultSharedPreferences(c)
+                        .edit()
+                        .putLong(LocalConstants.CacheName.LAST_MOD_COL.toString(), lastModified.getTime())
+                        .commit();
+                return true;
+            }
+        }
+        return false;
     }
 }

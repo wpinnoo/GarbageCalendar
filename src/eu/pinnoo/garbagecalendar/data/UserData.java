@@ -1,5 +1,6 @@
 package eu.pinnoo.garbagecalendar.data;
 
+import android.content.Context;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 
 /**
@@ -51,5 +52,9 @@ public class UserData implements DataContainer {
 
     public void changeCommitted() {
         isChanged = false;
+    }
+
+    public boolean needsUpdate(Context c) {
+        return false;
     }
 }

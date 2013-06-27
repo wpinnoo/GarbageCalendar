@@ -1,7 +1,12 @@
 package eu.pinnoo.garbagecalendar.data;
 
+import android.app.Activity;
+import android.content.Context;
+import android.preference.PreferenceManager;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.util.Network;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,5 +58,20 @@ public class AddressData implements DataContainer {
 
     public Address getLastAddress() {
         return addresses.get(addresses.size() - 1);
+    }
+
+    public boolean needsUpdate(Context c) {
+        Date lastModified = Network.getLastModifiedDate(LocalConstants.STREETS_URL, c);
+        if (lastModified != null) {
+            long lastUpdated = c.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getLong(LocalConstants.CacheName.LAST_MOD_ADDRESSES.toString(), 0);
+            if (lastUpdated < lastModified.getTime()) {
+                PreferenceManager.getDefaultSharedPreferences(c)
+                        .edit()
+                        .putLong(LocalConstants.CacheName.LAST_MOD_ADDRESSES.toString(), lastModified.getTime())
+                        .commit();
+                return true;
+            }
+        }
+        return false;
     }
 }

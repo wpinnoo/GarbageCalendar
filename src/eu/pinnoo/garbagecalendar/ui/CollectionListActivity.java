@@ -86,7 +86,8 @@ public class CollectionListActivity extends Activity {
 
     public void checkAddress() {
         if (UserData.getInstance().isSet()) {
-            loadCollections(UserData.getInstance().isChanged());
+            loadCollections(UserData.getInstance().isChanged()
+                    | CollectionsData.getInstance().needsUpdate(this));
         } else {
             loading = true;
             new AlertDialog.Builder(this)
@@ -112,7 +113,8 @@ public class CollectionListActivity extends Activity {
     }
 
     public void loadStreets() {
-        if (!AddressData.getInstance().isSet()) {
+        if (!AddressData.getInstance().isSet()
+                | AddressData.getInstance().needsUpdate(this)) {
             if (!Network.networkAvailable(this)) {
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.noInternetConnection))
