@@ -48,6 +48,7 @@
     <string name="loadingUnsuccessful">Could not load required data.</string>
     <string name="error">Error</string>
     
+    <string name="today">today</string>
     <string name="thisweek">this</string>
     <string name="nextweek">next</string>
     <string name="tomorrow">tomorrow</string>

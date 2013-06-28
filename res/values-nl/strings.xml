@@ -48,6 +48,7 @@
     <string name="loadingUnsuccessful">Fout bij het laden van de data.</string>
     <string name="error">Fout</string>
     
+    <string name="today">vandaag</string>
     <string name="thisweek">komende</string>
     <string name="nextweek">volgende week</string>
     <string name="tomorrow">morgen</string>

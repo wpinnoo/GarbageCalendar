@@ -206,7 +206,9 @@ public class CollectionListActivity extends Activity {
         int i = 0;
         while (it.hasNext()) {
             Collection col = it.next();
-            if (col.getDate().before(Calendar.getInstance().getTime())) {
+            Calendar lastDayToBeShown = Calendar.getInstance();
+            lastDayToBeShown.add(Calendar.DATE, -1);
+            if (col.getDate().before(lastDayToBeShown.getTime())) {
                 continue;
             }
 
@@ -219,7 +221,12 @@ public class CollectionListActivity extends Activity {
         Date today = Calendar.getInstance().getTime();
         int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
 
-        if (daysBetween <= 1) {
+        if (daysBetween < 1){
+            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+                    + " ("
+                    + getString(R.string.today)
+                    + ")";
+        } else if (daysBetween == 1) {
             return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
                     + " ("
                     + getString(R.string.tomorrow)
