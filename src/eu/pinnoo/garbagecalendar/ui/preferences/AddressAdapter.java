@@ -18,19 +18,20 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressAdapter extends ArrayAdapter<Address>{
+public class AddressAdapter extends ArrayAdapter<Address> {
 
     private List<Address> objects;
     private List<Address> original;
     private Context context;
-    
-    public AddressAdapter(Context context, int textViewResourceId, List<Address> objects){
+
+    public AddressAdapter(Context context, int textViewResourceId, List<Address> objects) {
         super(context, textViewResourceId, objects);
         this.context = context;
         this.objects = objects;
         original = new ArrayList<Address>();
         original.addAll(objects);
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
@@ -45,15 +46,15 @@ public class AddressAdapter extends ArrayAdapter<Address>{
         } catch (NullPointerException e) {
             addressText.setText(context.getString(R.string.none));
         }
-        
-        
+
+
         TextView nrText = (TextView) v.findViewById(R.id.nrtext);
         try {
             nrText.setText(objects.get(position).getFormattedNr(context));
         } catch (NullPointerException e) {
             nrText.setText(context.getString(R.string.none));
         }
-        
+
         return v;
     }
 
@@ -68,14 +69,21 @@ public class AddressAdapter extends ArrayAdapter<Address>{
                     results.values = original;
                     results.count = original.size();
                 } else {
-                    ArrayList<Address> filterResultsData = new ArrayList<Address>();
+                    ArrayList<Address> filtered = new ArrayList<Address>();
+                    ArrayList<Address> filteredLowPriority = new ArrayList<Address>();
                     for (Address item : original) {
-                        if (item.matches(charSequence.toString())) {
-                            filterResultsData.add(item);
+                        int match = item.matches(charSequence.toString());
+                        if (match == Address.FULL_MATCH) {
+                            filtered.add(item);
+                        } else if (match == Address.PARTIAL_MATCH) {
+                            filteredLowPriority.add(item);
                         }
                     }
-                    results.values = filterResultsData;
-                    results.count = filterResultsData.size();
+                    for (Address item : filteredLowPriority) {
+                        filtered.add(item);
+                    }
+                    results.values = filtered;
+                    results.count = filtered.size();
                 }
                 return results;
             }

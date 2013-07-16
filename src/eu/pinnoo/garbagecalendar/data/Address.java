@@ -2,7 +2,6 @@ package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import java.io.Serializable;
 
 /**
@@ -20,6 +19,9 @@ public class Address implements Serializable {
     private int zipcode;
     private String city;
     private Sector sector;
+    public static final int NO_MATCH = 0;
+    public static final int PARTIAL_MATCH = 1;
+    public static final int FULL_MATCH = 2;
 
     public Address() {
         streetname = "";
@@ -33,9 +35,15 @@ public class Address implements Serializable {
         sector = new Sector();
     }
 
-    public boolean matches(String s) {
+    public int matches(String s) {
         s = s.toLowerCase();
-        return streetname.toLowerCase().contains(s) || city.toLowerCase().contains(s);
+        if (streetname.toLowerCase().startsWith(s)) {
+            return FULL_MATCH;
+        }
+        if (streetname.toLowerCase().contains(s) || city.toLowerCase().contains(s)) {
+            return PARTIAL_MATCH;
+        }
+        return NO_MATCH;
     }
 
     public String getStreetname() {
@@ -140,7 +148,7 @@ public class Address implements Serializable {
             }
         }
 
-        if(str.isEmpty()){
+        if (str.isEmpty()) {
             return str;
         } else {
             return (str.contains(" ") || str.contains("-") ? c.getString(R.string.nrs) : c.getString(R.string.nr)) + " " + str;
