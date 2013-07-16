@@ -10,16 +10,6 @@
             <intent android:action=".ui.preferences.AddressListActivity"/>
         </Preference>
     </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="@string/appsettings">
-
-        <CheckBoxPreference
-            android:key="notif_pref"
-            android:title="@string/notif"
-            android:summary="@string/notif_descr" />
-
-    </PreferenceCategory>
     
     <PreferenceCategory
         android:title="@string/about">
