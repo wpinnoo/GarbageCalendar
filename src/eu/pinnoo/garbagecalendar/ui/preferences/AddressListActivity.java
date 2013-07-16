@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
@@ -59,14 +63,30 @@ public class AddressListActivity extends ListActivity {
             }
         };
 
-
-        filterText = (EditText) findViewById(R.id.search_box);
-        filterText.addTextChangedListener(filterTextWatcher);
         final ListView lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
                 UserData.getInstance().setAddress((Address) lv.getItemAtPosition(i));
                 finish();
+            }
+        });
+
+        filterText = (EditText) findViewById(R.id.search_box);
+        filterText.addTextChangedListener(filterTextWatcher);
+        filterText.setOnEditorActionListener(new OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE
+                        || (!event.isShiftPressed()
+                        && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                        && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    if (lv.getChildCount() == 1) {
+                        UserData.getInstance().setAddress((Address) lv.getItemAtPosition(0));
+                        AddressListActivity.this.finish();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
     }
@@ -81,9 +101,9 @@ public class AddressListActivity extends ListActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         fillList();
     }
