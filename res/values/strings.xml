@@ -14,36 +14,30 @@
     <string name="pk_long">Paper and paperboard</string>
     <string name="glas_long">Glass</string>
     
-    <string name="invalidLocation">Invalid location</string>
-    <string name="invalidLocationLong">This is not a valid location in Ghent.</string>
-    <string name="noCalendarAvailable">There\'s no garbage calendar available for your address since it\'s an apartment.</string>
-    <string name="newLocation">New location</string>
     <string name="close">Close</string>
     
     <string name="yourLocation">Your location</string>
     <string name="setAddress">Please set your address in Preferences first.</string>
-    <string name="enterAddress">Please enter your address.</string> 
     <string name="choseAddress">Address</string>
     <string name="nr">nr</string>
     <string name="nrs">nrs</string>
     <string name="allNrs">all numbers</string>
-    <string name="enterNr">Enter your house number</string>
     
     <string name="ok">OK</string>
     <string name="and">and</string>
     <string name="to">to</string>
-    <string name="tryAgain">Try again</string>
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
     
-    <string name="lookingUp">Looking up your address&#8230;</string>
     <string name="loadingCalendar">Loading calendar&#8230;</string>
+    <string name="loadingStreets">Loading streets&#8230;</string>
     
     <string name="noInternetConnection">No internet connection.</string>
-    <string name="needConnection">You need an internet connection the first time you\'re using this app.</string>
+    <string name="needConnection">You need an internet connection to load the calendar.</string>
     
-    <string name="locationSet">Location set on</string>
+    <string name="locationSet">Set on</string>
     <string name="selectAddress">Select your address.</string>
+    <string name="noAddressSet">No address set yet.</string>
     
     <string name="loadingUnsuccessful">Could not load required data.</string>
     <string name="error">Error</string>
@@ -58,12 +52,6 @@
     <string name="aboutVersion">GarbageCalendar v1.0.1</string>
     <string name="aboutMessage">Set your address in Preferences.\nCurrently, only addresses in Ghent are supported.</string>
     <string name="aboutMessageAuthor">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
-
-    <string name="putOutTrash">Put out the trash</string>
-    <string name="notif">Notifications (beta)</string>
-    <string name="notif_descr">Reminds you to put out the trash</string>
-    <string name="on">On</string>
-    <string name="off">Off</string>
     
     <string name="preferences">Preferences</string>
     <string name="appsettings">App preferences</string>

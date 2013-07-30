@@ -14,36 +14,30 @@
     <string name="pk_long">Papier en karton</string>
     <string name="glas_long">Glas</string>
     
-    <string name="invalidLocation">Ongeldige locatie</string>
-    <string name="invalidLocationLong">Dit is geen geldige locatie in Gent.</string>
-    <string name="noCalendarAvailable">Er is geen ophaalkalender beschikbaar voor jouw adres omdat het een appartement is.</string>
-    <string name="newLocation">Nieuwe locatie</string>
     <string name="close">Sluit</string>
     
     <string name="yourLocation">Jouw locatie</string>
-    <string name="enterAddress">Voer je adres in.</string> 
     <string name="setAddress">Stel je adres eerst in bij Voorkeuren.</string>
     <string name="choseAddress">Adres</string>
     <string name="nr">nr</string>
     <string name="nrs">nrs</string>
     <string name="allNrs">alle nummers</string>
-    <string name="enterNr">Vul je huisnummer in</string>
     
     <string name="ok">OK</string>
     <string name="and">en</string>
     <string name="to">tot</string>
-    <string name="tryAgain">Opnieuw</string>
     <string name="cancel">Annuleer</string>
     <string name="refresh">Vernieuw</string>
     
-    <string name="lookingUp">Adres nakijken&#8230;</string>
     <string name="loadingCalendar">Ophaalkalender laden&#8230;</string>
+    <string name="loadingStreets">Stratenlijst laden&#8230;</string>
     
     <string name="noInternetConnection">Geen internetverbinding.</string>
-    <string name="needConnection">Je hebt een internetverbinding nodig de eerste keer dat je deze app gebruikt.</string>
+    <string name="needConnection">Je hebt een internetverbinding nodig om de kalender te laden.</string>
     
-    <string name="locationSet">Locatie ingesteld op</string>
+    <string name="locationSet">Ingesteld op</string>
     <string name="selectAddress">Selecteer jouw adres.</string>
+    <string name="noAddressSet">Geen adres ingesteld.</string>
     
     <string name="loadingUnsuccessful">Fout bij het laden van de data.</string>
     <string name="error">Fout</string>
@@ -58,12 +52,6 @@
     <string name="aboutVersion">Ophaalkalender v1.0.1</string>
     <string name="aboutMessage">Stel je adres in bij Voorkeuren.\n Momenteel worden enkel Gentse adressen ondersteund.</string>
     <string name="aboutMessageAuthor">Deze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
-    
-    <string name="putOutTrash">Zet het vuilnis buiten</string>
-    <string name="notif">Notificaties (beta)</string>
-    <string name="notif_descr">Herinnert je eraan het vuil buiten te zetten</string>
-    <string name="on">Aan</string>
-    <string name="off">Uit</string>
     
     <string name="preferences">Voorkeuren</string>
     <string name="appsettings">App voorkeuren</string>
