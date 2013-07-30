@@ -15,7 +15,6 @@ import eu.pinnoo.garbagecalendar.R;
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public class AddressField extends EditText {
-//The image we are going to use for the Clear button
 
     private Drawable imgCloseButton = getResources().getDrawable(R.drawable.clear);
 

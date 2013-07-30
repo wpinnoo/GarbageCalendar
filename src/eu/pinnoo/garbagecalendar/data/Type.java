@@ -1,6 +1,5 @@
 package eu.pinnoo.garbagecalendar.data;
 
-import eu.pinnoo.garbagecalendar.data.AreaType;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
