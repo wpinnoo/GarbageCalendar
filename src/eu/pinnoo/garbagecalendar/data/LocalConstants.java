@@ -33,7 +33,8 @@ public class LocalConstants {
         USER_DATA("userdata"),
         ADDRESS_DATA("addressdata"),
         LAST_MOD_COL("lastmodcol"),
-        LAST_MOD_ADDRESSES("lastmodaddresses");
+        LAST_MOD_ADDRESSES("lastmodaddresses"),
+        COL_REFRESH_NEEDED("colrefreshneeded");
         
         
         private String s;

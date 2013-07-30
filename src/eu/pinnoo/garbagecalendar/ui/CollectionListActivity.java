@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,13 +61,14 @@ public class CollectionListActivity extends Activity {
     public void onResume() {
         super.onResume();
         if (!loading) {
-            Log.i("============================================[Cache]", "onresume");
-            initializeCacheAndLoadData();
+            if (getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)) {
+                initializeCacheAndLoadData();
+            }
         }
     }
 
     public void initializeCacheAndLoadData() {
-        new CacheTask(this, "Loading calendar...") {
+        new CacheTask(this, getString(R.string.loadingCalendar)) {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -127,7 +127,7 @@ public class CollectionListActivity extends Activity {
                 })
                         .create().show();
             } else {
-                new ParserTask(this, "Loading street list...") {
+                new ParserTask(this, getString(R.string.loadingStreets)) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -155,7 +155,7 @@ public class CollectionListActivity extends Activity {
                 return;
             }
             if (Network.networkAvailable(this)) {
-                new ParserTask(this, "Loading calendar...") {
+                new ParserTask(this, getString(R.string.loadingCalendar)) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -221,7 +221,7 @@ public class CollectionListActivity extends Activity {
         Date today = Calendar.getInstance().getTime();
         int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
 
-        if (daysBetween < 1){
+        if (daysBetween < 1) {
             return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
                     + " ("
                     + getString(R.string.today)

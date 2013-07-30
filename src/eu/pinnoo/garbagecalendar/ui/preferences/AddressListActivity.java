@@ -1,5 +1,6 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -66,6 +67,10 @@ public class AddressListActivity extends ListActivity {
         final ListView lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
+                getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+                        .edit()
+                        .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
+                        .commit();
                 UserData.getInstance().setAddress((Address) lv.getItemAtPosition(i));
                 finish();
             }
@@ -81,6 +86,10 @@ public class AddressListActivity extends ListActivity {
                         && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
                         && event.getAction() == KeyEvent.ACTION_DOWN)) {
                     if (lv.getChildCount() == 1) {
+                        getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+                                .edit()
+                                .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
+                                .commit();
                         UserData.getInstance().setAddress((Address) lv.getItemAtPosition(0));
                         AddressListActivity.this.finish();
                         return true;
@@ -105,6 +114,12 @@ public class AddressListActivity extends ListActivity {
     @Override
     public void onResume() {
         super.onResume();
+        if (UserData.getInstance().isSet()) {
+            getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), false)
+                    .commit();
+        }
         fillList();
     }
 
