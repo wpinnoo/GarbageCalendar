@@ -12,7 +12,6 @@
         android:src="@drawable/ic_launcher" />
     <TextView  
         android:id="@+id/aboutVersion"
-        android:text="@string/aboutVersion"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:gravity="center"

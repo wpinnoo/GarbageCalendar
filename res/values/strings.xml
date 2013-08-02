@@ -49,7 +49,6 @@
     
     <string name="about">About</string>
     <string name="aboutDescription">About this app</string>
-    <string name="aboutVersion">GarbageCalendar v1.0.1</string>
     <string name="aboutMessage">Set your address in Preferences.\nCurrently, only addresses in Ghent are supported.</string>
     <string name="aboutMessageAuthor">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2013\nGarbageCalendar.pinnoo.eu</string>
     

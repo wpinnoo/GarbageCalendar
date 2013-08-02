@@ -1,6 +1,7 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
@@ -12,6 +13,8 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,6 +30,16 @@ public class AboutActivity extends Activity {
         if (LocalConstants.DEBUG) {
             GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
             googleAnalytics.setAppOptOut(true);
+        }
+
+        TextView versionView = (TextView) findViewById(R.id.aboutVersion);
+        String version = "";
+        try {
+            version = " v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException ex) {
+            Logger.getLogger(AboutActivity.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            versionView.setText(getString(R.string.app_name) + version);
         }
 
         final SpannableString msg = new SpannableString(getString(R.string.aboutMessageAuthor));
