@@ -61,19 +61,4 @@ public class CollectionsData implements DataContainer {
     public boolean isSet() {
         return collections != null && !collections.isEmpty();
     }
-
-    public boolean needsUpdate(Context c) {
-        Date lastModified = Network.getLastModifiedDate(LocalConstants.CALENDAR_URL, c);
-        if (lastModified != null) {
-            long lastUpdated = c.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getLong(LocalConstants.CacheName.LAST_MOD_COL.toString(), 0);
-            if (lastUpdated < lastModified.getTime()) {
-                PreferenceManager.getDefaultSharedPreferences(c)
-                        .edit()
-                        .putLong(LocalConstants.CacheName.LAST_MOD_COL.toString(), lastModified.getTime())
-                        .commit();
-                return true;
-            }
-        }
-        return false;
-    }
 }
