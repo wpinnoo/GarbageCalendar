@@ -1,14 +1,14 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.view.MenuItem;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AboutActivity extends Activity {
+public class AboutActivity extends SherlockActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

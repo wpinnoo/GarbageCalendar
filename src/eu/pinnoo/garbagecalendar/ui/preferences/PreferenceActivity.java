@@ -1,12 +1,12 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.NavUtils;
-import android.view.MenuItem;
+import com.actionbarsherlock.app.*;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
@@ -18,7 +18,7 @@ import eu.pinnoo.garbagecalendar.data.UserData;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class PreferenceActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PreferenceActivity extends SherlockActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class PreferenceActivity extends Activity implements SharedPreferences.On
             googleAnalytics.setAppOptOut(true);
         }
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new Preferences()).commit();
     }
 

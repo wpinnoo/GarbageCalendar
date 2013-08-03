@@ -7,7 +7,6 @@ import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -16,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
@@ -32,7 +33,7 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressListActivity extends ListActivity {
+public class AddressListActivity extends SherlockListActivity {
 
     private EditText filterText;
     private List<Address> list;
