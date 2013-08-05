@@ -5,25 +5,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="2px">
-        
-        <eu.pinnoo.garbagecalendar.ui.preferences.AddressField android:id="@+android:id/search_box" 
-                  android:layout_width="fill_parent"
-                  android:layout_height="48dp"
-                  android:hint="@string/choseAddress"
-                  android:inputType="text"
-                  android:maxLines="1"
-                  android:imeOptions="actionDone"
-                  android:singleLine="true"
-                  android:layout_marginTop="5dp"
-                  android:layout_marginBottom="15dp"
-        />
-        
-    </FrameLayout>
-    
     <ListView android:id="@+id/android:list"
               android:layout_width="fill_parent"
               android:layout_height="0dip"
