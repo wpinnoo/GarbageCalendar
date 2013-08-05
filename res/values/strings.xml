@@ -56,4 +56,5 @@
     <string name="appsettings">App preferences</string>
     
     <string name="none">(None)</string>
+    <string name="address_search">Search</string>
 </resources>

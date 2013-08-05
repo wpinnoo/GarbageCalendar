@@ -56,4 +56,5 @@
     <string name="appsettings">App voorkeuren</string>
     
     <string name="none">(Geen)</string>
+    <string name="address_search">Zoek</string>
 </resources>
