@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AddressData;
@@ -56,6 +58,13 @@ public class CollectionListActivity extends AbstractSherlockActivity {
                 initializeCacheAndLoadData();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.col_list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void initializeCacheAndLoadData() {
