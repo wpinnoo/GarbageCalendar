@@ -2,6 +2,7 @@ package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -24,14 +26,31 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
     private List<Address> objects;
     private List<Address> original;
     private Context context;
-    private static final String SECTIONS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
-    public AddressAdapter(Context context, int textViewResourceId, List<Address> objects) {
-        super(context, textViewResourceId, objects);
+    private static final LinkedHashMap<Character, Integer> SECTION_MAP = new LinkedHashMap<Character, Integer>();
+
+    public AddressAdapter(Context context, int textViewResourceId, List<Address> initObjects) {
+        super(context, textViewResourceId, initObjects);
         this.context = context;
-        this.objects = objects;
         original = new ArrayList<Address>();
-        original.addAll(objects);
+        original.addAll(initObjects);
+
+        objects = new ArrayList<Address>();
+        int sectionPosition = 0;
+        int objectsIndex = 0;
+        char previousSection = '\n';
+        while (objectsIndex < initObjects.size()) {
+            Address a = initObjects.get(objectsIndex);
+            if (a.getStreetname().toUpperCase().charAt(0) != previousSection) {
+                previousSection = a.getStreetname().toUpperCase().charAt(0);
+                SECTION_MAP.put(previousSection, objectsIndex);
+            }
+            objects.add(a);
+            objectsIndex++;
+        }
+        Object[] lijst = SECTION_MAP.keySet().toArray();
+        for (int i = 0; i < lijst.length; i++) {
+            Log.d("eu.pinnoo.garbagecalendar.ui.preferences",((Character)lijst[i]).charValue() + ", " + SECTION_MAP.get((Character)lijst[i]) + "(" + objects.get(SECTION_MAP.get((Character)lijst[i])).getStreetname() + ")");
+        }
     }
 
     @Override
@@ -100,21 +119,24 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
         };
     }
 
+    @Override
     public Object[] getSections() {
-        return SECTIONS.split("");
+        return SECTION_MAP.keySet().toArray();
     }
 
+    @Override
     public int getPositionForSection(int section) {
-        for (int i = 0; i < getCount(); i++) {
-            String item = getItem(i).getStreetname().toUpperCase();
-            if (item.charAt(0) == SECTIONS.charAt(section)) {
+        return SECTION_MAP.get((Character) SECTION_MAP.keySet().toArray()[section]);
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        Character[] array = (Character[]) SECTION_MAP.keySet().toArray();
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].charValue() == getItem(position).getStreetname().toUpperCase().charAt(0)) {
                 return i;
             }
         }
         return 0;
-    }
-
-    public int getSectionForPosition(int position) {
-        return (int) (getItem(position).getStreetname().toUpperCase().charAt(0)) - 64;
     }
 }

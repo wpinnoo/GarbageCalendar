@@ -32,14 +32,14 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
 
     private List<Address> list;
     private AddressAdapter adapter;
-    private AddressListView lv;
+    private ListView lv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addresses);
         
-        lv = (AddressListView) getListView();
+        lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
                 submitAddress(i);

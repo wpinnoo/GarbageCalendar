@@ -10,15 +10,15 @@ import java.util.Comparator;
 public class AddressComparator implements Comparator<Address> {
 
     public int compare(Address lhs, Address rhs) {
-        int cmp = lhs.getStreetname().compareTo(rhs.getStreetname());
+        int cmp = lhs.getStreetname().toUpperCase().compareTo(rhs.getStreetname().toUpperCase());
         if (cmp != 0) {
             return cmp;
         }
-        cmp += lhs.getCity().compareTo(rhs.getCity());
+        cmp += lhs.getCity().toUpperCase().compareTo(rhs.getCity().toUpperCase());
         if (cmp != 0) {
             return cmp;
         }
-        cmp += lhs.getCode().compareTo(rhs.getCode());
+        cmp += lhs.getCode().toUpperCase().compareTo(rhs.getCode().toUpperCase());
         return cmp;
     }
 }

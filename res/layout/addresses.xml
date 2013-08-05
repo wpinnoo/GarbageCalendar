@@ -5,10 +5,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <eu.pinnoo.garbagecalendar.ui.preferences.AddressListView android:id="@+id/android:list"
+    <ListView android:id="@+id/android:list"
               android:layout_width="fill_parent"
               android:layout_height="0dip"
               android:layout_weight="1" 
+              android:fastScrollEnabled="true"
+              android:fastScrollAlwaysVisible="true"
     /> 
 
 </LinearLayout>
