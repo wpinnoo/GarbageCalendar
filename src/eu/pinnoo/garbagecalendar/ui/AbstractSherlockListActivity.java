@@ -3,9 +3,12 @@ package eu.pinnoo.garbagecalendar.ui;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
+import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 
 /**
@@ -13,8 +16,6 @@ import eu.pinnoo.garbagecalendar.data.LocalConstants;
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public abstract class AbstractSherlockListActivity extends SherlockListActivity {
-
-    protected static boolean SHOW_HOME_BUTTON = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,9 +26,7 @@ public abstract class AbstractSherlockListActivity extends SherlockListActivity 
             googleAnalytics.setAppOptOut(true);
         }
 
-        if (SHOW_HOME_BUTTON) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

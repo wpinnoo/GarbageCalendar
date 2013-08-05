@@ -17,10 +17,6 @@ import java.util.logging.Logger;
  */
 public class AboutActivity extends AbstractSherlockActivity {
 
-    static {
-        SHOW_HOME_BUTTON = true;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
