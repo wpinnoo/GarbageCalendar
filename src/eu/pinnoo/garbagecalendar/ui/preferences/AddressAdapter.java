@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
@@ -18,12 +19,13 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressAdapter extends ArrayAdapter<Address> {
+public class AddressAdapter extends ArrayAdapter<Address> implements SectionIndexer {
 
     private List<Address> objects;
     private List<Address> original;
     private Context context;
-
+    private static final String SECTIONS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
     public AddressAdapter(Context context, int textViewResourceId, List<Address> objects) {
         super(context, textViewResourceId, objects);
         this.context = context;
@@ -96,5 +98,23 @@ public class AddressAdapter extends ArrayAdapter<Address> {
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public Object[] getSections() {
+        return SECTIONS.split("");
+    }
+
+    public int getPositionForSection(int section) {
+        for (int i = 0; i < getCount(); i++) {
+            String item = getItem(i).getStreetname().toUpperCase();
+            if (item.charAt(0) == SECTIONS.charAt(section)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int getSectionForPosition(int position) {
+        return (int) (getItem(position).getStreetname().toUpperCase().charAt(0)) - 64;
     }
 }
