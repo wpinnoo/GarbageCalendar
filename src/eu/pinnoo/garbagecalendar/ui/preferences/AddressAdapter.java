@@ -26,7 +26,7 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
     private List<Address> objects;
     private List<Address> original;
     private Context context;
-    private static final LinkedHashMap<Character, Integer> SECTION_MAP = new LinkedHashMap<Character, Integer>();
+    private static final LinkedHashMap<String, Integer> SECTION_MAP = new LinkedHashMap<String, Integer>();
 
     public AddressAdapter(Context context, int textViewResourceId, List<Address> initObjects) {
         super(context, textViewResourceId, initObjects);
@@ -35,21 +35,16 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
         original.addAll(initObjects);
 
         objects = new ArrayList<Address>();
-        int sectionPosition = 0;
         int objectsIndex = 0;
-        char previousSection = '\n';
+        String previousSection = "";
         while (objectsIndex < initObjects.size()) {
             Address a = initObjects.get(objectsIndex);
-            if (a.getStreetname().toUpperCase().charAt(0) != previousSection) {
-                previousSection = a.getStreetname().toUpperCase().charAt(0);
+            if (!a.getStreetname().toUpperCase().substring(0, 2).equals(previousSection.toUpperCase())) {
+                previousSection = a.getStreetname().substring(0,2);
                 SECTION_MAP.put(previousSection, objectsIndex);
             }
             objects.add(a);
             objectsIndex++;
-        }
-        Object[] lijst = SECTION_MAP.keySet().toArray();
-        for (int i = 0; i < lijst.length; i++) {
-            Log.d("eu.pinnoo.garbagecalendar.ui.preferences",((Character)lijst[i]).charValue() + ", " + SECTION_MAP.get((Character)lijst[i]) + "(" + objects.get(SECTION_MAP.get((Character)lijst[i])).getStreetname() + ")");
         }
     }
 
@@ -126,14 +121,14 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
 
     @Override
     public int getPositionForSection(int section) {
-        return SECTION_MAP.get((Character) SECTION_MAP.keySet().toArray()[section]);
+        return SECTION_MAP.get((String) SECTION_MAP.keySet().toArray()[section]);
     }
 
     @Override
     public int getSectionForPosition(int position) {
-        Character[] array = (Character[]) SECTION_MAP.keySet().toArray();
+        String[] array = (String[]) SECTION_MAP.keySet().toArray();
         for (int i = 0; i < array.length; i++) {
-            if (array[i].charValue() == getItem(position).getStreetname().toUpperCase().charAt(0)) {
+            if (array[i].toUpperCase().equals(getItem(position).getStreetname().toUpperCase().substring(0,2))) {
                 return i;
             }
         }
