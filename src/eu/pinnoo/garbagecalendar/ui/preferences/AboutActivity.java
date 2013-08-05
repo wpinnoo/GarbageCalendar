@@ -2,17 +2,12 @@ package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.ui.AbstractSherlockActivity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,17 +15,12 @@ import java.util.logging.Logger;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AboutActivity extends SherlockActivity {
+public class AboutActivity extends AbstractSherlockActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
-
-        if (LocalConstants.DEBUG) {
-            GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
-            googleAnalytics.setAppOptOut(true);
-        }
 
         TextView versionView = (TextView) findViewById(R.id.aboutVersion);
         String version = "";
@@ -47,30 +37,5 @@ public class AboutActivity extends SherlockActivity {
         TextView v = (TextView) findViewById(R.id.aboutTextAuthor);
         v.setMovementMethod(LinkMovementMethod.getInstance());
         v.setText(msg);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance().activityStop(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 }

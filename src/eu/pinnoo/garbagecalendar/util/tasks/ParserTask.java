@@ -31,14 +31,16 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     @Override
     protected Integer[] doInBackground(Parser... params) {
         Integer[] results = new Integer[params.length];
-        for (int i=0; i < params.length; i++){
-             results[i] = params[i].loadData(context);
-             publishProgress((int) ((i / (float) params.length) * 100));
-             if(isCancelled()) break;
+        for (int i = 0; i < params.length; i++) {
+            results[i] = params[i].loadData(context);
+            publishProgress((int) ((i / (float) params.length) * 100));
+            if (isCancelled()) {
+                break;
+            }
         }
         return results;
     }
-    
+
     @Override
     protected void onPostExecute(Integer[] result) {
         dialog.dismiss();

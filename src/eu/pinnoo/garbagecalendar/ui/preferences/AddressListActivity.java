@@ -1,9 +1,7 @@
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -15,16 +13,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
+import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +28,7 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressListActivity extends SherlockListActivity {
+public class AddressListActivity extends AbstractSherlockListActivity {
 
     private EditText filterText;
     private List<Address> list;
@@ -43,13 +38,6 @@ public class AddressListActivity extends SherlockListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addresses);
-
-        if (LocalConstants.DEBUG) {
-            GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
-            googleAnalytics.setAppOptOut(true);
-        }
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         final TextWatcher filterTextWatcher = new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -102,17 +90,6 @@ public class AddressListActivity extends SherlockListActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (UserData.getInstance().isSet()) {
@@ -122,18 +99,6 @@ public class AddressListActivity extends SherlockListActivity {
                     .commit();
         }
         fillList();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance().activityStop(this);
     }
 
     public void fillList() {

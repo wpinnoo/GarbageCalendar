@@ -11,12 +11,7 @@ import android.view.LayoutInflater;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.GoogleAnalytics;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.Collection;
@@ -40,7 +35,7 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionListActivity extends SherlockActivity {
+public class CollectionListActivity extends AbstractSherlockActivity {
 
     private boolean loading = false;
 
@@ -51,11 +46,6 @@ public class CollectionListActivity extends SherlockActivity {
 
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
-
-        if (LocalConstants.DEBUG) {
-            GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(getApplicationContext());
-            googleAnalytics.setAppOptOut(true);
-        }
     }
 
     @Override
@@ -184,18 +174,6 @@ public class CollectionListActivity extends SherlockActivity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance().activityStop(this);
-    }
-
     private void createGUI() {
         TableLayout table = (TableLayout) findViewById(R.id.main_table);
         table.removeViews(0, table.getChildCount());
@@ -296,13 +274,6 @@ public class CollectionListActivity extends SherlockActivity {
         labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
 
         tl.addView(tr);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
     }
 
     @Override

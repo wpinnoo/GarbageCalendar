@@ -1,12 +1,7 @@
 package eu.pinnoo.garbagecalendar.data;
 
-import android.app.Activity;
-import android.content.Context;
-import android.preference.PreferenceManager;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
-import eu.pinnoo.garbagecalendar.util.Network;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

@@ -16,8 +16,8 @@ public class CollectionCache extends Cache<Collection> {
     private CollectionCache(File dir) {
         super(dir);
     }
-    
-    public static void initialize(Context context){
+
+    public static void initialize(Context context) {
         if (instance == null) {
             File dir = new File(context.getCacheDir(), LocalConstants.CacheName.COLLECTIONS_DATA.toString());
             instance = new CollectionCache(dir);

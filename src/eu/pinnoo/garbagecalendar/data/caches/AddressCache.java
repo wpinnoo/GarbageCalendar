@@ -9,22 +9,22 @@ import java.io.File;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressCache extends Cache<Address>{
-    
+public class AddressCache extends Cache<Address> {
+
     private static AddressCache instance;
-    
-    private AddressCache(File dir){
+
+    private AddressCache(File dir) {
         super(dir);
     }
-    
-    public static void initialize(Context context){
+
+    public static void initialize(Context context) {
         if (instance == null) {
             File dir = new File(context.getCacheDir(), LocalConstants.CacheName.ADDRESS_DATA.toString());
             instance = new AddressCache(dir);
         }
     }
-    
-    public static AddressCache getInstance(){
+
+    public static AddressCache getInstance() {
         return instance;
     }
 }

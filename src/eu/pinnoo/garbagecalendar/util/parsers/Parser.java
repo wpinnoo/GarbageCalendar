@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public abstract class Parser {
 
     public static final int NO_INTERNET_CONNECTION = 1;
-    
+
     protected abstract String getURL();
 
     protected abstract String getJSONArrayName();

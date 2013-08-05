@@ -62,3 +62,4 @@ ant.properties
 *database.properties*
 /nbandroid/
 
+/libs/actionbarsherlock/nbandroid/
