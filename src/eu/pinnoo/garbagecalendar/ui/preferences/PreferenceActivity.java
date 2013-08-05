@@ -13,6 +13,10 @@ import eu.pinnoo.garbagecalendar.ui.AbstractSherlockPreferenceActivity;
  */
 public class PreferenceActivity extends AbstractSherlockPreferenceActivity {
 
+    static {
+        SHOW_HOME_BUTTON = true;
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
