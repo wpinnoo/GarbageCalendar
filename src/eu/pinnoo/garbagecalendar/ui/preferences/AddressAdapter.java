@@ -2,7 +2,6 @@ package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,28 +22,23 @@ import java.util.List;
  */
 public class AddressAdapter extends ArrayAdapter<Address> implements SectionIndexer {
 
-    private List<Address> objects;
-    private List<Address> original;
     private Context context;
+    private List<Address> originalValues = new ArrayList<Address>();
     private static final LinkedHashMap<String, Integer> SECTION_MAP = new LinkedHashMap<String, Integer>();
 
     public AddressAdapter(Context context, int textViewResourceId, List<Address> initObjects) {
         super(context, textViewResourceId, initObjects);
         this.context = context;
-        original = new ArrayList<Address>();
-        original.addAll(initObjects);
 
-        objects = new ArrayList<Address>();
-        int objectsIndex = 0;
+        originalValues.addAll(initObjects);
+        int objectsIndex = -1;
         String previousSection = "";
-        while (objectsIndex < initObjects.size()) {
+        while (++objectsIndex < initObjects.size()) {
             Address a = initObjects.get(objectsIndex);
             if (!a.getStreetname().toUpperCase().substring(0, 2).equals(previousSection.toUpperCase())) {
-                previousSection = a.getStreetname().substring(0,2);
+                previousSection = a.getStreetname().substring(0, 2);
                 SECTION_MAP.put(previousSection, objectsIndex);
             }
-            objects.add(a);
-            objectsIndex++;
         }
     }
 
@@ -58,17 +52,21 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
         v.setBackgroundColor(position % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : Color.WHITE);
         TextView addressText = (TextView) v.findViewById(R.id.toptext);
         try {
-            addressText.setText(objects.get(position).getStreetname() + ", " + objects.get(position).getCity());
+            addressText.setText(getItem(position).getStreetname() + ", " + getItem(position).getCity());
         } catch (NullPointerException e) {
             addressText.setText(context.getString(R.string.none));
+        } catch (IndexOutOfBoundsException e) {
+            addressText.setText("");
         }
 
 
         TextView nrText = (TextView) v.findViewById(R.id.nrtext);
         try {
-            nrText.setText(objects.get(position).getFormattedNr(context));
+            nrText.setText(getItem(position).getFormattedNr(context));
         } catch (NullPointerException e) {
             nrText.setText(context.getString(R.string.none));
+        } catch (IndexOutOfBoundsException e) {
+            nrText.setText("");
         }
 
         return v;
@@ -82,12 +80,12 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
                 FilterResults results = new FilterResults();
 
                 if (charSequence == null || charSequence.length() == 0) {
-                    results.values = original;
-                    results.count = original.size();
+                    results.values = originalValues;
+                    results.count = originalValues.size();
                 } else {
                     ArrayList<Address> filtered = new ArrayList<Address>();
                     ArrayList<Address> filteredLowPriority = new ArrayList<Address>();
-                    for (Address item : original) {
+                    for (Address item : originalValues) {
                         int match = item.matches(charSequence.toString());
                         if (match == Address.FULL_MATCH) {
                             filtered.add(item);
@@ -106,29 +104,30 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                objects.clear();
-                objects.addAll((ArrayList<Address>) filterResults.values);
-
-                notifyDataSetChanged();
+                clear();
+                addAll((ArrayList<Address>) filterResults.values);
             }
         };
     }
 
     @Override
     public Object[] getSections() {
-        return SECTION_MAP.keySet().toArray();
+        return getCount() == originalValues.size() ? SECTION_MAP.keySet().toArray() : new Object[0];
     }
 
     @Override
     public int getPositionForSection(int section) {
-        return SECTION_MAP.get((String) SECTION_MAP.keySet().toArray()[section]);
+        return getCount() == originalValues.size() ? SECTION_MAP.get((String) SECTION_MAP.keySet().toArray()[section]) : 0;
     }
 
     @Override
     public int getSectionForPosition(int position) {
+        if (getCount() != originalValues.size()) {
+            return 0;
+        }
         String[] array = (String[]) SECTION_MAP.keySet().toArray();
         for (int i = 0; i < array.length; i++) {
-            if (array[i].toUpperCase().equals(getItem(position).getStreetname().toUpperCase().substring(0,2))) {
+            if (array[i].toUpperCase().equals(getItem(position).getStreetname().toUpperCase().substring(0, 2))) {
                 return i;
             }
         }
