@@ -32,19 +32,7 @@ public class TableRowListener implements OnClickListener {
         textview.setText(formatter.format(col.getDate()) + ":");
 
         TextView typesview = (TextView) customView.findViewById(R.id.rowDialogTypes);
-        Type[] types = col.getTypes();
-        String text = "";
-        for (int i = 0; i < types.length; i++) {
-            text += types[i].longStrValue(v.getContext());
-            if (i < types.length - 2) {
-                text += ", ";
-            }
-            if (i == types.length - 2) {
-                text += ", " + v.getContext().getString(R.string.and) + " ";
-            }
-        }
-        text += ".";
-        typesview.setText(text);
+        typesview.setText(col.getTypesToString(v.getContext()));
 
         AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
         b.setView(customView);

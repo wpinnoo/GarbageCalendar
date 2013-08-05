@@ -1,5 +1,7 @@
 package eu.pinnoo.garbagecalendar.data;
 
+import android.content.Context;
+import eu.pinnoo.garbagecalendar.R;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -41,6 +43,21 @@ public class Collection implements Serializable {
 
     public Type[] getTypes() {
         return types;
+    }
+
+    public String getTypesToString(Context c) {
+        String text = "";
+        for (int i = 0; i < types.length; i++) {
+            text += types[i].shortStrValue(c);
+            if (i < types.length - 2) {
+                text += ", ";
+            }
+            if (i == types.length - 2) {
+                text += ", " + c.getString(R.string.and) + " ";
+            }
+        }
+        text += ".";
+        return text;
     }
 
     public void addTypes(Type[] toAdd) {

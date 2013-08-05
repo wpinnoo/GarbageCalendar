@@ -24,7 +24,7 @@ public class LocalConstants {
 
     public enum DateFormatType {
 
-        MAIN_TABLE, WEEKDAY, SHORT_WEEKDAY, FULL
+        MAIN_TABLE, WEEKDAY, SHORT_WEEKDAY, WIDGET, FULL
     }
 
     public enum CacheName {
@@ -55,6 +55,8 @@ public class LocalConstants {
                 return new SimpleDateFormat("EEEE", c.getResources().getConfiguration().locale);
             case SHORT_WEEKDAY:
                 return new SimpleDateFormat("EEE", c.getResources().getConfiguration().locale);
+            case WIDGET:
+                return new SimpleDateFormat("EEE, d MMM.", c.getResources().getConfiguration().locale);
             case FULL:
                 return new SimpleDateFormat("EEEE d MMMM", c.getResources().getConfiguration().locale);
         }
