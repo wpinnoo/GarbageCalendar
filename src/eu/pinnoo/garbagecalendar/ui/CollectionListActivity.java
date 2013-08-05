@@ -46,7 +46,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        
+
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
     }
@@ -55,9 +55,11 @@ public class CollectionListActivity extends AbstractSherlockActivity {
     public void onResume() {
         super.onResume();
         if (!loading) {
-            if (getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)) {
+            if (getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
+                    || !CollectionsData.getInstance().isSet()) {
                 initializeCacheAndLoadData();
             }
+            createGUI();
         }
     }
 

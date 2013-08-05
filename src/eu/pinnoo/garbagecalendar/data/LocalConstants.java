@@ -17,6 +17,7 @@ public class LocalConstants {
     public static final String GOOGLE_MAPS_API = "http://maps.googleapis.com/maps/api/geocode/json";
     public static final String DEFAULT_SECTOR = "-00";
     public static final String NOTIF_INTENT_COL = "collection";
+    public static final String LOG = "eu.pinnoo.garbagecalendar";
     public static final int COLOR_TABLE_EVEN_ROW = Color.rgb(240, 240, 240);
     public static final int COLOR_TABLE_ODD_ROW = Color.rgb(219, 219, 219);
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
