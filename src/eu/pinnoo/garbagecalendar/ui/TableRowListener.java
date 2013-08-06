@@ -28,7 +28,7 @@ public class TableRowListener implements OnClickListener {
         View customView = li.inflate(R.layout.row_dialog, null);
 
         TextView textview = (TextView) customView.findViewById(R.id.rowDialogDate);
-        SimpleDateFormat formatter = LocalConstants.getDateFormatter(LocalConstants.DateFormatType.FULL, v.getContext());
+        SimpleDateFormat formatter = LocalConstants.DateFormatType.FULL.getDateFormatter(v.getContext());
         textview.setText(formatter.format(col.getDate()) + ":");
 
         TextView typesview = (TextView) customView.findViewById(R.id.rowDialogTypes);

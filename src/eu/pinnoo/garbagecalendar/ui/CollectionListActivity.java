@@ -211,31 +211,31 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
 
         if (daysBetween < 1) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+            return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.today)
                     + ")";
         } else if (daysBetween == 1) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+            return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.tomorrow)
                     + ")";
         } else if (daysBetween < 6) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+            return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.thisweek)
                     + " "
-                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
+                    + LocalConstants.DateFormatType.WEEKDAY.getDateFormatter(this).format(date)
                     + ")";
         } else if (daysBetween < 13) {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date)
+            return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.nextweek)
                     + " "
-                    + LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WEEKDAY, this).format(date)
+                    + LocalConstants.DateFormatType.WEEKDAY.getDateFormatter(this).format(date)
                     + ")";
         } else {
-            return LocalConstants.getDateFormatter(LocalConstants.DateFormatType.MAIN_TABLE, this).format(date);
+            return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date);
         }
     }
 

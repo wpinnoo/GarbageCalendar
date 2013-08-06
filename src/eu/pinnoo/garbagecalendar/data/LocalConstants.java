@@ -24,7 +24,16 @@ public class LocalConstants {
 
     public enum DateFormatType {
 
-        MAIN_TABLE, WEEKDAY, SHORT_WEEKDAY, FULL
+        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM");
+        
+        private String dateFormat;
+        private DateFormatType(String dateFormat){
+            this.dateFormat = dateFormat;
+        }
+        
+        public SimpleDateFormat getDateFormatter(Context c){
+            return new SimpleDateFormat(dateFormat, c.getResources().getConfiguration().locale);
+        }
     }
 
     public enum CacheName {
@@ -45,19 +54,5 @@ public class LocalConstants {
         public String toString() {
             return s;
         }
-    }
-
-    public static SimpleDateFormat getDateFormatter(DateFormatType type, Context c) {
-        switch (type) {
-            case MAIN_TABLE:
-                return new SimpleDateFormat("EEE, d MMMM", c.getResources().getConfiguration().locale);
-            case WEEKDAY:
-                return new SimpleDateFormat("EEEE", c.getResources().getConfiguration().locale);
-            case SHORT_WEEKDAY:
-                return new SimpleDateFormat("EEE", c.getResources().getConfiguration().locale);
-            case FULL:
-                return new SimpleDateFormat("EEEE d MMMM", c.getResources().getConfiguration().locale);
-        }
-        return null;
     }
 }
