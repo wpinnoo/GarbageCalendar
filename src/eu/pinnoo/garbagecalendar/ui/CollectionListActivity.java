@@ -46,6 +46,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
