@@ -2,7 +2,6 @@ package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import java.io.Serializable;
 
 /**
@@ -11,18 +10,16 @@ import java.io.Serializable;
  */
 public enum Type implements Serializable {
 
-    REST("rest", Color.TRANSPARENT),
-    GFT("gft", Color.rgb(12, 107, 53)),
-    PMD("pmd", Color.BLUE),
-    PK("pk", Color.GRAY),
-    GLAS("glas", Color.rgb(51, 83, 153)),
-    NONE("-", Color.TRANSPARENT);
+    REST("rest"),
+    GFT("gft"),
+    PMD("pmd"),
+    PK("pk"),
+    GLAS("glas"),
+    NONE("none");
     private String strValue;
-    private int color;
 
-    private Type(String strValue, int color) {
+    private Type(String strValue) {
         this.strValue = strValue;
-        this.color = color;
     }
 
     public final String shortStrValue(Context c) {
@@ -35,11 +32,16 @@ public enum Type implements Serializable {
         return res.getString(res.getIdentifier(strValue + "_long", "string", c.getPackageName()));
     }
 
-    public int getColor(AreaType type) {
+    public final String getStrValue() {
+        return strValue;
+    }
+
+    public int getColor(Context c, AreaType type) {
         if (this == REST) {
-            return type.getColor();
+            return type.getColor(c);
         } else {
-            return color;
+            Resources res = c.getResources();
+            return res.getColor(res.getIdentifier(strValue, "color", c.getPackageName()));
         }
     }
 }

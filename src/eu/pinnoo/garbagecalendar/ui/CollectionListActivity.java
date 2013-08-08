@@ -16,6 +16,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AddressData;
+import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
@@ -255,35 +256,37 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         tr.setBackgroundColor(backgroundColor);
         tr.setOnClickListener(new TableRowListener(col));
 
+        AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
+
         boolean hasType = col.hasType(Type.REST);
         TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
         labelRest.setText(hasType ? Type.REST.shortStrValue(this) : "");
         labelRest.setPadding(1, 5, 5, 5);
-        labelRest.setBackgroundColor(hasType ? Type.REST.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        labelRest.setBackgroundColor(hasType ? Type.REST.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.GFT);
         TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
         labelGFT.setText(hasType ? Type.GFT.shortStrValue(this) : "");
         labelGFT.setPadding(1, 5, 5, 5);
-        labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.PMD);
         TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
         labelPMD.setText(hasType ? Type.PMD.shortStrValue(this) : "");
         labelPMD.setPadding(1, 5, 5, 5);
-        labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.PK);
         TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
         labelPK.setText(hasType ? Type.PK.shortStrValue(this) : "");
         labelPK.setPadding(1, 5, 5, 5);
-        labelPK.setBackgroundColor(hasType ? Type.PK.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        labelPK.setBackgroundColor(hasType ? Type.PK.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.GLAS);
         TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
         labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
         labelGlas.setPadding(1, 5, 5, 5);
-        labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(UserData.getInstance().getAddress().getSector().getType()) : backgroundColor);
+        labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(this, currentAreaType) : backgroundColor);
 
         tl.addView(tr);
     }

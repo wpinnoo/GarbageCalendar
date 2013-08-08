@@ -56,7 +56,7 @@ public class LocalConstants {
             case SHORT_WEEKDAY:
                 return new SimpleDateFormat("EEE", c.getResources().getConfiguration().locale);
             case WIDGET:
-                return new SimpleDateFormat("EEE, d MMM.", c.getResources().getConfiguration().locale);
+                return new SimpleDateFormat("EEE,\nd MMM.", c.getResources().getConfiguration().locale);
             case FULL:
                 return new SimpleDateFormat("EEEE d MMMM", c.getResources().getConfiguration().locale);
         }
