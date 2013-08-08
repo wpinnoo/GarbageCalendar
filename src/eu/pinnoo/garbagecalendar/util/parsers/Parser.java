@@ -1,26 +1,28 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
 import android.content.Context;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Network;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public abstract class Parser {
+public abstract class Parser<T> {
 
     public static final int NO_INTERNET_CONNECTION = 1;
 
@@ -28,7 +30,7 @@ public abstract class Parser {
 
     protected abstract String getJSONArrayName();
 
-    protected abstract int fetchData(JSONArray data);
+    protected abstract int fetchData(List<T> data);
 
     /**
      *
@@ -39,60 +41,30 @@ public abstract class Parser {
         if (!Network.networkAvailable(c)) {
             return NO_INTERNET_CONNECTION;
         }
-        JSONArray arr = downloadData();
+        List<T> arr = downloadData();
         return fetchData(arr);
     }
 
-    private JSONArray downloadData() {
-        String result;
+    private List<T> downloadData() {
+        List<T> list = new ArrayList<T>();
         try {
             InputStream inp = Network.getStream(getURL());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inp, LocalConstants.ENCODING), 8);
-            StringBuilder builder = new StringBuilder();
-            builder.append(reader.readLine()).append("\n");
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line).append("\n");
+            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+            reader.beginArray();
+            while(reader.hasNext()){
+                T element = new Gson().fromJson(reader, new TypeToken<T>(){}.getType());
+                list.add(element);
             }
-            inp.close();
-            result = builder.toString();
+            reader.endArray();
+            reader.close();
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } catch (IOException e) {
             Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, e);
             return null;
-        }
-
-        JSONArray arr = null;
-        try {
-            if (!result.isEmpty() && !result.equals("null\n")) {
-                JSONObject obj = new JSONObject(result);
-                arr = obj.getJSONArray(getJSONArrayName());
-            }
-        } catch (JSONException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            return arr;
+            return list;
         }
-    }
-
-    protected Type[] parseGarbageType(String str) {
-        HashMap<String, Type> map = new HashMap<String, Type>();
-        map.put("Rest", Type.REST);
-        map.put("GFT", Type.GFT);
-        map.put("PMD", Type.PMD);
-        map.put("Papier & karton", Type.PK);
-        map.put("Glas", Type.GLAS);
-
-        String[] types = str.split("/");
-        Type[] results = new Type[types.length];
-        for (int i = 0; i < types.length; i++) {
-            if (map.containsKey(types[i].trim())) {
-                results[i] = map.get(types[i].trim());
-            }
-        }
-        return results;
     }
 }
