@@ -20,19 +20,22 @@ public class LocalConstants {
     public static final String LOG = "eu.pinnoo.garbagecalendar";
     public static final int COLOR_TABLE_EVEN_ROW = Color.rgb(240, 240, 240);
     public static final int COLOR_TABLE_ODD_ROW = Color.rgb(219, 219, 219);
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 
     public enum DateFormatType {
 
-        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM");
-        
+        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy");
         private String dateFormat;
-        private DateFormatType(String dateFormat){
+
+        private DateFormatType(String dateFormat) {
             this.dateFormat = dateFormat;
         }
-        
-        public SimpleDateFormat getDateFormatter(Context c){
-            return new SimpleDateFormat(dateFormat, c.getResources().getConfiguration().locale);
+
+        public SimpleDateFormat getDateFormatter(Context c) {
+            if (c == null) {
+                return new SimpleDateFormat(dateFormat);
+            } else {
+                return new SimpleDateFormat(dateFormat, c.getResources().getConfiguration().locale);
+            }
         }
     }
 

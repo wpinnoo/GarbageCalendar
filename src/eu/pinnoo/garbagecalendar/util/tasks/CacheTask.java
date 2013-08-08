@@ -3,7 +3,10 @@ package eu.pinnoo.garbagecalendar.util.tasks;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import eu.pinnoo.garbagecalendar.data.DataContainer;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import java.util.Calendar;
 
 /**
  *
@@ -30,8 +33,12 @@ public class CacheTask extends AsyncTask<DataContainer, Integer, Integer[]> {
     protected Integer[] doInBackground(DataContainer... params) {
         Integer[] results = new Integer[params.length];
         for (int i = 0; i < params.length; i++) {
+            Log.d(LocalConstants.LOG, "Starting with " + params[i].getClass().getName() + "...");
+            long start = System.currentTimeMillis();
             results[i] = params[i].initialize();
+            long end = System.currentTimeMillis();
             publishProgress((int) ((i / (float) params.length) * 100));
+            Log.d(LocalConstants.LOG, "... done with " + params[i].getClass().getName() + ", took " + (end-start) + "ms.");
             if (isCancelled()) {
                 break;
             }

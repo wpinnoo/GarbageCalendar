@@ -48,7 +48,7 @@ public class CalendarParser extends Parser {
                     if (obj.getString("datum").equals(previousDate)) {
                         CollectionsData.getInstance().addToLastCollection(parseGarbageType(obj.getString("fractie")));
                     } else {
-                        Collection col = new Collection(obj.getString("week"), obj.getString("dag"), LocalConstants.DATE_FORMATTER.parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
+                        Collection col = new Collection(obj.getString("week"), obj.getString("dag"), LocalConstants.DateFormatType.NORMAL.getDateFormatter(null).parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
                         CollectionsData.getInstance().addCollection(col);
                     }
                     previousDate = obj.getString("datum");

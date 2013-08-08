@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -188,6 +189,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
     }
 
     private void createGUI() {
+        Log.d(LocalConstants.LOG, "Everything done, creating GUI!");
         TableLayout table = (TableLayout) findViewById(R.id.main_table);
         table.removeViews(0, table.getChildCount());
 
