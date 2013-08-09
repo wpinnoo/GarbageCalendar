@@ -7,18 +7,18 @@ import com.google.gson.stream.JsonReader;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.data.PrimitiveCollection;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.util.Network;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CalendarParser<PrimitiveCollection> extends Parser<PrimitiveCollection> {
+public class CalendarParser extends Parser {
 
     @Override
     protected String getURL() {
@@ -31,30 +31,31 @@ public class CalendarParser<PrimitiveCollection> extends Parser<PrimitiveCollect
      * @return 0 when fetching was successful, otherwise 1
      */
     @Override
-    protected int fetchData(List<PrimitiveCollection> data) {
+    protected int fetchData(ArrayList data) {
         if (data == null) {
             return 1;
         }
-        CollectionsData.getInstance().resetCollections();
+        ArrayList<Collection> list = new ArrayList<Collection>();
         String previousDate = "";
         for (int i = 0; i < data.size(); i++) {
-            eu.pinnoo.garbagecalendar.data.PrimitiveCollection prCol = (eu.pinnoo.garbagecalendar.data.PrimitiveCollection) data.get(i);
+            PrimitiveCollection prCol = (PrimitiveCollection) data.get(i);
             Collection col = new Collection(prCol);
             if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
                 if (prCol.datum.equals(previousDate)) {
-                    CollectionsData.getInstance().addToLastCollection(Collection.parseGarbageType(prCol.fractie));
+                    list.get(list.size() - 1).addTypes(Collection.parseGarbageType(prCol.fractie));
                 } else {
-                    CollectionsData.getInstance().addCollection(col);
+                    list.add(col);
                 }
                 previousDate = prCol.datum;
             }
         }
+        CollectionsData.getInstance().setCollections(list);
         return 0;
     }
 
     @Override
-    protected List<PrimitiveCollection> downloadData() {
-        List<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
+    protected ArrayList downloadData() {
+        ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
         try {
             InputStream inp = Network.getStream(getURL());
             JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
@@ -71,6 +72,6 @@ public class CalendarParser<PrimitiveCollection> extends Parser<PrimitiveCollect
     public class PrimitiveCollectionList {
 
         @SerializedName("IVAGO-Inzamelkalender")
-        public List<PrimitiveCollection> list;
+        public ArrayList<PrimitiveCollection> list;
     }
 }

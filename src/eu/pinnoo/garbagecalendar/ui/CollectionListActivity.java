@@ -24,6 +24,7 @@ import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
@@ -51,6 +52,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
 
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
+        UserAddressCache.initialize(this);
     }
 
     @Override
@@ -60,8 +62,9 @@ public class CollectionListActivity extends AbstractSherlockActivity {
             if (getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
                     || !CollectionsData.getInstance().isSet()) {
                 initializeCacheAndLoadData();
+            } else {
+                createGUI();
             }
-            createGUI();
         }
     }
 

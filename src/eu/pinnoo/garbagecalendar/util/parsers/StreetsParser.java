@@ -8,17 +8,17 @@ import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Network;
+import eu.pinnoo.garbagecalendar.data.PrimitiveAddress;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class StreetsParser<PrimitiveAddress> extends Parser<PrimitiveAddress> {
+public class StreetsParser extends Parser {
 
     @Override
     protected String getURL() {
@@ -31,22 +31,23 @@ public class StreetsParser<PrimitiveAddress> extends Parser<PrimitiveAddress> {
      * @return 0 when fetching was successful, otherwise 1
      */
     @Override
-    protected int fetchData(List<PrimitiveAddress> data) {
+    protected int fetchData(ArrayList data) {
         if (data == null) {
             return 1;
         }
 
+        ArrayList<Address> list = new ArrayList<Address>();
         for (int i = 0; i < data.size(); i++) {
-            eu.pinnoo.garbagecalendar.data.PrimitiveAddress prAddr = (eu.pinnoo.garbagecalendar.data.PrimitiveAddress) data.get(i);
-            Address address = new Address(prAddr);
-            AddressData.getInstance().addAddress(address);
+            PrimitiveAddress prAddr = (PrimitiveAddress) data.get(i);
+            list.add(new Address(prAddr));
         }
+        AddressData.getInstance().setAddresses(list);
         return 0;
     }
 
     @Override
-    protected List<PrimitiveAddress> downloadData() {
-        List<PrimitiveAddress> list = new ArrayList<PrimitiveAddress>();
+    protected ArrayList downloadData() {
+        ArrayList<PrimitiveAddress> list = new ArrayList<PrimitiveAddress>();
         try {
             InputStream inp = Network.getStream(getURL());
             JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
@@ -63,6 +64,6 @@ public class StreetsParser<PrimitiveAddress> extends Parser<PrimitiveAddress> {
     public class PrimitiveAddressList {
 
         @SerializedName("IVAGO-Stratenlijst")
-        public List<PrimitiveAddress> list;
+        public ArrayList<PrimitiveAddress> list;
     }
 }
