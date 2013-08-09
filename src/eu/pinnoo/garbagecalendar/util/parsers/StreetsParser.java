@@ -1,30 +1,28 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
+import android.util.Log;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
-import eu.pinnoo.garbagecalendar.data.Sector;
+import eu.pinnoo.garbagecalendar.util.Network;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class StreetsParser<PrimitiveAddress> extends Parser {
+public class StreetsParser<PrimitiveAddress> extends Parser<PrimitiveAddress> {
 
     @Override
     protected String getURL() {
         return LocalConstants.STREETS_URL;
-    }
-
-    @Override
-    protected String getJSONArrayName() {
-        return "IVAGO-Stratenlijst";
     }
 
     /**
@@ -33,7 +31,7 @@ public class StreetsParser<PrimitiveAddress> extends Parser {
      * @return 0 when fetching was successful, otherwise 1
      */
     @Override
-    protected int fetchData(List data) {
+    protected int fetchData(List<PrimitiveAddress> data) {
         if (data == null) {
             return 1;
         }
@@ -44,5 +42,27 @@ public class StreetsParser<PrimitiveAddress> extends Parser {
             AddressData.getInstance().addAddress(address);
         }
         return 0;
+    }
+
+    @Override
+    protected List<PrimitiveAddress> downloadData() {
+        List<PrimitiveAddress> list = new ArrayList<PrimitiveAddress>();
+        try {
+            InputStream inp = Network.getStream(getURL());
+            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+            PrimitiveAddressList results = new GsonBuilder().create().fromJson(reader, PrimitiveAddressList.class);
+            list.addAll((Collection<PrimitiveAddress>) results.list);
+            reader.close();
+        } catch (Exception e) {
+            Log.d(LocalConstants.LOG, e.toString());
+        } finally {
+            return list;
+        }
+    }
+
+    public class PrimitiveAddressList {
+
+        @SerializedName("IVAGO-Stratenlijst")
+        public List<PrimitiveAddress> list;
     }
 }
