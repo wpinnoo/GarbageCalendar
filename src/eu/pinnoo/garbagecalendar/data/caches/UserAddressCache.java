@@ -19,7 +19,7 @@ public class UserAddressCache extends Cache<Address> {
 
     public static void initialize(Context context) {
         if (instance == null) {
-            File dir = new File(context.getCacheDir(), LocalConstants.CacheName.USER_ADDRESS_DATA.toString());
+            File dir = new File(context.getCacheDir(), LocalConstants.CacheName.ADDRESS_DATA.toString());
             instance = new UserAddressCache(dir);
         }
     }

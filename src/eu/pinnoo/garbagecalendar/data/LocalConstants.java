@@ -43,7 +43,6 @@ public class LocalConstants {
 
         COLLECTIONS_DATA("collectionsdata"),
         USER_DATA("userdata"),
-        USER_ADDRESS_DATA("addressdata"),
         ADDRESS_DATA("addressdata"),
         LAST_MOD_COL("lastmodcol"),
         LAST_MOD_ADDRESSES("lastmodaddresses"),
