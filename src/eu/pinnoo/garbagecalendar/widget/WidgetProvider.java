@@ -36,6 +36,11 @@ public class WidgetProvider extends AppWidgetProvider {
         ComponentName thisWidget = new ComponentName(context, WidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
+            if (!CollectionsData.getInstance().isSet()
+                    || !UserData.getInstance().isSet()) {
+                return;
+            }
+
             List<Collection> cols = CollectionsData.getInstance().getCollections();
             Iterator<Collection> it = cols.iterator();
             Calendar dayToBeShown = Calendar.getInstance();
