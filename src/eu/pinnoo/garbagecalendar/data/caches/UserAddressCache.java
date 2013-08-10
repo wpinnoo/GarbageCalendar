@@ -4,28 +4,27 @@ import android.content.Context;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Address;
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressCache extends Cache<ArrayList<Address>> {
+public class UserAddressCache extends Cache<Address> {
 
-    private static AddressCache instance;
+    private static UserAddressCache instance;
 
-    private AddressCache(File dir) {
+    private UserAddressCache(File dir) {
         super(dir);
     }
 
     public static void initialize(Context context) {
         if (instance == null) {
             File dir = new File(context.getCacheDir(), LocalConstants.CacheName.ADDRESS_DATA.toString());
-            instance = new AddressCache(dir);
+            instance = new UserAddressCache(dir);
         }
     }
 
-    public static AddressCache getInstance() {
+    public static UserAddressCache getInstance() {
         return instance;
     }
 }
