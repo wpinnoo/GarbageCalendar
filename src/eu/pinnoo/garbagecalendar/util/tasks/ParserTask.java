@@ -39,7 +39,7 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
             results[i] = params[i].loadData(context);
             long end = System.currentTimeMillis();
             publishProgress((int) ((i / (float) params.length) * 100));
-            Log.d(LocalConstants.LOG, "... done with " + params[i].getClass().getName() + ", took " + (end-start) + "ms.");
+            Log.d(LocalConstants.LOG, "... done with " + params[i].getClass().getName() + ", took " + (end - start) + "ms.");
             if (isCancelled()) {
                 break;
             }

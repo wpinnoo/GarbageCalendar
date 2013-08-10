@@ -1,6 +1,7 @@
 package eu.pinnoo.garbagecalendar.data;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.content.res.Resources;
 import java.io.Serializable;
 
 /**
@@ -9,13 +10,11 @@ import java.io.Serializable;
  */
 public enum AreaType implements Serializable {
 
-    V("V", Color.rgb(191, 201, 79)), L("L", Color.rgb(110, 110, 110)), NONE("-", Color.TRANSPARENT);
+    V("V"), L("L"), NONE("none");
     private final String str;
-    private final int color;
 
-    private AreaType(final String str, final int color) {
+    private AreaType(final String str) {
         this.str = str;
-        this.color = color;
     }
 
     @Override
@@ -23,7 +22,12 @@ public enum AreaType implements Serializable {
         return str;
     }
 
-    public int getColor() {
-        return color;
+    public int getColor(Context c) {
+        Resources res = c.getResources();
+        if (this == NONE) {
+            return res.getColor(res.getIdentifier(str, "color", c.getPackageName()));
+        } else {
+            return res.getColor(res.getIdentifier(Type.REST.getStrValue() + str, "color", c.getPackageName()));
+        }
     }
 }

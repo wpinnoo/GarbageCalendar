@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="restV">#FFBFC94F</color>
+    <color name="restL">#FF6E6E6E</color>
+    <color name="gft">#FF0C6B35</color>
+    <color name="pmd">#FF0000FF</color>
+    <color name="pk">#FF888888</color>
+    <color name="glas">#FF335399</color>
+    <color name="none">#00FFFFFF</color>
+</resources>
