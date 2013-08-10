@@ -1,14 +1,18 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
+import android.util.Log;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
-import eu.pinnoo.garbagecalendar.data.Sector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import eu.pinnoo.garbagecalendar.util.Network;
+import eu.pinnoo.garbagecalendar.data.PrimitiveAddress;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -21,47 +25,45 @@ public class StreetsParser extends Parser {
         return LocalConstants.STREETS_URL;
     }
 
-    @Override
-    protected String getJSONArrayName() {
-        return "IVAGO-Stratenlijst";
-    }
-
     /**
      *
      * @param data
      * @return 0 when fetching was successful, otherwise 1
      */
     @Override
-    protected int fetchData(JSONArray data) {
+    protected int fetchData(ArrayList data) {
         if (data == null) {
             return 1;
         }
 
-        for (int i = 0; i < data.length(); i++) {
-            try {
-                JSONObject obj = data.getJSONObject(i);
-
-                Address address = new Address();
-
-                address.setZipcode(Integer.parseInt(obj.optString("postcode")));
-                address.setStreetname(obj.optString("straatnaam"));
-                address.setCode(obj.optString("straatcode"));
-                address.setSector(new Sector(obj.optString("sector")));
-                address.setNrEvenBegin(obj.optString("even van "));
-                address.setNrEvenEnd(obj.optString("even tot"));
-                address.setNrOddBegin(obj.optString("oneven van "));
-                address.setNrOddEnd(obj.optString("oneven tot"));
-                address.setCity(obj.optString("gemeente"));
-
-                AddressData.getInstance().addAddress(address);
-            } catch (JSONException ex) {
-                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
-                return 1;
-            } catch (NullPointerException e) {
-                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, e);
-                return 1;
-            }
+        ArrayList<Address> list = new ArrayList<Address>();
+        for (int i = 0; i < data.size(); i++) {
+            PrimitiveAddress prAddr = (PrimitiveAddress) data.get(i);
+            list.add(new Address(prAddr));
         }
+        AddressData.getInstance().setAddresses(list);
         return 0;
+    }
+
+    @Override
+    protected ArrayList downloadData() {
+        ArrayList<PrimitiveAddress> list = new ArrayList<PrimitiveAddress>();
+        try {
+            InputStream inp = Network.getStream(getURL());
+            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+            PrimitiveAddressList results = new GsonBuilder().create().fromJson(reader, PrimitiveAddressList.class);
+            list.addAll((Collection<PrimitiveAddress>) results.list);
+            reader.close();
+        } catch (Exception e) {
+            Log.d(LocalConstants.LOG, e.toString());
+        } finally {
+            return list;
+        }
+    }
+
+    public class PrimitiveAddressList {
+
+        @SerializedName("IVAGO-Stratenlijst")
+        public ArrayList<PrimitiveAddress> list;
     }
 }

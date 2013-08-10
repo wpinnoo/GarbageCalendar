@@ -11,7 +11,7 @@ import java.util.List;
 public class AddressData implements DataContainer {
 
     private static final AddressData instance = new AddressData();
-    private List<Address> addresses;
+    private ArrayList<Address> addresses;
 
     private AddressData() {
         if (addresses == null) {
@@ -26,7 +26,7 @@ public class AddressData implements DataContainer {
     @Override
     public int initialize() {
         if (addresses == null || addresses.isEmpty()) {
-            addresses = AddressCache.getInstance().getAll();
+            addresses = AddressCache.getInstance().get(LocalConstants.CacheName.ADDRESS_DATA.toString());
             return 0;
         } else {
             return 1;
@@ -38,20 +38,19 @@ public class AddressData implements DataContainer {
     }
 
     public void resetAddresses() {
-        addresses.clear();
+        if (isSet()) {
+            addresses.clear();
+        }
         AddressCache.getInstance().clear();
     }
 
-    public void addAddress(Address address) {
-        addresses.add(address);
-        AddressCache.getInstance().put(address.getCode(), address);
+    public void setAddresses(ArrayList<Address> list) {
+        resetAddresses();
+        addresses = list;
+        AddressCache.getInstance().put(LocalConstants.CacheName.ADDRESS_DATA.toString(), addresses);
     }
 
     public List<Address> getAddresses() {
         return addresses;
-    }
-
-    public Address getLastAddress() {
-        return addresses.get(addresses.size() - 1);
     }
 }

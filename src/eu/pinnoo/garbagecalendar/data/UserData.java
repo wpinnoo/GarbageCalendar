@@ -1,7 +1,7 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
-import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 
 /**
  *
@@ -23,7 +23,7 @@ public class UserData implements DataContainer {
     @Override
     public int initialize() {
         if (address == null) {
-            address = AddressCache.getInstance().get(LocalConstants.CacheName.USER_DATA.toString());
+            address = UserAddressCache.getInstance().get(LocalConstants.CacheName.USER_DATA.toString());
             return 0;
         } else {
             return 1;
@@ -42,7 +42,7 @@ public class UserData implements DataContainer {
         if (this.address != address) {
             this.address = address;
             this.isChanged = true;
-            AddressCache.getInstance().put(LocalConstants.CacheName.USER_DATA.toString(), address);
+            UserAddressCache.getInstance().put(LocalConstants.CacheName.USER_DATA.toString(), address);
         }
     }
 

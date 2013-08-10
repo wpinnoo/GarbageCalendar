@@ -16,7 +16,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
@@ -24,9 +23,9 @@ import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
-import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.Calendar;
@@ -51,6 +50,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
 
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
+        UserAddressCache.initialize(this);
     }
 
     @Override
@@ -60,8 +60,9 @@ public class CollectionListActivity extends AbstractSherlockActivity {
             if (getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
                     || !CollectionsData.getInstance().isSet()) {
                 initializeCacheAndLoadData();
+            } else {
+                createGUI();
             }
-            createGUI();
         }
     }
 
@@ -84,9 +85,9 @@ public class CollectionListActivity extends AbstractSherlockActivity {
             protected void onPostExecute(Integer[] result) {
                 super.onPostExecute(result);
                 loading = false;
-                loadStreets();
+                checkAddress();
             }
-        }.execute(AddressData.getInstance(), CollectionsData.getInstance(), UserData.getInstance());
+        }.execute(CollectionsData.getInstance(), UserData.getInstance());
     }
 
     public void checkAddress() {
@@ -116,40 +117,6 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         }
     }
 
-    public void loadStreets() {
-        if (!AddressData.getInstance().isSet()) {
-            if (!Network.networkAvailable(this)) {
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.noInternetConnection))
-                        .setMessage(getString(R.string.needConnection))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        finish();
-                    }
-                })
-                        .create().show();
-            } else {
-                new ParserTask(this, getString(R.string.loadingStreets)) {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        loading = true;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Integer[] result) {
-                        super.onPostExecute(result);
-                        loading = false;
-                        checkAddress();
-                    }
-                }.execute(new StreetsParser());
-            }
-        } else {
-            checkAddress();
-        }
-    }
-
     public void loadCollections(boolean force) {
         if (!force && CollectionsData.getInstance().isSet()) {
             createGUI();
@@ -174,12 +141,14 @@ public class CollectionListActivity extends AbstractSherlockActivity {
                     }
                 }.execute(new CalendarParser());
             } else {
+                loading = true;
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.noInternetConnection))
                         .setMessage(getString(R.string.needConnection))
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        loading = false;
                         finish();
                     }
                 })

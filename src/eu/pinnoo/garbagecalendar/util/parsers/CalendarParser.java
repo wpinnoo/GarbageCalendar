@@ -1,16 +1,18 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
+import android.util.Log;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.stream.JsonReader;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
-import eu.pinnoo.garbagecalendar.data.Sector;
+import eu.pinnoo.garbagecalendar.data.PrimitiveCollection;
 import eu.pinnoo.garbagecalendar.data.UserData;
-import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import eu.pinnoo.garbagecalendar.util.Network;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,47 +25,53 @@ public class CalendarParser extends Parser {
         return LocalConstants.CALENDAR_URL;
     }
 
-    @Override
-    protected String getJSONArrayName() {
-        return "IVAGO-Inzamelkalender";
-    }
-
     /**
      *
      * @param data
      * @return 0 when fetching was successful, otherwise 1
      */
     @Override
-    protected int fetchData(JSONArray data) {
+    protected int fetchData(ArrayList data) {
         if (data == null) {
             return 1;
         }
-        CollectionsData.getInstance().resetCollections();
+        ArrayList<Collection> list = new ArrayList<Collection>();
         String previousDate = "";
-        for (int i = 0; i < data.length(); i++) {
-            try {
-                JSONObject obj = data.getJSONObject(i);
-                Sector sector = new Sector(obj.getString("locatie"));
-                if (UserData.getInstance().getAddress().getSector().equals(sector)) {
-                    if (obj.getString("datum").equals(previousDate)) {
-                        CollectionsData.getInstance().addToLastCollection(parseGarbageType(obj.getString("fractie")));
-                    } else {
-                        Collection col = new Collection(obj.getString("week"), obj.getString("dag"), LocalConstants.DateFormatType.NORMAL.getDateFormatter(null).parse(obj.getString("datum")), parseGarbageType(obj.getString("fractie")), sector);
-                        CollectionsData.getInstance().addCollection(col);
-                    }
-                    previousDate = obj.getString("datum");
+        for (int i = 0; i < data.size(); i++) {
+            PrimitiveCollection prCol = (PrimitiveCollection) data.get(i);
+            Collection col = new Collection(prCol);
+            if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
+                if (prCol.datum.equals(previousDate)) {
+                    list.get(list.size() - 1).addTypes(Collection.parseGarbageType(prCol.fractie));
+                } else {
+                    list.add(col);
                 }
-            } catch (JSONException ex) {
-                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
-                return 1;
-            } catch (NullPointerException e) {
-                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, e);
-                return 1;
-            } catch (ParseException ex) {
-                Logger.getLogger(CalendarParser.class.getName()).log(Level.SEVERE, null, ex);
-                return 1;
+                previousDate = prCol.datum;
             }
         }
+        CollectionsData.getInstance().setCollections(list);
         return 0;
+    }
+
+    @Override
+    protected ArrayList downloadData() {
+        ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
+        try {
+            InputStream inp = Network.getStream(getURL());
+            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+            PrimitiveCollectionList results = new GsonBuilder().create().fromJson(reader, PrimitiveCollectionList.class);
+            list.addAll((java.util.Collection<PrimitiveCollection>) results.list);
+            reader.close();
+        } catch (Exception e) {
+            Log.d(LocalConstants.LOG, e.toString());
+        } finally {
+            return list;
+        }
+    }
+
+    public class PrimitiveCollectionList {
+
+        @SerializedName("IVAGO-Inzamelkalender")
+        public ArrayList<PrimitiveCollection> list;
     }
 }
