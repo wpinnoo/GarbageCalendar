@@ -34,6 +34,7 @@
     
     <string name="noInternetConnection">Geen internetverbinding.</string>
     <string name="needConnection">Je hebt een internetverbinding nodig om de kalender te laden.</string>
+    <string name="needConnectionAddress">Je hebt een internetverbinding nodig om de lijst met adressen te laden.</string>
     
     <string name="locationSet">Ingesteld op</string>
     <string name="selectAddress">Selecteer jouw adres.</string>
