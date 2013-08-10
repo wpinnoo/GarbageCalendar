@@ -11,7 +11,7 @@ import java.util.List;
 public class CollectionsData implements DataContainer {
 
     private static final CollectionsData instance = new CollectionsData();
-    private List<Collection> collections;
+    private ArrayList<Collection> collections;
 
     private CollectionsData() {
         if (collections == null) {
@@ -26,7 +26,7 @@ public class CollectionsData implements DataContainer {
     @Override
     public int initialize() {
         if (collections == null || collections.isEmpty()) {
-            collections = CollectionCache.getInstance().getAll();
+            collections = CollectionCache.getInstance().get(LocalConstants.CacheName.COLLECTIONS_DATA.toString());
             return 0;
         } else {
             return 1;
@@ -34,23 +34,20 @@ public class CollectionsData implements DataContainer {
     }
 
     public void resetCollections() {
-        collections.clear();
+        if (isSet()) {
+            collections.clear();
+        }
         CollectionCache.getInstance().clear();
     }
 
-    public void addCollection(Collection col) {
-        collections.add(col);
-        CollectionCache.getInstance().put(col.getCollectionCode(), col);
+    public void setCollections(ArrayList<Collection> list) {
+        resetCollections();
+        collections = list;
+        CollectionCache.getInstance().put(LocalConstants.CacheName.COLLECTIONS_DATA.toString(), collections);
     }
 
     public List<Collection> getCollections() {
         return collections;
-    }
-
-    public void addToLastCollection(Type[] types) {
-        Collection last = collections.get(collections.size() - 1);
-        last.addTypes(types);
-        CollectionCache.getInstance().put(last.getCollectionCode(), last);
     }
 
     public boolean isSet() {

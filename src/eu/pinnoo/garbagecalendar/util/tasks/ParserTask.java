@@ -3,6 +3,8 @@ package eu.pinnoo.garbagecalendar.util.tasks;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.parsers.Parser;
 
 /**
@@ -32,8 +34,12 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     protected Integer[] doInBackground(Parser... params) {
         Integer[] results = new Integer[params.length];
         for (int i = 0; i < params.length; i++) {
+            Log.d(LocalConstants.LOG, "Starting with " + params[i].getClass().getName() + "...");
+            long start = System.currentTimeMillis();
             results[i] = params[i].loadData(context);
+            long end = System.currentTimeMillis();
             publishProgress((int) ((i / (float) params.length) * 100));
+            Log.d(LocalConstants.LOG, "... done with " + params[i].getClass().getName() + ", took " + (end - start) + "ms.");
             if (isCancelled()) {
                 break;
             }

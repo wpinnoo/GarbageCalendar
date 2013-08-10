@@ -4,12 +4,13 @@ import android.content.Context;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionCache extends Cache<Collection> {
+public class CollectionCache extends Cache<ArrayList<Collection>> {
 
     private static CollectionCache instance;
 

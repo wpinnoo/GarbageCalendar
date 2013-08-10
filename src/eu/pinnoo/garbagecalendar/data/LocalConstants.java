@@ -20,11 +20,23 @@ public class LocalConstants {
     public static final String LOG = "eu.pinnoo.garbagecalendar";
     public static final int COLOR_TABLE_EVEN_ROW = Color.rgb(240, 240, 240);
     public static final int COLOR_TABLE_ODD_ROW = Color.rgb(219, 219, 219);
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 
     public enum DateFormatType {
 
-        MAIN_TABLE, WEEKDAY, SHORT_WEEKDAY, WIDGET, FULL
+        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy"), WIDGET("EEE,\nd MMM.");
+        private String dateFormat;
+
+        private DateFormatType(String dateFormat) {
+            this.dateFormat = dateFormat;
+        }
+
+        public SimpleDateFormat getDateFormatter(Context c) {
+            if (c == null) {
+                return new SimpleDateFormat(dateFormat);
+            } else {
+                return new SimpleDateFormat(dateFormat, c.getResources().getConfiguration().locale);
+            }
+        }
     }
 
     public enum CacheName {
@@ -45,21 +57,5 @@ public class LocalConstants {
         public String toString() {
             return s;
         }
-    }
-
-    public static SimpleDateFormat getDateFormatter(DateFormatType type, Context c) {
-        switch (type) {
-            case MAIN_TABLE:
-                return new SimpleDateFormat("EEE, d MMMM", c.getResources().getConfiguration().locale);
-            case WEEKDAY:
-                return new SimpleDateFormat("EEEE", c.getResources().getConfiguration().locale);
-            case SHORT_WEEKDAY:
-                return new SimpleDateFormat("EEE", c.getResources().getConfiguration().locale);
-            case WIDGET:
-                return new SimpleDateFormat("EEE,\nd MMM.", c.getResources().getConfiguration().locale);
-            case FULL:
-                return new SimpleDateFormat("EEEE d MMMM", c.getResources().getConfiguration().locale);
-        }
-        return null;
     }
 }

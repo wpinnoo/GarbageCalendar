@@ -13,6 +13,8 @@ import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -108,6 +110,19 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
                 addAll((ArrayList<Address>) filterResults.values);
             }
         };
+    }
+
+    /**
+     * addAll is only available in API levels 11+, so here an alternative.
+     *
+     * @param list
+     */
+    @Override
+    public void addAll(Collection<? extends Address> list) {
+        Iterator<? extends Address> it = list.iterator();
+        while (it.hasNext()) {
+            add((Address) it.next());
+        }
     }
 
     @Override

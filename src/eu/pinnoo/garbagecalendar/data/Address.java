@@ -23,16 +23,16 @@ public class Address implements Serializable {
     public static final int PARTIAL_MATCH = 1;
     public static final int FULL_MATCH = 2;
 
-    public Address() {
-        streetname = "";
-        code = "";
-        nrOddBegin = 0;
-        nrOddEnd = 0;
-        nrEvenBegin = 0;
-        nrEvenEnd = 0;
-        zipcode = 0;
-        city = "";
-        sector = new Sector();
+    public Address(PrimitiveAddress addr) {
+        streetname = addr.straatnaam;
+        code = addr.straatcode;
+        nrOddBegin = parseNumber(addr.oneven_van);
+        nrOddEnd = parseNumber(addr.oneven_tot);
+        nrEvenBegin = parseNumber(addr.even_van);
+        nrEvenEnd = parseNumber(addr.even_tot);
+        zipcode = parseNumber(addr.postcode);
+        city = addr.gemeente;
+        sector = new Sector(addr.sector);
     }
 
     public int matches(String s) {

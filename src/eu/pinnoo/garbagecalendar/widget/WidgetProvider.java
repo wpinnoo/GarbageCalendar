@@ -56,7 +56,7 @@ public class WidgetProvider extends AppWidgetProvider {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
             if (col != null && UserData.getInstance().isSet()) {
-                String date = LocalConstants.getDateFormatter(LocalConstants.DateFormatType.WIDGET, context).format(col.getDate());
+                String date = LocalConstants.DateFormatType.WIDGET.getDateFormatter(context).format(col.getDate());
                 remoteViews.setTextViewText(R.id.widget_date, date);
 
                 AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
