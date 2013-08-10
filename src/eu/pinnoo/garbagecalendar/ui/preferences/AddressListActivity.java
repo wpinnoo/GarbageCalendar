@@ -65,39 +65,43 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         }
 
         if (!loading) {
-            if (!AddressData.getInstance().isSet()) {
-                if (!Network.networkAvailable(this)) {
-                    loading = true;
-                    new AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.noInternetConnection))
-                            .setMessage(getString(R.string.needConnectionAddress))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            loading = false;
-                            finish();
-                        }
-                    })
-                            .create().show();
-                } else {
-                    new ParserTask(this, getString(R.string.loadingStreets)) {
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            loading = true;
-                        }
+            initializeCacheAndLoadStreets(false);
+        }
+    }
 
-                        @Override
-                        protected void onPostExecute(Integer[] result) {
-                            super.onPostExecute(result);
-                            loading = false;
-                            loadStreets();
-                        }
-                    }.execute(new StreetsParser());
-                }
+    private void initializeCacheAndLoadStreets(boolean force) {
+        if (force || !AddressData.getInstance().isSet()) {
+            if (!Network.networkAvailable(this)) {
+                loading = true;
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.noInternetConnection))
+                        .setMessage(getString(R.string.needConnectionAddress))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        loading = false;
+                        finish();
+                    }
+                })
+                        .create().show();
             } else {
-                loadStreets();
+                new ParserTask(this, getString(R.string.loadingStreets)) {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        loading = true;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer[] result) {
+                        super.onPostExecute(result);
+                        loading = false;
+                        loadStreets();
+                    }
+                }.execute(new StreetsParser());
             }
+        } else {
+            loadStreets();
         }
     }
 
@@ -168,5 +172,16 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     public boolean onQueryTextChange(String newText) {
         adapter.getFilter().filter(newText);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                initializeCacheAndLoadStreets(true);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

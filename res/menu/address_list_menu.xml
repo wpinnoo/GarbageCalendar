@@ -6,4 +6,9 @@
           android:showAsAction="always"
           android:actionViewClass="com.actionbarsherlock.widget.SearchView"
     />
+    <item android:id="@+id/refresh"
+          android:icon="@drawable/refresh"
+          android:title="@string/refresh"
+          android:showAsAction="ifRoom"
+    />
 </menu>
