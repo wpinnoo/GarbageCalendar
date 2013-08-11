@@ -29,6 +29,7 @@
     <string name="cancel">Annuleer</string>
     <string name="refresh">Vernieuw</string>
     
+    <string name="loading">Laden&#8230;</string>
     <string name="loadingCalendar">Ophaalkalender laden&#8230;</string>
     <string name="loadingStreets">Stratenlijst laden&#8230;</string>
     

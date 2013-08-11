@@ -21,6 +21,7 @@ import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
+import eu.pinnoo.garbagecalendar.ui.CollectionListActivity;
 import eu.pinnoo.garbagecalendar.ui.preferences.AddressListActivity;
 import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
@@ -60,23 +61,15 @@ public class WidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public void updateWidgetErrorView(String msg, boolean pointToAddressList) {
+    public void updateWidgetErrorView(String msg, Class target) {
         ComponentName thisWidget = new ComponentName(c, WidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
             RemoteViews remoteViews = new RemoteViews(c.getPackageName(), R.layout.widget_error_layout);
             remoteViews.setTextViewText(R.id.widget_error_message, msg);
 
-            PendingIntent pendingIntent;
-            if (pointToAddressList) {
-                Intent intent = new Intent(c, AddressListActivity.class);
-                pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
-            } else {
-                Intent intent = new Intent(c, WidgetProvider.class);
-                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
+            Intent intent = new Intent(c, target);
+            PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
 
             remoteViews.setOnClickPendingIntent(R.id.widget_error_message, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
@@ -156,8 +149,23 @@ public class WidgetProvider extends AppWidgetProvider {
         }
     }
 
+    private void setLoadingView() {
+        ComponentName thisWidget = new ComponentName(c, WidgetProvider.class);
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        for (int widgetId : allWidgetIds) {
+            RemoteViews remoteViews = new RemoteViews(c.getPackageName(), R.layout.widget_loading_layout);
+            appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        }
+    }
+
     private void initializeCacheAndLoadData() {
         new CacheTask() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                setLoadingView();
+            }
+
             @Override
             protected void onPostExecute(Integer[] result) {
                 super.onPostExecute(result);
@@ -170,7 +178,7 @@ public class WidgetProvider extends AppWidgetProvider {
         if (UserData.getInstance().isSet()) {
             loadCollections(UserData.getInstance().isChanged());
         } else {
-            updateWidgetErrorView(c.getString(R.string.widget_setAddress), false);
+            updateWidgetErrorView(c.getString(R.string.widget_setAddress), AddressListActivity.class);
         }
     }
 
@@ -179,7 +187,7 @@ public class WidgetProvider extends AppWidgetProvider {
             updateWidgetView();
         } else {
             if (!UserData.getInstance().isSet()) {
-                updateWidgetErrorView(c.getString(R.string.widget_setAddress), true);
+                updateWidgetErrorView(c.getString(R.string.widget_setAddress), AddressListActivity.class);
             }
             if (Network.networkAvailable(c)) {
                 new ParserTask(c) {
@@ -191,7 +199,7 @@ public class WidgetProvider extends AppWidgetProvider {
                     }
                 }.execute(new CalendarParser());
             } else {
-                updateWidgetErrorView(c.getString(R.string.widget_noAvailableConnection), false);
+                updateWidgetErrorView(c.getString(R.string.widget_noAvailableConnection), CollectionListActivity.class);
             }
         }
     }

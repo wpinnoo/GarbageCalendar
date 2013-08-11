@@ -29,6 +29,7 @@
     <string name="cancel">Cancel</string>
     <string name="refresh">Refresh</string>
     
+    <string name="loading">Loading&#8230;</string>
     <string name="loadingCalendar">Loading calendar&#8230;</string>
     <string name="loadingStreets">Loading streets&#8230;</string>
     
