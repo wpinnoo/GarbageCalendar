@@ -58,4 +58,7 @@
     
     <string name="none">(None)</string>
     <string name="address_search">Search</string>
+    
+    <string name="widget_setAddress">Please set your\naddress in the app\npreferences.</string>
+    <string name="widget_noAvailableConnection">There\'s no available\ninternet connection to\nupdate your calendar.</string>
 </resources>

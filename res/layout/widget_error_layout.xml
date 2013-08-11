@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal"
+              android:layout_margin="8dip"
+              android:background="@drawable/widget_shape" >
+    
+        <TextView
+            android:id="@+id/widget_error_message"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="6dp"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:gravity="center">
+        </TextView>
+</LinearLayout> 

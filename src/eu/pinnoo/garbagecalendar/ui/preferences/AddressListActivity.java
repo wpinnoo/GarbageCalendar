@@ -88,7 +88,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 })
                         .create().show();
             } else {
-                new ParserTask(this, getString(R.string.loadingStreets), isPullToRefresh) {
+                new ParserTask(this, getString(R.string.loadingStreets), !isPullToRefresh) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();

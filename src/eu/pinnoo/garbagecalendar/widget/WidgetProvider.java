@@ -1,5 +1,6 @@
 package eu.pinnoo.garbagecalendar.widget;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -17,6 +18,14 @@ import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.Type;
 import eu.pinnoo.garbagecalendar.data.UserData;
+import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
+import eu.pinnoo.garbagecalendar.ui.preferences.AddressListActivity;
+import eu.pinnoo.garbagecalendar.util.Network;
+import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
+import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
+import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -29,18 +38,55 @@ public class WidgetProvider extends AppWidgetProvider {
 
     private final String SET_BACKGROUND_COLOR = "setBackgroundColor";
     private final String SET_BACKGROUND_RES = "setBackgroundResource";
+    private Context c;
+    private AppWidgetManager appWidgetManager;
+    private int[] appWidgetIds;
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(Context c, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        this.c = c;
+        this.appWidgetManager = appWidgetManager;
+        this.appWidgetIds = appWidgetIds;
 
-        ComponentName thisWidget = new ComponentName(context, WidgetProvider.class);
+        AddressCache.initialize(c);
+        CollectionCache.initialize(c);
+        UserAddressCache.initialize(c);
+
+        if (c.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
+                || !CollectionsData.getInstance().isSet()) {
+            initializeCacheAndLoadData();
+        } else {
+            updateWidgetView();
+        }
+    }
+
+    public void updateWidgetErrorView(String msg, boolean pointToAddressList) {
+        ComponentName thisWidget = new ComponentName(c, WidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
-            if (!CollectionsData.getInstance().isSet()
-                    || !UserData.getInstance().isSet()) {
-                return;
+            RemoteViews remoteViews = new RemoteViews(c.getPackageName(), R.layout.widget_error_layout);
+            remoteViews.setTextViewText(R.id.widget_error_message, msg);
+
+            PendingIntent pendingIntent;
+            if (pointToAddressList) {
+                Intent intent = new Intent(c, AddressListActivity.class);
+                pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
+            } else {
+                Intent intent = new Intent(c, WidgetProvider.class);
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+                pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
 
+            remoteViews.setOnClickPendingIntent(R.id.widget_error_message, pendingIntent);
+            appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        }
+    }
+
+    public void updateWidgetView() {
+        ComponentName thisWidget = new ComponentName(c, WidgetProvider.class);
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        for (int widgetId : allWidgetIds) {
             List<Collection> cols = CollectionsData.getInstance().getCollections();
             Iterator<Collection> it = cols.iterator();
             Calendar dayToBeShown = Calendar.getInstance();
@@ -53,17 +99,17 @@ public class WidgetProvider extends AppWidgetProvider {
                 }
             }
 
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            RemoteViews remoteViews = new RemoteViews(c.getPackageName(), R.layout.widget_layout);
 
             if (col != null && UserData.getInstance().isSet()) {
-                String date = LocalConstants.DateFormatType.WIDGET.getDateFormatter(context).format(col.getDate());
+                String date = LocalConstants.DateFormatType.WIDGET.getDateFormatter(c).format(col.getDate());
                 remoteViews.setTextViewText(R.id.widget_date, date);
 
                 AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
                 int backgroundColor = Color.argb(0, 0, 0, 0);
 
                 boolean hasType = col.hasType(Type.REST);
-                remoteViews.setTextViewText(R.id.widget_rest, hasType ? Type.REST.shortStrValue(context) : "");
+                remoteViews.setTextViewText(R.id.widget_rest, hasType ? Type.REST.shortStrValue(c) : "");
                 if (hasType) {
                     switch (currentAreaType) {
                         case V:
@@ -77,36 +123,76 @@ public class WidgetProvider extends AppWidgetProvider {
                 }
 
                 hasType = col.hasType(Type.GFT);
-                remoteViews.setTextViewText(R.id.widget_gft, hasType ? Type.GFT.shortStrValue(context) : "");
-                remoteViews.setInt(R.id.widget_gft, SET_BACKGROUND_COLOR, hasType ? Type.GFT.getColor(context, currentAreaType) : backgroundColor);
+                remoteViews.setTextViewText(R.id.widget_gft, hasType ? Type.GFT.shortStrValue(c) : "");
+                remoteViews.setInt(R.id.widget_gft, SET_BACKGROUND_COLOR, hasType ? Type.GFT.getColor(c, currentAreaType) : backgroundColor);
 
                 hasType = col.hasType(Type.PMD);
-                remoteViews.setTextViewText(R.id.widget_pmd, hasType ? Type.PMD.shortStrValue(context) : "");
-                remoteViews.setInt(R.id.widget_pmd, SET_BACKGROUND_COLOR, hasType ? Type.PMD.getColor(context, currentAreaType) : backgroundColor);
+                remoteViews.setTextViewText(R.id.widget_pmd, hasType ? Type.PMD.shortStrValue(c) : "");
+                remoteViews.setInt(R.id.widget_pmd, SET_BACKGROUND_COLOR, hasType ? Type.PMD.getColor(c, currentAreaType) : backgroundColor);
 
                 hasType = col.hasType(Type.PK);
-                remoteViews.setTextViewText(R.id.widget_pk, hasType ? Type.PK.shortStrValue(context) : "");
-                remoteViews.setInt(R.id.widget_pk, SET_BACKGROUND_COLOR, hasType ? Type.PK.getColor(context, currentAreaType) : backgroundColor);
+                remoteViews.setTextViewText(R.id.widget_pk, hasType ? Type.PK.shortStrValue(c) : "");
+                remoteViews.setInt(R.id.widget_pk, SET_BACKGROUND_COLOR, hasType ? Type.PK.getColor(c, currentAreaType) : backgroundColor);
 
                 hasType = col.hasType(Type.GLAS);
-                remoteViews.setTextViewText(R.id.widget_glas, hasType ? Type.GLAS.shortStrValue(context) : "");
+                remoteViews.setTextViewText(R.id.widget_glas, hasType ? Type.GLAS.shortStrValue(c) : "");
                 if (hasType) {
                     remoteViews.setInt(R.id.widget_glas, SET_BACKGROUND_RES, R.drawable.widget_glas_activated_shape);
                 } else {
                     remoteViews.setInt(R.id.widget_glas, SET_BACKGROUND_COLOR, backgroundColor);
                 }
             } else {
-                remoteViews.setTextViewText(R.id.widget_date, context.getString(R.string.none));
+                remoteViews.setTextViewText(R.id.widget_date, c.getString(R.string.none));
             }
 
-            Intent intent = new Intent(context, WidgetProvider.class);
+            Intent intent = new Intent(c, WidgetProvider.class);
 
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_date, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        }
+    }
+
+    private void initializeCacheAndLoadData() {
+        new CacheTask() {
+            @Override
+            protected void onPostExecute(Integer[] result) {
+                super.onPostExecute(result);
+                checkAddress();
+            }
+        }.execute(CollectionsData.getInstance(), UserData.getInstance());
+    }
+
+    private void checkAddress() {
+        if (UserData.getInstance().isSet()) {
+            loadCollections(UserData.getInstance().isChanged());
+        } else {
+            updateWidgetErrorView(c.getString(R.string.widget_setAddress), false);
+        }
+    }
+
+    private void loadCollections(boolean force) {
+        if (!force && CollectionsData.getInstance().isSet()) {
+            updateWidgetView();
+        } else {
+            if (!UserData.getInstance().isSet()) {
+                updateWidgetErrorView(c.getString(R.string.widget_setAddress), true);
+            }
+            if (Network.networkAvailable(c)) {
+                new ParserTask(c) {
+                    @Override
+                    protected void onPostExecute(Integer[] result) {
+                        super.onPostExecute(result);
+                        UserData.getInstance().changeCommitted();
+                        updateWidgetView();
+                    }
+                }.execute(new CalendarParser());
+            } else {
+                updateWidgetErrorView(c.getString(R.string.widget_noAvailableConnection), false);
+            }
         }
     }
 }

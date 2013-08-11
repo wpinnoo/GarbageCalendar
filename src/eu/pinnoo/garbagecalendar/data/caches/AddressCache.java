@@ -28,4 +28,8 @@ public class AddressCache extends Cache<ArrayList<Address>> {
     public static AddressCache getInstance() {
         return instance;
     }
+    
+    public boolean isSet(){
+        return instance != null;
+    }
 }

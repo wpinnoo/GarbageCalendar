@@ -28,4 +28,8 @@ public class CollectionCache extends Cache<ArrayList<Collection>> {
     public static CollectionCache getInstance() {
         return instance;
     }
+    
+    public boolean isSet(){
+        return instance != null;
+    }
 }

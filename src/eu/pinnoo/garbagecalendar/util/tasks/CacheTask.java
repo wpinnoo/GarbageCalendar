@@ -15,17 +15,31 @@ public class CacheTask extends AsyncTask<DataContainer, Integer, Integer[]> {
 
     protected ProgressDialog dialog;
     private String msg;
+    private boolean showDialog;
 
-    public CacheTask(Context context, String msg) {
-        dialog = new ProgressDialog(context);
+    public CacheTask(Context context, String msg, boolean showDialog) {
+        if (showDialog) {
+            dialog = new ProgressDialog(context);
+        }
         this.msg = msg;
+        this.showDialog = showDialog;
+    }
+    
+    public CacheTask(Context context, String msg){
+        this(context, msg, true);
+    }
+    
+    public CacheTask(){
+        this(null, null, false);
     }
 
     @Override
     protected void onPreExecute() {
-        dialog.setMessage(msg);
-        dialog.show();
-        dialog.setCancelable(false);
+        if (showDialog) {
+            dialog.setMessage(msg);
+            dialog.show();
+            dialog.setCancelable(false);
+        }
     }
 
     @Override
@@ -47,6 +61,8 @@ public class CacheTask extends AsyncTask<DataContainer, Integer, Integer[]> {
 
     @Override
     protected void onPostExecute(Integer[] result) {
-        dialog.dismiss();
+        if (showDialog) {
+            dialog.dismiss();
+        }
     }
 }

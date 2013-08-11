@@ -134,7 +134,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                 return;
             }
             if (Network.networkAvailable(this)) {
-                new ParserTask(this, getString(R.string.loadingCalendar), isPullToRefresh) {
+                new ParserTask(this, getString(R.string.loadingCalendar), !isPullToRefresh) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();

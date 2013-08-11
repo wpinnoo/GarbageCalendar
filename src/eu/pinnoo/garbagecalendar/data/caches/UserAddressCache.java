@@ -27,4 +27,8 @@ public class UserAddressCache extends Cache<Address> {
     public static UserAddressCache getInstance() {
         return instance;
     }
+    
+    public boolean isSet(){
+        return instance != null;
+    }
 }

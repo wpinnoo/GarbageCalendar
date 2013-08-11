@@ -16,24 +16,28 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     protected ProgressDialog dialog;
     private Context context;
     private String msg;
-    private boolean isPullToRefresh;
+    private boolean showDialog;
 
-    public ParserTask(Context context, String msg, boolean isPullToRefresh) {
-        if (!isPullToRefresh) {
+    public ParserTask(Context context, String msg, boolean showDialog) {
+        if (showDialog) {
             dialog = new ProgressDialog(context);
         }
         this.context = context;
         this.msg = msg;
-        this.isPullToRefresh = isPullToRefresh;
+        this.showDialog = showDialog;
     }
 
     public ParserTask(Context context, String msg) {
-        this(context, msg, false);
+        this(context, msg, true);
+    }
+    
+    public ParserTask(Context context){
+        this(context, "", false);
     }
 
     @Override
     protected void onPreExecute() {
-        if (!isPullToRefresh) {
+        if (showDialog) {
             dialog.setMessage(msg);
             dialog.show();
             dialog.setCancelable(false);
@@ -59,7 +63,7 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
 
     @Override
     protected void onPostExecute(Integer[] result) {
-        if (!isPullToRefresh) {
+        if (showDialog) {
             dialog.dismiss();
         }
     }

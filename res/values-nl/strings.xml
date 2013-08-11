@@ -58,4 +58,7 @@
     
     <string name="none">(Geen)</string>
     <string name="address_search">Zoek</string>
+    
+    <string name="widget_setAddress">Stel je adres in\nbij de instellingen\nvan de app.</string>
+    <string name="widget_noAvailableConnection">Er is geen internetconnectie\nbeschikbaar om de kalender\nte updaten.</string>
 </resources>
