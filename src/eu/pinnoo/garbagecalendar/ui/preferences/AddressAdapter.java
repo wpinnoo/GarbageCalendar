@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
@@ -22,11 +23,12 @@ import java.util.List;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressAdapter extends ArrayAdapter<Address> implements SectionIndexer {
+public class AddressAdapter extends ArrayAdapter<Address> implements SectionIndexer, StickyListHeadersAdapter {
 
     private Context context;
     private List<Address> originalValues = new ArrayList<Address>();
     private static final LinkedHashMap<String, Integer> SECTION_MAP = new LinkedHashMap<String, Integer>();
+    private LayoutInflater inflater;
 
     public AddressAdapter(Context context, int textViewResourceId, List<Address> initObjects) {
         super(context, textViewResourceId, initObjects);
@@ -48,7 +50,7 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.address_table_row, null);
         }
         v.setBackgroundColor(position % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : Color.WHITE);
@@ -147,5 +149,34 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
             }
         }
         return 0;
+    }
+
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        HeaderViewHolder holder;
+        if (convertView == null) {
+            holder = new HeaderViewHolder();
+            convertView = inflater.inflate(R.layout.sticky_header, parent, false);
+            holder.text1 = (TextView) convertView.findViewById(R.id.text1);
+            convertView.setTag(holder);
+        } else {
+            holder = (HeaderViewHolder) convertView.getTag();
+        }
+
+        String name = getItem(position).getStreetname().substring(0, 2);
+        String headerText = name.substring(0, 1).toUpperCase() + name.substring(1, 2).toLowerCase();
+        holder.text1.setText(headerText);
+        return convertView;
+
+    }
+
+    private class HeaderViewHolder {
+
+        TextView text1;
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        return getItem(position).getStreetname().toUpperCase().substring(0, 2).hashCode();
     }
 }
