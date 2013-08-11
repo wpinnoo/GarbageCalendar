@@ -275,9 +275,6 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.refresh:
-                loadCollections(true, false);
-                return true;
             case R.id.preferences:
                 Intent intent = new Intent();
                 intent.setClass(this, PreferenceActivity.class);

@@ -179,17 +179,6 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.refresh:
-                initializeCacheAndLoadStreets(true, false);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onRefreshStarted(View view) {
         initializeCacheAndLoadStreets(true, true);
     }
