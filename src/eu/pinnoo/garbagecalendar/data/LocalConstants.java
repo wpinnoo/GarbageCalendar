@@ -23,7 +23,7 @@ public class LocalConstants {
 
     public enum DateFormatType {
 
-        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy"), WIDGET("EEE,\nd MMM.");
+        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy"), WIDGET("EEE,\nd MMM");
         private String dateFormat;
 
         private DateFormatType(String dateFormat) {

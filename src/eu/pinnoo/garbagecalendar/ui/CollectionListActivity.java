@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,14 +34,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionListActivity extends AbstractSherlockActivity {
+public class CollectionListActivity extends AbstractSherlockActivity implements PullToRefreshAttacher.OnRefreshListener {
 
     private boolean loading = false;
+    private PullToRefreshAttacher attacher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,10 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
         UserAddressCache.initialize(this);
+
+        attacher = PullToRefreshAttacher.get(this);
+        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.main_table_scrollview);
+        ptrLayout.setPullToRefreshAttacher(attacher, (PullToRefreshAttacher.OnRefreshListener) this);
     }
 
     @Override
@@ -93,7 +101,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
 
     public void checkAddress() {
         if (UserData.getInstance().isSet()) {
-            loadCollections(UserData.getInstance().isChanged());
+            loadCollections(UserData.getInstance().isChanged(), false);
         } else {
             loading = true;
             new AlertDialog.Builder(this)
@@ -118,7 +126,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
         }
     }
 
-    public void loadCollections(boolean force) {
+    public void loadCollections(boolean force, boolean isPullToRefresh) {
         if (!force && CollectionsData.getInstance().isSet()) {
             createGUI();
         } else {
@@ -126,7 +134,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
                 return;
             }
             if (Network.networkAvailable(this)) {
-                new ParserTask(this, getString(R.string.loadingCalendar)) {
+                new ParserTask(this, getString(R.string.loadingCalendar), isPullToRefresh) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -137,6 +145,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
                         loading = false;
+                        attacher.setRefreshComplete();
                         UserData.getInstance().changeCommitted();
                         createGUI();
                     }
@@ -267,7 +276,7 @@ public class CollectionListActivity extends AbstractSherlockActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                loadCollections(true);
+                loadCollections(true, false);
                 return true;
             case R.id.preferences:
                 Intent intent = new Intent();
@@ -277,5 +286,10 @@ public class CollectionListActivity extends AbstractSherlockActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        loadCollections(true, true);
     }
 }

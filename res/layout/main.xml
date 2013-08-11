@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_table_scrollview"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    > 
+> 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
                 android:scrollbars="vertical" 
                 android:layout_weight="1"
@@ -22,5 +23,5 @@
             </TableRow>
         </TableLayout>
     </ScrollView>
-</LinearLayout>
+</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 

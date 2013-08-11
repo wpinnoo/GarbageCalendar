@@ -63,3 +63,5 @@ ant.properties
 /nbandroid/
 
 /libs/actionbarsherlock/nbandroid/
+/libs/ab-pull-torefresh/nbandroid/
+/libs/ab-pull-to-refresh/nbandroid/

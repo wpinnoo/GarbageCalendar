@@ -29,17 +29,19 @@ import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressListActivity extends AbstractSherlockListActivity implements SearchView.OnQueryTextListener {
+public class AddressListActivity extends AbstractSherlockListActivity implements SearchView.OnQueryTextListener, PullToRefreshAttacher.OnRefreshListener {
 
     private List<Address> list;
     private AddressAdapter adapter;
     private ListView lv;
     private boolean loading = false;
+    private PullToRefreshAttacher attacher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,24 +54,25 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 submitAddress(i);
             }
         });
+
+        attacher = PullToRefreshAttacher.get(this);
+        attacher.addRefreshableView(lv, (PullToRefreshAttacher.OnRefreshListener) this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (UserData.getInstance().isSet()) {
-            getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
-                    .edit()
-                    .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), false)
-                    .commit();
-        }
+        getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
+                .edit()
+                .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), !UserData.getInstance().isSet())
+                .commit();
 
         if (!loading) {
-            initializeCacheAndLoadStreets(false);
+            initializeCacheAndLoadStreets(false, false);
         }
     }
 
-    private void initializeCacheAndLoadStreets(boolean force) {
+    private void initializeCacheAndLoadStreets(boolean force, boolean isPullToRefresh) {
         if (force || !AddressData.getInstance().isSet()) {
             if (!Network.networkAvailable(this)) {
                 loading = true;
@@ -85,7 +88,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 })
                         .create().show();
             } else {
-                new ParserTask(this, getString(R.string.loadingStreets)) {
+                new ParserTask(this, getString(R.string.loadingStreets), isPullToRefresh) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -96,6 +99,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
                         loading = false;
+                        attacher.setRefreshComplete();
                         loadStreets();
                     }
                 }.execute(new StreetsParser());
@@ -178,10 +182,15 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
-                initializeCacheAndLoadStreets(true);
+                initializeCacheAndLoadStreets(true, false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        initializeCacheAndLoadStreets(true, true);
     }
 }
