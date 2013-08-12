@@ -63,9 +63,9 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     public void onResume() {
         super.onResume();
         getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
-                .edit()
-                .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), !UserData.getInstance().isSet())
-                .commit();
+            .edit()
+            .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), !UserData.getInstance().isSet())
+            .commit();
 
         if (!loading) {
             initializeCacheAndLoadStreets(false, false);
@@ -76,34 +76,39 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         if (force || !AddressData.getInstance().isSet()) {
             if (!Network.networkAvailable(this)) {
                 loading = true;
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.noInternetConnection))
-                        .setMessage(getString(R.string.needConnectionAddress))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        loading = false;
-                        finish();
-                    }
-                })
-                        .create().show();
+                if(isPullToRefresh(){
+                    loading = false;
+                    Toast.makeText(getApplicationContext(), getString(R.string.needConnectionAddress), Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.noInternetConnection))
+                    .setMessage(getString(R.string.needConnectionAddress))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            loading = false;
+                            finish();
+                        }
+                    })
+                .create().show();
+                }
             } else {
-                new ParserTask(this, getString(R.string.loadingStreets), !isPullToRefresh) {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        loading = true;
-                    }
+                    new ParserTask(this, getString(R.string.loadingStreets), !isPullToRefresh) {
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            loading = true;
+                        }
 
-                    @Override
-                    protected void onPostExecute(Integer[] result) {
-                        super.onPostExecute(result);
-                        loading = false;
-                        attacher.setRefreshComplete();
-                        loadStreets();
-                    }
-                }.execute(new StreetsParser());
-            }
+                        @Override
+                        protected void onPostExecute(Integer[] result) {
+                            super.onPostExecute(result);
+                            loading = false;
+                            attacher.setRefreshComplete();
+                            loadStreets();
+                        }
+                    }.execute(new StreetsParser());
+                }
         } else {
             loadStreets();
         }
@@ -142,9 +147,9 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
 
     public void submitAddress(int position) {
         getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE)
-                .edit()
-                .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
-                .commit();
+            .edit()
+            .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
+            .commit();
         UserData.getInstance().setAddress((Address) getListView().getItemAtPosition(position));
         finish();
     }

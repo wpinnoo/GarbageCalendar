@@ -152,8 +152,11 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                 }.execute(new CalendarParser());
             } else {
                 loading = true;
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.noInternetConnection))
+                if(isPullToRefresh){
+                    Toast.makeText(getApplicationContext(), getString(R.string.needConnection), Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.noInternetConnection))/
                         .setMessage(getString(R.string.needConnection))
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
@@ -162,7 +165,8 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                         finish();
                     }
                 })
-                        .create().show();
+                .create().show();
+                }
             }
         }
     }
