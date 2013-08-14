@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -152,20 +153,23 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                 }.execute(new CalendarParser());
             } else {
                 loading = true;
-                if(isPullToRefresh){
+                if (isPullToRefresh) {
+                    loading = false;
+                    attacher.setRefreshComplete();
                     Toast.makeText(getApplicationContext(), getString(R.string.needConnection), Toast.LENGTH_SHORT).show();
                 } else {
                     new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.noInternetConnection))/
-                        .setMessage(getString(R.string.needConnection))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        loading = false;
-                        finish();
-                    }
-                })
-                .create().show();
+                            .setTitle(getString(R.string.noInternetConnection))
+                            .setMessage(getString(R.string.needConnection))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            loading = false;
+                            attacher.setRefreshComplete();
+                            finish();
+                        }
+                    })
+                            .create().show();
                 }
             }
         }
