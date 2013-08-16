@@ -156,12 +156,8 @@ public class WidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_date, c.getString(R.string.none));
             }
 
-            Intent intent = new Intent(c, WidgetProvider.class);
-
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(c, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(c, CollectionListActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.widget_date, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
