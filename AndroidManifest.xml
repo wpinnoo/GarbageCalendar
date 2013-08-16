@@ -54,7 +54,7 @@
             </intent-filter>   
         </activity>
         
-        <receiver android:name=".widget.WidgetProvider" >
+        <receiver android:name=".ui.widget.WidgetProvider" >
             <intent-filter >
                 <action 
                     android:name="android.appwidget.action.APPWIDGET_UPDATE" />

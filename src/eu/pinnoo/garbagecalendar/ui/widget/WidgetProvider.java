@@ -1,4 +1,4 @@
-package eu.pinnoo.garbagecalendar.widget;
+package eu.pinnoo.garbagecalendar.ui.widget;
 
 import android.app.Activity;
 import android.app.PendingIntent;
