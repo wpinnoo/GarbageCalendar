@@ -7,6 +7,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
 import eu.pinnoo.garbagecalendar.R;
+import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.ui.AbstractSherlockActivity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +24,12 @@ public class AboutActivity extends AbstractSherlockActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
+
+        AddressCache.initialize(this);
+        CollectionCache.initialize(this);
+        UserAddressCache.initialize(this);
+
+        clearCachedIfRequired();
 
         TextView versionView = (TextView) findViewById(R.id.aboutVersion);
         String version = "";

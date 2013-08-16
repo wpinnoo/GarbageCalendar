@@ -7,7 +7,9 @@ import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -21,6 +23,9 @@ import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.UserData;
+import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
+import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
+import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
 import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
 import eu.pinnoo.garbagecalendar.util.Network;
@@ -49,13 +54,18 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addresses);
 
+        AddressCache.initialize(this);
+        CollectionCache.initialize(this);
+        UserAddressCache.initialize(this);
+
+        clearCachedIfRequired();
+        
         lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
                 submitAddress(i);
             }
         });
-
         attacher = PullToRefreshAttacher.get(this);
         attacher.addRefreshableView(lv, (PullToRefreshAttacher.OnRefreshListener) this);
     }
@@ -89,7 +99,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             loading = false;
-                        attacher.setRefreshComplete();
+                            attacher.setRefreshComplete();
                             finish();
                         }
                     })

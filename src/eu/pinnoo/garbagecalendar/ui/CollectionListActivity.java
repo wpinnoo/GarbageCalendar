@@ -64,15 +64,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         CollectionCache.initialize(this);
         UserAddressCache.initialize(this);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int old = prefs.getInt(LocalConstants.CacheName.VERSION.toString(), 0);
-        int current = getVersionCode();
-        if (old < current) {
-            clearCaches();
-            Editor editor = prefs.edit();
-            editor.putInt(LocalConstants.CacheName.VERSION.toString(), current);
-            editor.commit();
-        }
+        clearCachedIfRequired();
 
         attacher = PullToRefreshAttacher.get(this);
         PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.main_table_scrollview);
@@ -97,12 +89,6 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.col_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public void clearCaches() {
-        AddressCache.getInstance().clear();
-        CollectionCache.getInstance().clear();
-        UserAddressCache.getInstance().clear();
     }
 
     public void initializeCacheAndLoadData() {
@@ -318,15 +304,5 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     @Override
     public void onRefreshStarted(View view) {
         loadCollections(true, true);
-    }
-
-    private int getVersionCode() {
-        try {
-            ComponentName componentName = new ComponentName(this, CollectionListActivity.class);
-            PackageInfo info = getPackageManager().getPackageInfo(componentName.getPackageName(), 0);
-            return info.versionCode;
-        } catch (NameNotFoundException e) {
-            return 0;
-        }
     }
 }
