@@ -252,7 +252,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     private void addTableRow(Collection col, int rowNumber) {
         String date = beautifyDate(col.getDate());
-        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_even_row) : getResources().getColor(R.color.table_even_row);
+        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_even_row) : getResources().getColor(R.color.table_odd_row);
 
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);
