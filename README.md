@@ -2,9 +2,9 @@ GarbageCalendar [![Stories in Ready](https://badge.waffle.io/wpinnoo/GarbageCale
 ===============
 
 GarbageCalendar for Android gives you a nice overview of the garbage collections in your street (currently only in Ghent).   
-
 This app uses open data from [data.gent.be](http://data.gent.be/datasets/ivago-inzamelkalender-0).
 
+Issues in this repo are managed on [waffle.io](https://waffle.io/wpinnoo/GarbageCalendar).
 #### Authors
 * Wouter Pinnoo ([@wpinnoo](http://github.com/wpinnoo))
 
