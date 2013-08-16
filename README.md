@@ -1,5 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/wpinnoo/GarbageCalendar.png?label=ready)](https://waffle.io/wpinnoo/GarbageCalendar)  
-GarbageCalendar
+GarbageCalendar [![Stories in Ready](https://badge.waffle.io/wpinnoo/GarbageCalendar.png?label=ready)](https://waffle.io/wpinnoo/GarbageCalendar)  
 ===============
 
 GarbageCalendar for Android gives you a nice overview of the garbage collections in your street (currently only in Ghent).   
