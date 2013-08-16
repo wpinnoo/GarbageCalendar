@@ -1,18 +1,27 @@
+/* 
+ * Copyright 2013 Wouter Pinnoo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.pinnoo.garbagecalendar.ui;
 
 import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,7 +193,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     }
 
     private void createGUI() {
-        Log.d(LocalConstants.LOG, "Everything done, creating GUI!");
+        Log.d(LocalConstants.LOG, "Everything done, creating UI!");
         TableLayout table = (TableLayout) findViewById(R.id.main_table);
         table.removeViews(0, table.getChildCount());
 
@@ -239,7 +248,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     private void addTableRow(Collection col, int rowNumber) {
         String date = beautifyDate(col.getDate());
-        int backgroundColor = rowNumber % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : LocalConstants.COLOR_TABLE_ODD_ROW;
+        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_even_row) : getResources().getColor(R.color.table_even_row);
 
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.main_table);

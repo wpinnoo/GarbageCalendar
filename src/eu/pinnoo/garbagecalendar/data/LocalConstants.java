@@ -1,7 +1,21 @@
+/* 
+ * Copyright 2013 Wouter Pinnoo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
-import android.graphics.Color;
 import java.text.SimpleDateFormat;
 
 /**
@@ -14,12 +28,7 @@ public class LocalConstants {
     public static final String ENCODING = "iso-8859-1";
     public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
-    public static final String GOOGLE_MAPS_API = "http://maps.googleapis.com/maps/api/geocode/json";
-    public static final String DEFAULT_SECTOR = "-00";
-    public static final String NOTIF_INTENT_COL = "collection";
     public static final String LOG = "eu.pinnoo.garbagecalendar";
-    public static final int COLOR_TABLE_EVEN_ROW = Color.rgb(240, 240, 240);
-    public static final int COLOR_TABLE_ODD_ROW = Color.rgb(219, 219, 219);
 
     public enum DateFormatType {
 
@@ -44,8 +53,6 @@ public class LocalConstants {
         COLLECTIONS_DATA("collectionsdata"),
         USER_DATA("userdata"),
         ADDRESS_DATA("addressdata"),
-        LAST_MOD_COL("lastmodcol"),
-        LAST_MOD_ADDRESSES("lastmodaddresses"),
         COL_REFRESH_NEEDED("colrefreshneeded"),
         VERSION("eu.pinnoo.garbagecalendar.version");
         private String s;

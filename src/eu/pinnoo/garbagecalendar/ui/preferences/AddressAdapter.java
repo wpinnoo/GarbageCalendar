@@ -1,3 +1,18 @@
+/* 
+ * Copyright 2013 Wouter Pinnoo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.content.Context;
@@ -12,7 +27,6 @@ import android.widget.TextView;
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
-import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +48,7 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
         super(context, textViewResourceId, initObjects);
         this.context = context;
 
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         originalValues.addAll(initObjects);
         int objectsIndex = -1;
         String previousSection = "";
@@ -50,10 +65,9 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.address_table_row, null);
         }
-        v.setBackgroundColor(position % 2 == 0 ? LocalConstants.COLOR_TABLE_EVEN_ROW : Color.WHITE);
+        v.setBackgroundColor(position % 2 == 0 ? context.getResources().getColor(R.color.table_even_row) : Color.WHITE);
         TextView addressText = (TextView) v.findViewById(R.id.toptext);
         try {
             addressText.setText(getItem(position).getStreetname() + ", " + getItem(position).getCity());
@@ -142,7 +156,7 @@ public class AddressAdapter extends ArrayAdapter<Address> implements SectionInde
         if (getCount() != originalValues.size()) {
             return 0;
         }
-        String[] array = (String[]) SECTION_MAP.keySet().toArray();
+        String[] array = (String[]) SECTION_MAP.keySet().toArray(new String[SECTION_MAP.size()]);
         for (int i = 0; i < array.length; i++) {
             if (array[i].toUpperCase().equals(getItem(position).getStreetname().toUpperCase().substring(0, 2))) {
                 return i;

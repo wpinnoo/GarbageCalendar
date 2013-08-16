@@ -1,5 +1,22 @@
+/* 
+ * Copyright 2013 Wouter Pinnoo
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.pinnoo.garbagecalendar.data.caches;
 
+import android.util.Log;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,7 +39,10 @@ public class Cache<T extends Serializable> {
 
     public Cache(File dir) {
         if (!dir.exists()) {
-            dir.mkdirs();
+            boolean mkdirs = dir.mkdirs();
+            if (!mkdirs) {
+                Log.e(LocalConstants.LOG, "Error making initial directories for cache");
+            }
         }
         this.dir = dir;
     }
@@ -83,7 +103,10 @@ public class Cache<T extends Serializable> {
     public void invalidate(String key) {
         File cached = new File(dir, key);
         if (cached.exists()) {
-            cached.delete();
+            boolean deleted = cached.delete();
+            if (!deleted) {
+                Log.e(LocalConstants.LOG, "Error deleting file");
+            }
         }
     }
 
@@ -93,7 +116,10 @@ public class Cache<T extends Serializable> {
 
     public void clear() {
         for (File f : dir.listFiles()) {
-            f.delete();
+            boolean deleted = f.delete();
+            if (!deleted) {
+                Log.e(LocalConstants.LOG, "Error deleting file");
+            }
         }
     }
 }
