@@ -30,9 +30,11 @@ public class Cache<T extends Serializable> {
     public T get(String key) {
         T value = null;
         try {
-            ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File(dir, key)));
-            value = (T) stream.readObject();
-            stream.close();
+            if (exists(key)) {
+                ObjectInputStream stream = new ObjectInputStream(new FileInputStream(new File(dir, key)));
+                value = (T) stream.readObject();
+                stream.close();
+            }
         } catch (IOException ex) {
             Logger.getLogger(Cache.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassCastException ex) {
