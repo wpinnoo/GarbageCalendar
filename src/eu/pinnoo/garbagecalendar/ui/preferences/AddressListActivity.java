@@ -19,6 +19,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
 import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
+import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
 import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
@@ -177,7 +180,16 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
                 .commit();
         UserData.getInstance().setAddress((Address) getListView().getItemAtPosition(position));
+        updateAllWidgets();
         finish();
+    }
+
+    private void updateAllWidgets() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, WidgetProvider.class));
+        if (appWidgetIds.length > 0) {
+            new WidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
+        }
     }
 
     @Override

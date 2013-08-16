@@ -18,6 +18,8 @@ package eu.pinnoo.garbagecalendar.ui;
 import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -42,6 +44,7 @@ import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
+import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
 import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
@@ -211,6 +214,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             addTableRow(col, i);
             i++;
         }
+        updateAllWidgets();
     }
 
     private String beautifyDate(Date date) {
@@ -313,5 +317,13 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     @Override
     public void onRefreshStarted(View view) {
         loadCollections(true, true);
+    }
+
+    private void updateAllWidgets() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, WidgetProvider.class));
+        if (appWidgetIds.length > 0) {
+            new WidgetProvider().onUpdate(this, appWidgetManager, appWidgetIds);
+        }
     }
 }
