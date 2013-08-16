@@ -46,7 +46,8 @@ public class LocalConstants {
         ADDRESS_DATA("addressdata"),
         LAST_MOD_COL("lastmodcol"),
         LAST_MOD_ADDRESSES("lastmodaddresses"),
-        COL_REFRESH_NEEDED("colrefreshneeded");
+        COL_REFRESH_NEEDED("colrefreshneeded"),
+        VERSION("eu.pinnoo.garbagecalendar.version");
         private String s;
 
         private CacheName(String s) {
