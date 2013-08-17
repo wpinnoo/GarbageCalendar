@@ -53,6 +53,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
@@ -218,27 +220,26 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     }
 
     private String beautifyDate(Date date) {
-        Date today = Calendar.getInstance().getTime();
-        int daysBetween = (int) ((date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
+        int daysDiff = new DateTime(date).getDayOfYear() - new DateTime(Calendar.getInstance().getTime()).getDayOfYear();
 
-        if (daysBetween < 1) {
+        if (daysDiff == 0) {
             return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.today)
                     + ")";
-        } else if (daysBetween == 1) {
+        } else if (daysDiff == 1) {
             return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.tomorrow)
                     + ")";
-        } else if (daysBetween < 6) {
+        } else if (daysDiff > 0 && daysDiff < 8) {
             return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.thisweek)
                     + " "
                     + LocalConstants.DateFormatType.WEEKDAY.getDateFormatter(this).format(date)
                     + ")";
-        } else if (daysBetween < 13) {
+        } else if (daysDiff > 0 && daysDiff < 15) {
             return LocalConstants.DateFormatType.MAIN_TABLE.getDateFormatter(this).format(date)
                     + " ("
                     + getString(R.string.nextweek)
