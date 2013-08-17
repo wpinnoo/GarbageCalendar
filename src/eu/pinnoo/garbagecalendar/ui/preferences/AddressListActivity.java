@@ -44,8 +44,8 @@ import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
 import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
 import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
-import eu.pinnoo.garbagecalendar.util.Network;
-import eu.pinnoo.garbagecalendar.util.parsers.Parser;
+import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
+import static eu.pinnoo.garbagecalendar.util.parsers.Parser.Result.NO_INTERNET_CONNECTION;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
@@ -62,7 +62,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     private List<Address> list;
     private AddressAdapter adapter;
     private ListView lv;
-    private boolean loading = false;
+    private volatile boolean loading = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,46 +96,49 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         }
     }
 
-    private void initializeCacheAndLoadStreets(boolean force, boolean requiredRefresh) {
+    private void initializeCacheAndLoadStreets(boolean force, final boolean requiredRefresh) {
         if (force || !AddressData.getInstance().isSet()) {
-            if (!Network.networkAvailable(this)) {
-                loading = true;
-                if (!requiredRefresh) {
-                    loading = false;
-                    Toast.makeText(getApplicationContext(), getString(R.string.needConnectionAddress), Toast.LENGTH_SHORT).show();
-                } else {
-                    new AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.noInternetConnection))
-                            .setMessage(getString(R.string.needConnectionAddress))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            loading = false;
-                            finish();
-                        }
-                    })
-                            .create().show();
+            new ParserTask(this, getString(R.string.loadingStreets)) {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    loading = true;
                 }
-            } else {
-                new ParserTask(this, getString(R.string.loadingStreets)) {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        loading = true;
-                    }
 
-                    @Override
-                    protected void onPostExecute(Integer[] result) {
-                        super.onPostExecute(result);
-                        loading = false;
-                        if (result[0] == Parser.DOWNLOADING_ERROR) {
+                @Override
+                protected void onPostExecute(Result[] result) {
+                    super.onPostExecute(result);
+                    switch (result[0]) {
+                        case EMPTY_RESPONSE:
+                        case CONNECTION_FAIL:
                             Toast.makeText(getApplicationContext(), getString(R.string.errorDownload), Toast.LENGTH_SHORT).show();
-                        } else {
+                            break;
+                        case UNKNOWN_ERROR:
+                            Toast.makeText(getApplicationContext(), getString(R.string.unknownError), Toast.LENGTH_SHORT).show();
+                            break;
+                        case NO_INTERNET_CONNECTION:
+                            if (!requiredRefresh) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.needConnectionAddress), Toast.LENGTH_SHORT).show();
+                            } else {
+                                new AlertDialog.Builder(AddressListActivity.this)
+                                        .setTitle(getString(R.string.noInternetConnection))
+                                        .setMessage(getString(R.string.needConnectionAddress))
+                                        .setCancelable(false)
+                                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        loading = false;
+                                        finish();
+                                    }
+                                }).create().show();
+                            }
+                            break;
+                        case SUCCESSFUL:
                             loadStreets();
-                        }
+                            break;
                     }
-                }.execute(new StreetsParser());
-            }
+                    loading = false;
+                }
+            }.execute(new StreetsParser());
         } else {
             loadStreets();
         }

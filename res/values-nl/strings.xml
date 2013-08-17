@@ -52,6 +52,7 @@
     <string name="needConnection">Je hebt een internetverbinding nodig om de kalender te laden.</string>
     <string name="needConnectionAddress">Je hebt een internetverbinding nodig om de lijst met adressen te laden.</string>
     <string name="errorDownload">Kon de data niet downloaden. Probeer later opnieuw.</string>
+    <string name="unknownError">Er is een onverwachte fout opgetreden. Probeer later opnieuw.</string>
     
     <string name="locationSet">Ingesteld op</string>
     <string name="selectAddress">Selecteer jouw adres.</string>
@@ -78,4 +79,5 @@
     
     <string name="widget_setAddress">Stel je adres in\nbij de instellingen\nvan de app.</string>
     <string name="widget_noAvailableConnection">Er is geen internetconnectie\nbeschikbaar om de kalender\nte updaten.</string>
+    <string name="widget_unknownError">Er is een onverwachte\nfout opgetreden. Probeer\nlater opnieuw.</string>
 </resources>

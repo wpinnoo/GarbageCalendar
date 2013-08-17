@@ -28,25 +28,30 @@ import java.util.ArrayList;
  */
 public abstract class Parser {
 
-    public static final int DOWNLOADING_ERROR = 3;
-    public static final int NO_INTERNET_CONNECTION = 2;
+    public enum Result {
+
+        SUCCESSFUL, EMPTY_RESPONSE, NO_INTERNET_CONNECTION, CONNECTION_FAIL, UNKNOWN_ERROR
+    }
 
     protected abstract String getURL();
 
-    protected abstract int fetchData(ArrayList data);
+    protected abstract Result fetchData(ArrayList data);
 
     protected abstract ArrayList downloadData() throws IOException;
 
-    public int loadData(Context c) {
+    public Result loadData(Context c) {
         if (!Network.networkAvailable(c)) {
-            return NO_INTERNET_CONNECTION;
+            return Result.NO_INTERNET_CONNECTION;
         }
         ArrayList arr;
         try {
             arr = downloadData();
         } catch (IOException e) {
             Log.d(LocalConstants.LOG, e.getMessage());
-            return DOWNLOADING_ERROR;
+            return Result.CONNECTION_FAIL;
+        }
+        if (arr == null) {
+            return Result.EMPTY_RESPONSE;
         }
         return fetchData(arr);
     }

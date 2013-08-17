@@ -45,8 +45,8 @@ import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
-import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
+import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.Calendar;
@@ -54,7 +54,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
@@ -64,7 +63,7 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
  */
 public class CollectionListActivity extends AbstractSherlockActivity implements PullToRefreshAttacher.OnRefreshListener {
 
-    private boolean loading = false;
+    private volatile boolean loading = false;
     private PullToRefreshAttacher attacher;
 
     @Override
@@ -144,56 +143,61 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                     loading = false;
                     finish();
                 }
-            })
-                    .create().show();
+            }).create().show();
         }
     }
 
-    public void loadCollections(boolean force, boolean isPullToRefresh) {
+    public void loadCollections(boolean force, final boolean isPullToRefresh) {
         if (!force && CollectionsData.getInstance().isSet()) {
             createGUI();
         } else {
             if (!UserData.getInstance().isSet()) {
                 return;
             }
-            if (Network.networkAvailable(this)) {
-                new ParserTask(this, getString(R.string.loadingCalendar), !isPullToRefresh) {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        loading = true;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Integer[] result) {
-                        super.onPostExecute(result);
-                        loading = false;
-                        attacher.setRefreshComplete();
-                        UserData.getInstance().changeCommitted();
-                        createGUI();
-                    }
-                }.execute(new CalendarParser());
-            } else {
-                loading = true;
-                if (isPullToRefresh) {
-                    loading = false;
-                    attacher.setRefreshComplete();
-                    Toast.makeText(getApplicationContext(), getString(R.string.needConnection), Toast.LENGTH_SHORT).show();
-                } else {
-                    new AlertDialog.Builder(this)
-                            .setTitle(getString(R.string.noInternetConnection))
-                            .setMessage(getString(R.string.needConnection))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            loading = false;
-                            attacher.setRefreshComplete();
-                            finish();
-                        }
-                    })
-                            .create().show();
+            new ParserTask(this, getString(R.string.loadingCalendar), !isPullToRefresh) {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    loading = true;
                 }
-            }
+
+                @Override
+                protected void onPostExecute(Result[] result) {
+                    super.onPostExecute(result);
+                    switch (result[0]) {
+                        case EMPTY_RESPONSE:
+                        case CONNECTION_FAIL:
+                            Toast.makeText(getApplicationContext(), getString(R.string.errorDownload), Toast.LENGTH_SHORT).show();
+                            break;
+                        case UNKNOWN_ERROR:
+                            Toast.makeText(getApplicationContext(), getString(R.string.unknownError), Toast.LENGTH_SHORT).show();
+                            break;
+                        case NO_INTERNET_CONNECTION:
+                            if (isPullToRefresh) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.needConnection), Toast.LENGTH_SHORT).show();
+                            } else {
+                                new AlertDialog.Builder(CollectionListActivity.this)
+                                        .setTitle(getString(R.string.noInternetConnection))
+                                        .setMessage(getString(R.string.needConnection))
+                                        .setCancelable(false)
+                                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        loading = false;
+                                        attacher.setRefreshComplete();
+                                        finish();
+                                    }
+                                }).create().show();
+                            }
+                            break;
+                        case SUCCESSFUL:
+                            UserData.getInstance().changeCommitted();
+                            createGUI();
+                            break;
+                    }
+                    attacher.setRefreshComplete();
+                    loading = false;
+                }
+            }.execute(new CalendarParser());
         }
     }
 

@@ -15,6 +15,7 @@
  */
 package eu.pinnoo.garbagecalendar.util.parsers;
 
+import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -40,32 +41,32 @@ public class CalendarParser extends Parser {
         return LocalConstants.CALENDAR_URL;
     }
 
-    /**
-     *
-     * @param data
-     * @return 0 when fetching was successful, otherwise 1
-     */
     @Override
-    protected int fetchData(ArrayList data) {
-        if (data == null) {
-            return 1;
-        }
-        ArrayList<Collection> list = new ArrayList<Collection>();
-        String previousDate = "";
-        for (int i = 0; i < data.size(); i++) {
-            PrimitiveCollection prCol = (PrimitiveCollection) data.get(i);
-            Collection col = new Collection(prCol);
-            if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
-                if (prCol.datum.equals(previousDate)) {
-                    list.get(list.size() - 1).addTypes(Collection.parseGarbageType(prCol.fractie));
-                } else {
-                    list.add(col);
+    protected Result fetchData(ArrayList data) {
+        try {
+            ArrayList<Collection> list = new ArrayList<Collection>();
+            String previousDate = "";
+            for (int i = 0; i < data.size(); i++) {
+                PrimitiveCollection prCol = (PrimitiveCollection) data.get(i);
+                Collection col = new Collection(prCol);
+                if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
+                    if (prCol.datum.equals(previousDate)) {
+                        list.get(list.size() - 1).addTypes(Collection.parseGarbageType(prCol.fractie));
+                    } else {
+                        list.add(col);
+                    }
+                    previousDate = prCol.datum;
                 }
-                previousDate = prCol.datum;
             }
+            CollectionsData.getInstance().setCollections(list);
+        } catch (NullPointerException e) {
+            Log.d(LocalConstants.LOG, e.getMessage());
+            return Result.UNKNOWN_ERROR;
+        } catch (ClassCastException e) {
+            Log.d(LocalConstants.LOG, e.getMessage());
+            return Result.UNKNOWN_ERROR;
         }
-        CollectionsData.getInstance().setCollections(list);
-        return 0;
+        return Result.SUCCESSFUL;
     }
 
     @Override

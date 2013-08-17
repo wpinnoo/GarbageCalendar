@@ -38,8 +38,9 @@ import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.ui.CollectionListActivity;
 import eu.pinnoo.garbagecalendar.ui.preferences.AddressListActivity;
-import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
+import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
+import static eu.pinnoo.garbagecalendar.util.parsers.Parser.Result.UNKNOWN_ERROR;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.Calendar;
@@ -56,13 +57,11 @@ public class WidgetProvider extends AppWidgetProvider {
     private final String SET_BACKGROUND_RES = "setBackgroundResource";
     private Context c;
     private AppWidgetManager appWidgetManager;
-    private int[] appWidgetIds;
 
     @Override
     public void onUpdate(Context c, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         this.c = c;
         this.appWidgetManager = appWidgetManager;
-        this.appWidgetIds = appWidgetIds;
 
         AddressCache.initialize(c);
         CollectionCache.initialize(c);
@@ -120,12 +119,10 @@ public class WidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_rest, hasType ? Type.REST.shortStrValue(c) : "");
                 if (hasType) {
                     switch (currentAreaType) {
-                        case V:
-                            remoteViews.setInt(R.id.widget_rest, SET_BACKGROUND_RES, R.drawable.widget_rest_v_activated_shape);
-                            break;
                         case L:
                             remoteViews.setInt(R.id.widget_rest, SET_BACKGROUND_RES, R.drawable.widget_rest_l_activated_shape);
                             break;
+                        case V:
                         default:
                             remoteViews.setInt(R.id.widget_rest, SET_BACKGROUND_RES, R.drawable.widget_rest_v_activated_shape);
                     }
@@ -203,18 +200,26 @@ public class WidgetProvider extends AppWidgetProvider {
             if (!UserData.getInstance().isSet()) {
                 updateWidgetErrorView(c.getString(R.string.widget_setAddress), AddressListActivity.class);
             }
-            if (Network.networkAvailable(c)) {
-                new ParserTask(c) {
-                    @Override
-                    protected void onPostExecute(Integer[] result) {
-                        super.onPostExecute(result);
-                        UserData.getInstance().changeCommitted();
-                        updateWidgetView();
+            new ParserTask(c) {
+                @Override
+                protected void onPostExecute(Result[] result) {
+                    super.onPostExecute(result);
+                    switch (result[0]) {
+                        case SUCCESSFUL:
+                            UserData.getInstance().changeCommitted();
+                            updateWidgetView();
+                            break;
+                        case NO_INTERNET_CONNECTION:
+                            updateWidgetErrorView(c.getString(R.string.widget_noAvailableConnection), CollectionListActivity.class);
+                            break;
+                        case EMPTY_RESPONSE:
+                        case CONNECTION_FAIL:
+                        case UNKNOWN_ERROR:
+                            updateWidgetErrorView(c.getString(R.string.widget_unknownError), CollectionListActivity.class);
+                            break;
                     }
-                }.execute(new CalendarParser());
-            } else {
-                updateWidgetErrorView(c.getString(R.string.widget_noAvailableConnection), CollectionListActivity.class);
-            }
+                }
+            }.execute(new CalendarParser());
         }
     }
 }

@@ -21,12 +21,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.parsers.Parser;
+import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
+public class ParserTask extends AsyncTask<Parser, Integer, Result[]> {
 
     protected ProgressDialog dialog;
     private Context context;
@@ -60,8 +61,8 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     }
 
     @Override
-    protected Integer[] doInBackground(Parser... params) {
-        Integer[] results = new Integer[params.length];
+    protected Result[] doInBackground(Parser... params) {
+        Result[] results = new Result[params.length];
         for (int i = 0; i < params.length; i++) {
             Log.d(LocalConstants.LOG, "Starting with " + params[i].getClass().getName() + "...");
             long start = System.currentTimeMillis();
@@ -77,7 +78,7 @@ public class ParserTask extends AsyncTask<Parser, Integer, Integer[]> {
     }
 
     @Override
-    protected void onPostExecute(Integer[] result) {
+    protected void onPostExecute(Result[] result) {
         if (showDialog) {
             dialog.dismiss();
         }

@@ -15,6 +15,7 @@
  */
 package eu.pinnoo.garbagecalendar.util.parsers;
 
+import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -40,24 +41,23 @@ public class StreetsParser extends Parser {
         return LocalConstants.STREETS_URL;
     }
 
-    /**
-     *
-     * @param data
-     * @return 0 when fetching was successful, otherwise 1
-     */
     @Override
-    protected int fetchData(ArrayList data) {
-        if (data == null) {
-            return 1;
+    protected Result fetchData(ArrayList data) {
+        try {
+            ArrayList<Address> list = new ArrayList<Address>();
+            for (int i = 0; i < data.size(); i++) {
+                PrimitiveAddress prAddr = (PrimitiveAddress) data.get(i);
+                list.add(new Address(prAddr));
+            }
+            AddressData.getInstance().setAddresses(list);
+        } catch (NullPointerException e) {
+            Log.d(LocalConstants.LOG, e.getMessage());
+            return Result.UNKNOWN_ERROR;
+        } catch (ClassCastException e) {
+            Log.d(LocalConstants.LOG, e.getMessage());
+            return Result.UNKNOWN_ERROR;
         }
-
-        ArrayList<Address> list = new ArrayList<Address>();
-        for (int i = 0; i < data.size(); i++) {
-            PrimitiveAddress prAddr = (PrimitiveAddress) data.get(i);
-            list.add(new Address(prAddr));
-        }
-        AddressData.getInstance().setAddresses(list);
-        return 0;
+        return Result.SUCCESSFUL;
     }
 
     @Override

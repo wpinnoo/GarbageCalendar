@@ -48,9 +48,9 @@ public class TableRowListener implements OnClickListener {
         TextView typesview = (TextView) customView.findViewById(R.id.rowDialogTypes);
         typesview.setText(col.getTypesToString(v.getContext()));
 
-        AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
-        b.setView(customView);
-        b.setCancelable(true);
-        b.create().show();
+        new AlertDialog.Builder(v.getContext())
+                .setView(customView)
+                .setCancelable(true)
+                .create().show();
     }
 }
