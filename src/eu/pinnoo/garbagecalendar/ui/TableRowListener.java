@@ -39,7 +39,7 @@ public class TableRowListener implements OnClickListener {
 
     public void onClick(View v) {
         LayoutInflater li = LayoutInflater.from(v.getContext());
-        View customView = li.inflate(R.layout.row_dialog, null);
+        View customView = li.inflate(R.layout.col_row_dialog, null);
 
         TextView textview = (TextView) customView.findViewById(R.id.rowDialogDate);
         SimpleDateFormat formatter = LocalConstants.DateFormatType.FULL.getDateFormatter(v.getContext());

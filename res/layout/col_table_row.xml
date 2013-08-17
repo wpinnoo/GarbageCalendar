@@ -21,7 +21,7 @@
                   android:orientation="vertical"
                   android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/main_row_date"
+            android:id="@+id/row_date"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
@@ -34,11 +34,13 @@
             android:gravity="center"
             android:layout_height="wrap_content">
             <TextView  
-                android:id="@+id/main_row_rest"
+                android:id="@+id/row_rest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:padding="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="10dp"
@@ -46,11 +48,13 @@
                 android:textColor="@android:color/white"
             />
             <TextView  
-                android:id="@+id/main_row_gft"
+                android:id="@+id/row_gft"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:padding="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="3dp"
@@ -58,11 +62,13 @@
                 android:textColor="@android:color/white"
             />
             <TextView  
-                android:id="@+id/main_row_pmd"
+                android:id="@+id/row_pmd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:padding="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="3dp"
@@ -70,11 +76,13 @@
                 android:textColor="@android:color/white"
             />
             <TextView  
-                android:id="@+id/main_row_pk"
+                android:id="@+id/row_pk"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:padding="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="3dp"
@@ -82,11 +90,13 @@
                 android:textColor="@android:color/white"
             />
             <TextView  
-                android:id="@+id/main_row_glas"
+                android:id="@+id/row_glas"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
+                android:layout_weight="5"
                 android:gravity="center"
+                android:textAlignment="center"
+                android:padding="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="3dp"

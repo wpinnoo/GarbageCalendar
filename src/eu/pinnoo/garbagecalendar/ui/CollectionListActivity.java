@@ -69,7 +69,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.collections);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(false);
 
@@ -80,7 +80,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         clearCachedIfRequired();
 
         attacher = PullToRefreshAttacher.get(this);
-        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.main_table_scrollview);
+        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.col_table_scrollview);
         ptrLayout.setPullToRefreshAttacher(attacher, (PullToRefreshAttacher.OnRefreshListener) this);
     }
 
@@ -203,7 +203,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     private void createGUI() {
         Log.d(LocalConstants.LOG, "Everything done, creating UI!");
-        TableLayout table = (TableLayout) findViewById(R.id.main_table);
+        TableLayout table = (TableLayout) findViewById(R.id.col_table);
         table.removeViews(0, table.getChildCount());
 
         List<Collection> collections = CollectionsData.getInstance().getCollections();
@@ -260,10 +260,10 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_even_row) : getResources().getColor(R.color.table_odd_row);
 
         LayoutInflater inflater = getLayoutInflater();
-        TableLayout tl = (TableLayout) findViewById(R.id.main_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.main_table_row, tl, false);
+        TableLayout tl = (TableLayout) findViewById(R.id.col_table);
+        TableRow tr = (TableRow) inflater.inflate(R.layout.col_table_row, tl, false);
 
-        TextView labelDate = (TextView) tr.findViewById(R.id.main_row_date);
+        TextView labelDate = (TextView) tr.findViewById(R.id.row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
         labelDate.setTextColor(Color.BLACK);
@@ -274,33 +274,28 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
 
         boolean hasType = col.hasType(Type.REST);
-        TextView labelRest = (TextView) tr.findViewById(R.id.main_row_rest);
+        TextView labelRest = (TextView) tr.findViewById(R.id.row_rest);
         labelRest.setText(hasType ? Type.REST.shortStrValue(this) : "");
-        labelRest.setPadding(1, 5, 5, 5);
         labelRest.setBackgroundColor(hasType ? Type.REST.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.GFT);
-        TextView labelGFT = (TextView) tr.findViewById(R.id.main_row_gft);
+        TextView labelGFT = (TextView) tr.findViewById(R.id.row_gft);
         labelGFT.setText(hasType ? Type.GFT.shortStrValue(this) : "");
-        labelGFT.setPadding(1, 5, 5, 5);
         labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.PMD);
-        TextView labelPMD = (TextView) tr.findViewById(R.id.main_row_pmd);
+        TextView labelPMD = (TextView) tr.findViewById(R.id.row_pmd);
         labelPMD.setText(hasType ? Type.PMD.shortStrValue(this) : "");
-        labelPMD.setPadding(1, 5, 5, 5);
         labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.PK);
-        TextView labelPK = (TextView) tr.findViewById(R.id.main_row_pk);
+        TextView labelPK = (TextView) tr.findViewById(R.id.row_pk);
         labelPK.setText(hasType ? Type.PK.shortStrValue(this) : "");
-        labelPK.setPadding(1, 5, 5, 5);
         labelPK.setBackgroundColor(hasType ? Type.PK.getColor(this, currentAreaType) : backgroundColor);
 
         hasType = col.hasType(Type.GLAS);
-        TextView labelGlas = (TextView) tr.findViewById(R.id.main_row_glas);
+        TextView labelGlas = (TextView) tr.findViewById(R.id.row_glas);
         labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
-        labelGlas.setPadding(1, 5, 5, 5);
         labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(this, currentAreaType) : backgroundColor);
 
         tl.addView(tr);
