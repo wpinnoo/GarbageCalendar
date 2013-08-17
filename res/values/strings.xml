@@ -51,6 +51,7 @@
     <string name="noInternetConnection">No internet connection.</string>
     <string name="needConnection">You need an internet connection to load the calendar.</string>
     <string name="needConnectionAddress">You need an internet connection to load the address list.</string>
+    <string name="errorDownload">Error while downloading data. Please try again later.</string>
     
     <string name="locationSet">Set on</string>
     <string name="selectAddress">Select your address.</string>

@@ -15,7 +15,6 @@
  */
 package eu.pinnoo.garbagecalendar.util.parsers;
 
-import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -70,19 +69,14 @@ public class CalendarParser extends Parser {
     }
 
     @Override
-    protected ArrayList downloadData() {
+    protected ArrayList downloadData() throws IOException {
         ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
-        try {
-            InputStream inp = Network.getStream(getURL());
-            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
-            PrimitiveCollectionList results = new GsonBuilder().create().fromJson(reader, PrimitiveCollectionList.class);
-            list.addAll((java.util.Collection<PrimitiveCollection>) results.list);
-            reader.close();
-        } catch (IOException e) {
-            Log.d(LocalConstants.LOG, e.toString());
-        } finally {
-            return list;
-        }
+        InputStream inp = Network.getStream(getURL());
+        JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+        PrimitiveCollectionList results = new GsonBuilder().create().fromJson(reader, PrimitiveCollectionList.class);
+        list.addAll((java.util.Collection<PrimitiveCollection>) results.list);
+        reader.close();
+        return list;
     }
 
     public class PrimitiveCollectionList {

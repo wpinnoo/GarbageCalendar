@@ -45,6 +45,7 @@ import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
 import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
 import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
 import eu.pinnoo.garbagecalendar.util.Network;
+import eu.pinnoo.garbagecalendar.util.parsers.Parser;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
@@ -127,7 +128,11 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
                         loading = false;
-                        loadStreets();
+                        if (result[0] == Parser.DOWNLOADING_ERROR) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.errorDownload), Toast.LENGTH_SHORT).show();
+                        } else {
+                            loadStreets();
+                        }
                     }
                 }.execute(new StreetsParser());
             }

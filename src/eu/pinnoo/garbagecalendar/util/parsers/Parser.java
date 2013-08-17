@@ -16,7 +16,10 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
 import android.content.Context;
+import android.util.Log;
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.Network;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -25,19 +28,26 @@ import java.util.ArrayList;
  */
 public abstract class Parser {
 
-    public static final int NO_INTERNET_CONNECTION = 1;
+    public static final int DOWNLOADING_ERROR = 3;
+    public static final int NO_INTERNET_CONNECTION = 2;
 
     protected abstract String getURL();
 
     protected abstract int fetchData(ArrayList data);
 
-    protected abstract ArrayList downloadData();
+    protected abstract ArrayList downloadData() throws IOException;
 
     public int loadData(Context c) {
         if (!Network.networkAvailable(c)) {
             return NO_INTERNET_CONNECTION;
         }
-        ArrayList arr = downloadData();
+        ArrayList arr;
+        try {
+            arr = downloadData();
+        } catch (IOException e) {
+            Log.d(LocalConstants.LOG, e.getMessage());
+            return DOWNLOADING_ERROR;
+        }
         return fetchData(arr);
     }
 }

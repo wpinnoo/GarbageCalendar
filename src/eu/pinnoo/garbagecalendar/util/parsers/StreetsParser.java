@@ -15,7 +15,6 @@
  */
 package eu.pinnoo.garbagecalendar.util.parsers;
 
-import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
@@ -62,19 +61,14 @@ public class StreetsParser extends Parser {
     }
 
     @Override
-    protected ArrayList downloadData() {
+    protected ArrayList downloadData() throws IOException {
         ArrayList<PrimitiveAddress> list = new ArrayList<PrimitiveAddress>();
-        try {
-            InputStream inp = Network.getStream(getURL());
-            JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
-            PrimitiveAddressList results = new GsonBuilder().create().fromJson(reader, PrimitiveAddressList.class);
-            list.addAll((Collection<PrimitiveAddress>) results.list);
-            reader.close();
-        } catch (IOException e) {
-            Log.d(LocalConstants.LOG, e.toString());
-        } finally {
-            return list;
-        }
+        InputStream inp = Network.getStream(getURL());
+        JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
+        PrimitiveAddressList results = new GsonBuilder().create().fromJson(reader, PrimitiveAddressList.class);
+        list.addAll((Collection<PrimitiveAddress>) results.list);
+        reader.close();
+        return list;
     }
 
     public class PrimitiveAddressList {
