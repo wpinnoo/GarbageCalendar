@@ -86,7 +86,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent intent = new Intent(c, target);
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
 
-            remoteViews.setOnClickPendingIntent(R.id.widget_error_message, pendingIntent);
+            remoteViews.setOnClickPendingIntent(R.id.layout, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
     }
@@ -158,7 +158,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             Intent intent = new Intent(c, CollectionListActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.widget_date, pendingIntent);
+            remoteViews.setOnClickPendingIntent(R.id.layout, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
     }
