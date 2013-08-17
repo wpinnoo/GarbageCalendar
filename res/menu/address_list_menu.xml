@@ -19,7 +19,12 @@
     <item android:id="@+id/address_search"
           android:icon="@android:drawable/ic_menu_search"
           android:title="@string/address_search"
-          android:showAsAction="always"
+          android:showAsAction="ifRoom"
           android:actionViewClass="com.actionbarsherlock.widget.SearchView"
+    />
+    <item android:id="@+id/refresh"
+          android:icon="@drawable/ic_menu_refresh"
+          android:title="@string/refresh"
+          android:showAsAction="never"
     />
 </menu>

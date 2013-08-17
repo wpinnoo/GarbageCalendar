@@ -51,19 +51,17 @@ import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressListActivity extends AbstractSherlockListActivity implements SearchView.OnQueryTextListener, PullToRefreshAttacher.OnRefreshListener {
+public class AddressListActivity extends AbstractSherlockListActivity implements SearchView.OnQueryTextListener {
 
     private List<Address> list;
     private AddressAdapter adapter;
     private ListView lv;
     private boolean loading = false;
-    private PullToRefreshAttacher attacher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,8 +80,6 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 submitAddress(i);
             }
         });
-        attacher = PullToRefreshAttacher.get(this);
-        attacher.addRefreshableView(lv, (PullToRefreshAttacher.OnRefreshListener) this);
     }
 
     @Override
@@ -95,17 +91,16 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 .commit();
 
         if (!loading) {
-            initializeCacheAndLoadStreets(false, false);
+            initializeCacheAndLoadStreets(false, true);
         }
     }
 
-    private void initializeCacheAndLoadStreets(boolean force, boolean isPullToRefresh) {
+    private void initializeCacheAndLoadStreets(boolean force, boolean requiredRefresh) {
         if (force || !AddressData.getInstance().isSet()) {
             if (!Network.networkAvailable(this)) {
                 loading = true;
-                if (isPullToRefresh) {
+                if (!requiredRefresh) {
                     loading = false;
-                    attacher.setRefreshComplete();
                     Toast.makeText(getApplicationContext(), getString(R.string.needConnectionAddress), Toast.LENGTH_SHORT).show();
                 } else {
                     new AlertDialog.Builder(this)
@@ -115,14 +110,13 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             loading = false;
-                            attacher.setRefreshComplete();
                             finish();
                         }
                     })
                             .create().show();
                 }
             } else {
-                new ParserTask(this, getString(R.string.loadingStreets), !isPullToRefresh) {
+                new ParserTask(this, getString(R.string.loadingStreets)) {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
@@ -133,7 +127,6 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                     protected void onPostExecute(Integer[] result) {
                         super.onPostExecute(result);
                         loading = false;
-                        attacher.setRefreshComplete();
                         loadStreets();
                     }
                 }.execute(new StreetsParser());
@@ -208,6 +201,17 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                initializeCacheAndLoadStreets(true, false);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         if (lv.getChildCount() == 1) {
             submitAddress(0);
@@ -219,10 +223,5 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
     public boolean onQueryTextChange(String newText) {
         adapter.getFilter().filter(newText);
         return true;
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        initializeCacheAndLoadStreets(true, true);
     }
 }
