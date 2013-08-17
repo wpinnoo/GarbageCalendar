@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
  */
 public class LocalConstants {
 
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final String ENCODING = "iso-8859-1";
     public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
