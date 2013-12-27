@@ -65,3 +65,4 @@ ant.properties
 /libs/actionbarsherlock/nbandroid/
 /libs/ab-pull-torefresh/nbandroid/
 /libs/ab-pull-to-refresh/nbandroid/
+keystore/
