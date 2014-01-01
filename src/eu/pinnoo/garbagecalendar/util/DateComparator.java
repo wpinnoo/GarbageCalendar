@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.pinnoo.garbagecalendar.data;
+package eu.pinnoo.garbagecalendar.util;
+
+import eu.pinnoo.garbagecalendar.data.Collection;
+import java.util.Comparator;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class PrimitiveCollection {
+public class DateComparator implements Comparator<Collection> {
 
-    public String sector;
-    public String datum;
-    public String Fractie;
+    public int compare(Collection lhs, Collection rhs) {
+        return lhs.getDate().compareTo(rhs.getDate());
+    }
 }

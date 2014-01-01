@@ -24,40 +24,44 @@ import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.PrimitiveCollection;
 import eu.pinnoo.garbagecalendar.data.UserData;
+import eu.pinnoo.garbagecalendar.util.DateComparator;
 import eu.pinnoo.garbagecalendar.util.Network;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public class CalendarParser extends Parser {
-
+    
     @Override
     protected String getURL() {
         return LocalConstants.CALENDAR_URL;
     }
-
+    
     @Override
     protected Result fetchData(ArrayList data) {
         try {
             ArrayList<Collection> list = new ArrayList<Collection>();
-            String previousDate = "";
+            HashMap<String, Integer> previousCollections = new HashMap<String, Integer>();
             for (int i = 0; i < data.size(); i++) {
                 PrimitiveCollection prCol = (PrimitiveCollection) data.get(i);
                 Collection col = new Collection(prCol);
                 if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
-                    if (prCol.datum.equals(previousDate)) {
-                        list.get(list.size() - 1).addTypes(Collection.parseGarbageType(prCol.fractie));
+                    if (previousCollections.containsKey(prCol.datum)) {
+                        list.get(previousCollections.get(prCol.datum)).addTypes(Collection.parseGarbageType(prCol.Fractie));
                     } else {
                         list.add(col);
+                        previousCollections.put(prCol.datum, list.indexOf(col));
                     }
-                    previousDate = prCol.datum;
                 }
             }
+            Collections.sort(list, new DateComparator());
             CollectionsData.getInstance().setCollections(list);
         } catch (NullPointerException e) {
             Log.d(LocalConstants.LOG, e.getMessage());
@@ -68,7 +72,7 @@ public class CalendarParser extends Parser {
         }
         return Result.SUCCESSFUL;
     }
-
+    
     @Override
     protected ArrayList downloadData() throws IOException {
         ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
@@ -79,10 +83,10 @@ public class CalendarParser extends Parser {
         reader.close();
         return list;
     }
-
+    
     public class PrimitiveCollectionList {
-
-        @SerializedName("IVAGO-Inzamelkalender")
+        
+        @SerializedName("IvagoOphaalkalender2014")
         public ArrayList<PrimitiveCollection> list;
     }
 }

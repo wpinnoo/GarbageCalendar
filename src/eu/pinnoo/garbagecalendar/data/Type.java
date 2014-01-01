@@ -29,6 +29,8 @@ public enum Type {
     PMD("pmd"),
     PK("pk"),
     GLAS("glas"),
+    KERSTBOOM("kerst"),
+    GROF("grof"),
     NONE("none");
     private String strValue;
 

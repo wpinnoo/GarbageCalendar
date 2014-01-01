@@ -56,7 +56,7 @@ public class Sector implements Serializable {
     }
 
     public Sector(String str) {
-        if (str.length() == 3) {
+        if (str.matches("[LlVv][0-9][0-9]")) {
             switch (str.charAt(0)) {
                 case 'L':
                     type = AreaType.L;
@@ -68,6 +68,9 @@ public class Sector implements Serializable {
                     type = AreaType.NONE;
             }
             code = str.substring(1);
+        } else {
+            type = AreaType.CITY;
+            code = str;
         }
     }
 

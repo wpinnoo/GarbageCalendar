@@ -26,13 +26,13 @@ public class LocalConstants {
 
     public static final boolean DEBUG = true;
     public static final String ENCODING = "iso-8859-1";
-    public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Inzamelkalender.json";
+    public static final String CALENDAR_URL = "http://datatank.gent.be/MilieuEnNatuur/IvagoOphaalkalender2014.json";
     public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
     public static final String LOG = "eu.pinnoo.garbagecalendar";
 
     public enum DateFormatType {
 
-        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy"), WIDGET("EEE,\nd MMM");
+        MAIN_TABLE("EEE, d MMMM"), WEEKDAY("EEEE"), SHORT_WEEKDAY("EEE"), FULL("EEEE d MMMM"), NORMAL("dd/MM/yyyy"), REVERSE("yyyy-MM-dd"), WIDGET("EEE,\nd MMM");
         private String dateFormat;
 
         private DateFormatType(String dateFormat) {

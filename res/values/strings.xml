@@ -23,12 +23,16 @@
     <string name="pmd_short">Plastic</string>
     <string name="pk_short">Paper</string>
     <string name="glas_short">Glass</string>
+    <string name="kerst_short">Christmas trees</string>
+    <string name="grof_short">Bulky</string>
     
     <string name="rest_long">Municipal solid waste</string>
     <string name="gft_long">Green</string>
     <string name="pmd_long">Plastics and metals</string>
     <string name="pk_long">Paper and paperboard</string>
     <string name="glas_long">Glass</string>
+    <string name="kerst_long">Kerstbomen</string>
+    <string name="grof_long">Bulky waste (on request)</string>
     
     <string name="close">Close</string>
     

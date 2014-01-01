@@ -16,6 +16,7 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
+import com.google.analytics.tracking.android.Log;
 import eu.pinnoo.garbagecalendar.R;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -29,30 +30,24 @@ import java.util.HashMap;
 public class Collection implements Serializable {
 
     private static final long serialVersionUID = -4787102199050536373L;
-    private String weekCode;
-    private String day;
     private Date date;
     private Type[] types;
     private Sector sector;
 
-    public Collection(String weekCode, String day, Date date, Type[] types, Sector sector) {
-        this.weekCode = weekCode;
-        this.day = day;
+    public Collection(Date date, Type[] types, Sector sector) {
         this.date = date;
         this.types = types;
         this.sector = sector;
     }
 
     public Collection(PrimitiveCollection col) {
-        this.weekCode = col.week;
-        this.day = col.dag;
         try {
-            this.date = LocalConstants.DateFormatType.NORMAL.getDateFormatter(null).parse(col.datum);
+            this.date = LocalConstants.DateFormatType.REVERSE.getDateFormatter(null).parse(col.datum);
         } catch (ParseException ex) {
             this.date = new Date();
         }
-        this.types = parseGarbageType(col.fractie);
-        this.sector = new Sector(col.locatie);
+        this.types = parseGarbageType(col.Fractie);
+        this.sector = new Sector(col.sector);
     }
 
     public Date getDate() {
@@ -95,9 +90,11 @@ public class Collection implements Serializable {
     }
 
     public boolean hasType(Type t) {
-        for (Type type : getTypes()) {
-            if (type.equals(t)) {
-                return true;
+        if (t != null) {
+            for (Type type : getTypes()) {
+                if (type.equals(t)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -109,19 +106,26 @@ public class Collection implements Serializable {
 
     public static Type[] parseGarbageType(String str) {
         HashMap<String, Type> map = new HashMap<String, Type>();
-        map.put("Rest", Type.REST);
+        map.put("REST", Type.REST);
         map.put("GFT", Type.GFT);
         map.put("PMD", Type.PMD);
-        map.put("Papier & karton", Type.PK);
-        map.put("Glas", Type.GLAS);
+        map.put("PAPIER", Type.PK);
+        map.put("GLAS", Type.GLAS);
+        map.put("GROFVUIL OP AANVRAAG", Type.GROF);
+        map.put("KERSTBOMEN", Type.KERSTBOOM);
 
-        String[] types = str.split("/");
-        Type[] results = new Type[types.length];
-        for (int i = 0; i < types.length; i++) {
-            if (map.containsKey(types[i].trim())) {
-                results[i] = map.get(types[i].trim());
+        String[] splittedTypes = str.split("/");
+        Type[] results;
+
+        results = new Type[splittedTypes.length];
+        for (int i = 0; i < splittedTypes.length; i++) {
+            if (map.containsKey(splittedTypes[i].trim())) {
+                results[i] = map.get(splittedTypes[i].trim());
+            } else {
+                results[i] = Type.NONE;
             }
         }
+
         return results;
     }
 }

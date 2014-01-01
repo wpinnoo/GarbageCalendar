@@ -24,7 +24,7 @@ import android.content.res.Resources;
  */
 public enum AreaType {
 
-    V("V"), L("L"), NONE("none");
+    V("V"), L("L"), CITY("city"), NONE("none");
     private final String str;
 
     private AreaType(final String str) {
@@ -38,7 +38,7 @@ public enum AreaType {
 
     public int getColor(Context c) {
         Resources res = c.getResources();
-        if (this == NONE) {
+        if (this == NONE || this == CITY) {
             return res.getColor(res.getIdentifier(str, "color", c.getPackageName()));
         } else {
             return res.getColor(res.getIdentifier(Type.REST.getStrValue() + str, "color", c.getPackageName()));

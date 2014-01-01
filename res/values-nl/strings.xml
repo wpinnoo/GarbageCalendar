@@ -23,12 +23,16 @@
     <string name="pmd_short">PMD</string>
     <string name="pk_short">Papier</string>
     <string name="glas_short">Glas</string>
+    <string name="kerst_short">Kerstbomen</string>
+    <string name="grof_short">Grofvuil</string>
     
     <string name="rest_long">Restafval</string>
     <string name="gft_long">GFT</string>
     <string name="pmd_long">PMD</string>
     <string name="pk_long">Papier en karton</string>
     <string name="glas_long">Glas</string>
+    <string name="kerst_long">Kerstbomen</string>
+    <string name="grof_long">Grofvuil (op aanvraag)</string>
     
     <string name="close">Sluit</string>
     
