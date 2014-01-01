@@ -54,7 +54,7 @@ public class CalendarParser extends Parser {
                 Collection col = new Collection(prCol);
                 if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
                     if (previousCollections.containsKey(prCol.datum)) {
-                        list.get(previousCollections.get(prCol.datum)).getTypes().addAll(Collection.parseGarbageType(prCol.Fractie));
+                        list.get(previousCollections.get(prCol.datum)).addTypes(Collection.parseGarbageType(prCol.Fractie));
                     } else {
                         list.add(col);
                         previousCollections.put(prCol.datum, list.indexOf(col));

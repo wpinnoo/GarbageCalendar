@@ -52,14 +52,50 @@ public class Collection implements Serializable {
         return types;
     }
 
+    public boolean hasAnyNormalType() {
+        for (Type t : types) {
+            if (!t.isExtraType()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAnyExtralType() {
+        for (Type t : types) {
+            if (t.isExtraType()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getTypesToString(Context c) {
+        return getTypesToString(c, true, true);
+    }
+
+    public String getTypesToString(Context c, boolean includeExtras, boolean includeNormals) {
         StringBuilder text = new StringBuilder();
-        for (int i = 0; i < types.size(); i++) {
-            text.append(types.get(i).shortStrValue(c));
-            if (i < types.size() - 2) {
+
+        ArrayList<Type> l = new ArrayList<Type>();
+        for (Type t : types) {
+            if (t.isExtraType()) {
+                if (includeExtras) {
+                    l.add(t);
+                }
+            } else {
+                if (includeNormals) {
+                    l.add(t);
+                }
+            }
+        }
+
+        for (int i = 0; i < l.size(); i++) {
+            text.append(l.get(i).longStrValue(c));
+            if (i < l.size() - 2) {
                 text.append(", ");
             }
-            if (i == types.size() - 2) {
+            if (i == l.size() - 2) {
                 text.append(", ");
                 text.append(c.getString(R.string.and));
                 text.append(" ");
@@ -67,6 +103,14 @@ public class Collection implements Serializable {
         }
         text.append(".");
         return text.toString();
+    }
+
+    public void addTypes(ArrayList<Type> newtypes) {
+        for (Type t : newtypes) {
+            if (!types.contains(t)) {
+                types.add(t);
+            }
+        }
     }
 
     public boolean hasType(Type t) {
@@ -98,10 +142,14 @@ public class Collection implements Serializable {
         ArrayList<Type> results = new ArrayList<Type>();
 
         for (int i = 0; i < splittedTypes.length; i++) {
+            Type newtype;
             if (map.containsKey(splittedTypes[i].trim())) {
-                results.add(map.get(splittedTypes[i].trim()));
+                newtype = map.get(splittedTypes[i].trim());
             } else {
-                results.add(Type.NONE);
+                newtype = Type.NONE;
+            }
+            if (!results.contains(newtype)) {
+                results.add(newtype);
             }
         }
 

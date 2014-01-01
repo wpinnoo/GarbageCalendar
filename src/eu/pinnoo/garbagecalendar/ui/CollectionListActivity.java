@@ -261,44 +261,59 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.col_table);
-        TableRow tr = (TableRow) inflater.inflate(R.layout.col_table_row, tl, false);
 
+        TableRow tr = (TableRow) inflater.inflate(R.layout.col_table_row_date, tl, false);
         TextView labelDate = (TextView) tr.findViewById(R.id.row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
         labelDate.setTextColor(Color.BLACK);
-
         tr.setBackgroundColor(backgroundColor);
         tr.setOnClickListener(new TableRowListener(col));
-
-        AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
-
-        boolean hasType = col.hasType(Type.REST);
-        TextView labelRest = (TextView) tr.findViewById(R.id.row_rest);
-        labelRest.setText(hasType ? Type.REST.shortStrValue(this) : "");
-        labelRest.setBackgroundColor(hasType ? Type.REST.getColor(this, currentAreaType) : backgroundColor);
-
-        hasType = col.hasType(Type.GFT);
-        TextView labelGFT = (TextView) tr.findViewById(R.id.row_gft);
-        labelGFT.setText(hasType ? Type.GFT.shortStrValue(this) : "");
-        labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(this, currentAreaType) : backgroundColor);
-
-        hasType = col.hasType(Type.PMD);
-        TextView labelPMD = (TextView) tr.findViewById(R.id.row_pmd);
-        labelPMD.setText(hasType ? Type.PMD.shortStrValue(this) : "");
-        labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(this, currentAreaType) : backgroundColor);
-
-        hasType = col.hasType(Type.PK);
-        TextView labelPK = (TextView) tr.findViewById(R.id.row_pk);
-        labelPK.setText(hasType ? Type.PK.shortStrValue(this) : "");
-        labelPK.setBackgroundColor(hasType ? Type.PK.getColor(this, currentAreaType) : backgroundColor);
-
-        hasType = col.hasType(Type.GLAS);
-        TextView labelGlas = (TextView) tr.findViewById(R.id.row_glas);
-        labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
-        labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(this, currentAreaType) : backgroundColor);
-
         tl.addView(tr);
+
+        if (col.hasAnyNormalType()) {
+            tr = (TableRow) inflater.inflate(R.layout.col_table_row_normal, tl, false);
+            tr.setBackgroundColor(backgroundColor);
+            tr.setOnClickListener(new TableRowListener(col));
+
+            AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
+
+            boolean hasType = col.hasType(Type.REST);
+            TextView labelRest = (TextView) tr.findViewById(R.id.row_rest);
+            labelRest.setText(hasType ? Type.REST.shortStrValue(this) : "");
+            labelRest.setBackgroundColor(hasType ? Type.REST.getColor(this, currentAreaType) : backgroundColor);
+
+            hasType = col.hasType(Type.GFT);
+            TextView labelGFT = (TextView) tr.findViewById(R.id.row_gft);
+            labelGFT.setText(hasType ? Type.GFT.shortStrValue(this) : "");
+            labelGFT.setBackgroundColor(hasType ? Type.GFT.getColor(this, currentAreaType) : backgroundColor);
+
+            hasType = col.hasType(Type.PMD);
+            TextView labelPMD = (TextView) tr.findViewById(R.id.row_pmd);
+            labelPMD.setText(hasType ? Type.PMD.shortStrValue(this) : "");
+            labelPMD.setBackgroundColor(hasType ? Type.PMD.getColor(this, currentAreaType) : backgroundColor);
+
+            hasType = col.hasType(Type.PK);
+            TextView labelPK = (TextView) tr.findViewById(R.id.row_pk);
+            labelPK.setText(hasType ? Type.PK.shortStrValue(this) : "");
+            labelPK.setBackgroundColor(hasType ? Type.PK.getColor(this, currentAreaType) : backgroundColor);
+
+            hasType = col.hasType(Type.GLAS);
+            TextView labelGlas = (TextView) tr.findViewById(R.id.row_glas);
+            labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
+            labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(this, currentAreaType) : backgroundColor);
+
+            tl.addView(tr);
+        }
+
+        if (col.hasAnyExtralType()) {
+            tr = (TableRow) inflater.inflate(R.layout.col_table_row_extras, tl, false);
+            tr.setBackgroundColor(backgroundColor);
+            tr.setOnClickListener(new TableRowListener(col));
+            TextView label = (TextView) tr.findViewById(R.id.row_extras);
+            label.setText(getString(R.string.extras) + ": " + col.getTypesToString(this, true, false));
+            tl.addView(tr);
+        }
     }
 
     @Override

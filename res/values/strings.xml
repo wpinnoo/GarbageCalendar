@@ -36,6 +36,8 @@
     
     <string name="close">Close</string>
     
+    <string name="extras">Extras</string>
+    
     <string name="yourLocation">Your location</string>
     <string name="setAddress">Please set your address in Preferences first.</string>
     <string name="choseAddress">Address</string>
