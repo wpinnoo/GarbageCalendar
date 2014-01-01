@@ -15,11 +15,32 @@
 ~ limitations under the License.
 -->
   
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android">
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+>
+   
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="fill_parent"
                   android:orientation="vertical"
+            android:layout_weight="10"
                   android:layout_height="wrap_content">
+        <View
+            android:id="@+id/col_table_date_shadow_top"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/drop_shadow_top"
+        />
+        <View
+            android:id="@+id/col_table_date_padding"
+            android:layout_width="fill_parent"
+            android:layout_height="25dp"
+            android:background="@color/table_even_row"
+        />
+        <View
+            android:id="@+id/col_table_date_shadow_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/drop_shadow_bottom"
+        />
         <TextView
             android:id="@+id/row_date"
             android:layout_width="fill_parent"
@@ -27,6 +48,7 @@
             android:textColor="@android:color/black"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginBottom="12dp"
         />
     </LinearLayout>
 </TableRow>

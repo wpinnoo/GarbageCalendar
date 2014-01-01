@@ -257,12 +257,17 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     private void addTableRow(Collection col, int rowNumber) {
         String date = beautifyDate(col.getDate());
-        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_even_row) : getResources().getColor(R.color.table_odd_row);
+        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_odd_row) : getResources().getColor(R.color.table_odd_row);
 
         LayoutInflater inflater = getLayoutInflater();
         TableLayout tl = (TableLayout) findViewById(R.id.col_table);
 
         TableRow tr = (TableRow) inflater.inflate(R.layout.col_table_row_date, tl, false);
+        if(rowNumber == 0){
+            tr.findViewById(R.id.col_table_date_shadow_top).setVisibility(View.GONE);
+            tr.findViewById(R.id.col_table_date_padding).setVisibility(View.GONE);
+            tr.findViewById(R.id.col_table_date_shadow_bottom).setVisibility(View.GONE);
+        }
         TextView labelDate = (TextView) tr.findViewById(R.id.row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
@@ -311,7 +316,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             tr.setBackgroundColor(backgroundColor);
             tr.setOnClickListener(new TableRowListener(col));
             TextView label = (TextView) tr.findViewById(R.id.row_extras);
-            label.setText(getString(R.string.extras) + ": " + col.getTypesToString(this, true, false));
+            label.setText(col.getTypesToString(this, true, false));
             tl.addView(tr);
         }
     }

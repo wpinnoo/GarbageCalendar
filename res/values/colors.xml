@@ -22,9 +22,11 @@
     <color name="pmd">#FF0000FF</color>
     <color name="pk">#FF888888</color>
     <color name="glas">#FF335399</color>
+    <color name="extras">#FFD0D0D0</color>
     <color name="none">#00FFFFFF</color>
     <color name="sticky_header_normal">#FFADADAD</color>
     <color name="sticky_header_pressed">#FF858585</color>
     <color name="table_even_row">#FFF0F0F0</color>
-    <color name="table_odd_row">#FFDBDBDB</color>
+    <color name="table_odd_row">#FFDEDEDE</color>
+    <color name="table_odd_row_darker">#FFD0D0D0</color>
 </resources>
