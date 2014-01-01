@@ -38,12 +38,12 @@ import java.util.HashMap;
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
 public class CalendarParser extends Parser {
-    
+
     @Override
     protected String getURL() {
         return LocalConstants.CALENDAR_URL;
     }
-    
+
     @Override
     protected Result fetchData(ArrayList data) {
         try {
@@ -54,7 +54,7 @@ public class CalendarParser extends Parser {
                 Collection col = new Collection(prCol);
                 if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
                     if (previousCollections.containsKey(prCol.datum)) {
-                        list.get(previousCollections.get(prCol.datum)).addTypes(Collection.parseGarbageType(prCol.Fractie));
+                        list.get(previousCollections.get(prCol.datum)).getTypes().addAll(Collection.parseGarbageType(prCol.Fractie));
                     } else {
                         list.add(col);
                         previousCollections.put(prCol.datum, list.indexOf(col));
@@ -72,7 +72,7 @@ public class CalendarParser extends Parser {
         }
         return Result.SUCCESSFUL;
     }
-    
+
     @Override
     protected ArrayList downloadData() throws IOException {
         ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
@@ -83,9 +83,9 @@ public class CalendarParser extends Parser {
         reader.close();
         return list;
     }
-    
+
     public class PrimitiveCollectionList {
-        
+
         @SerializedName("IvagoOphaalkalender2014")
         public ArrayList<PrimitiveCollection> list;
     }

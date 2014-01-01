@@ -24,18 +24,24 @@ import android.content.res.Resources;
  */
 public enum Type {
 
-    REST("rest"),
-    GFT("gft"),
-    PMD("pmd"),
-    PK("pk"),
-    GLAS("glas"),
-    KERSTBOOM("kerst"),
-    GROF("grof"),
-    NONE("none");
+    REST("rest", false),
+    GFT("gft", false),
+    PMD("pmd", false),
+    PK("pk", false),
+    GLAS("glas", false),
+    KERSTBOOM("kerst", true),
+    GROF("grof", true),
+    NONE("none", false);
     private String strValue;
+    private boolean isExtraType;
 
-    private Type(String strValue) {
+    private Type(String strValue, boolean isExtraType) {
         this.strValue = strValue;
+        this.isExtraType = isExtraType;
+    }
+    
+    public boolean isExtraType(){
+        return isExtraType;
     }
 
     public final String shortStrValue(Context c) {

@@ -16,10 +16,10 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
-import com.google.analytics.tracking.android.Log;
 import eu.pinnoo.garbagecalendar.R;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -31,14 +31,8 @@ public class Collection implements Serializable {
 
     private static final long serialVersionUID = -4787102199050536373L;
     private Date date;
-    private Type[] types;
+    private ArrayList<Type> types;
     private Sector sector;
-
-    public Collection(Date date, Type[] types, Sector sector) {
-        this.date = date;
-        this.types = types;
-        this.sector = sector;
-    }
 
     public Collection(PrimitiveCollection col) {
         try {
@@ -54,18 +48,18 @@ public class Collection implements Serializable {
         return date;
     }
 
-    public Type[] getTypes() {
+    public ArrayList<Type> getTypes() {
         return types;
     }
 
     public String getTypesToString(Context c) {
         StringBuilder text = new StringBuilder();
-        for (int i = 0; i < types.length; i++) {
-            text.append(types[i].shortStrValue(c));
-            if (i < types.length - 2) {
+        for (int i = 0; i < types.size(); i++) {
+            text.append(types.get(i).shortStrValue(c));
+            if (i < types.size() - 2) {
                 text.append(", ");
             }
-            if (i == types.length - 2) {
+            if (i == types.size() - 2) {
                 text.append(", ");
                 text.append(c.getString(R.string.and));
                 text.append(" ");
@@ -73,20 +67,6 @@ public class Collection implements Serializable {
         }
         text.append(".");
         return text.toString();
-    }
-
-    public void addTypes(Type[] toAdd) {
-        Type[] newTypes = new Type[toAdd.length + this.types.length];
-        int i = 0;
-        while (i < this.types.length) {
-            newTypes[i] = this.types[i];
-            i++;
-        }
-        while (i < this.types.length + toAdd.length) {
-            newTypes[i] = toAdd[i - this.types.length];
-            i++;
-        }
-        this.types = newTypes;
     }
 
     public boolean hasType(Type t) {
@@ -104,7 +84,7 @@ public class Collection implements Serializable {
         return sector;
     }
 
-    public static Type[] parseGarbageType(String str) {
+    public static ArrayList<Type> parseGarbageType(String str) {
         HashMap<String, Type> map = new HashMap<String, Type>();
         map.put("REST", Type.REST);
         map.put("GFT", Type.GFT);
@@ -115,14 +95,13 @@ public class Collection implements Serializable {
         map.put("KERSTBOMEN", Type.KERSTBOOM);
 
         String[] splittedTypes = str.split("/");
-        Type[] results;
+        ArrayList<Type> results = new ArrayList<Type>();
 
-        results = new Type[splittedTypes.length];
         for (int i = 0; i < splittedTypes.length; i++) {
             if (map.containsKey(splittedTypes[i].trim())) {
-                results[i] = map.get(splittedTypes[i].trim());
+                results.add(map.get(splittedTypes[i].trim()));
             } else {
-                results[i] = Type.NONE;
+                results.add(Type.NONE);
             }
         }
 
