@@ -25,19 +25,16 @@
                 android:scrollbars="horizontal" 
                 android:layout_weight="1"
                 android:layout_height="fill_parent" 
-                android:layout_width="fill_parent">
+                android:layout_width="fill_parent"
+                android:fillViewport="true">
 
-        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                     android:stretchColumns="0,1"
-                     android:id="@+id/col_table" 
-                     android:layout_weight="1" 
-                     android:layout_height="wrap_content" 
-                     android:layout_width="match_parent" 
-                     android:background="@android:color/white" >
-            <TableRow
-                android:layout_width="fill_parent" >
-            </TableRow>
-        </TableLayout>
+        <eu.pinnoo.garbagecalendar.ui.NowLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e3e3e3"
+            android:orientation="vertical" 
+            android:id="@+id/col_table" >
+        </eu.pinnoo.garbagecalendar.ui.NowLayout>
     </ScrollView>
 </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 

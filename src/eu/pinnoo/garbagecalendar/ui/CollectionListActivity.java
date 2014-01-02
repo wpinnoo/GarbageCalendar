@@ -22,15 +22,13 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
@@ -205,12 +203,11 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     private void createGUI() {
         Log.d(LocalConstants.LOG, "Everything done, creating UI!");
-        TableLayout table = (TableLayout) findViewById(R.id.col_table);
+        NowLayout table = (NowLayout) findViewById(R.id.col_table);
         table.removeViews(0, table.getChildCount());
 
         List<Collection> collections = CollectionsData.getInstance().getCollections();
         Iterator<Collection> it = collections.iterator();
-        int i = 0;
         while (it.hasNext()) {
             Collection col = it.next();
             Calendar lastDayToBeShown = Calendar.getInstance();
@@ -219,8 +216,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                 continue;
             }
 
-            addTableRow(col, i);
-            i++;
+            addTableRow(col);
         }
         updateAllWidgets();
     }
@@ -257,33 +253,20 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
         }
     }
 
-    private void addTableRow(Collection col, int rowNumber) {
+    private void addTableRow(Collection col) {
         String date = beautifyDate(col.getDate());
-        int backgroundColor = rowNumber % 2 == 0 ? getResources().getColor(R.color.table_odd_row) : getResources().getColor(R.color.table_odd_row);
+        int backgroundColor = getResources().getColor(R.color.table_row);
 
         LayoutInflater inflater = getLayoutInflater();
-        TableLayout tl = (TableLayout) findViewById(R.id.col_table);
+        NowLayout tl = (NowLayout) findViewById(R.id.col_table);
 
-        TableRow tr = (TableRow) inflater.inflate(R.layout.col_table_row_date, tl, false);
-        if(rowNumber == 0){
-            tr.findViewById(R.id.col_table_date_shadow_top).setVisibility(View.GONE);
-            tr.findViewById(R.id.col_table_date_padding).setVisibility(View.GONE);
-            tr.findViewById(R.id.col_table_date_shadow_bottom).setVisibility(View.GONE);
-        }
-        
+        LinearLayout tr = (LinearLayout) inflater.inflate(R.layout.col_table_row, tl, false);
+
         TextView labelDate = (TextView) tr.findViewById(R.id.row_date);
         labelDate.setText(date);
-        labelDate.setPadding(5, 5, 5, 5);
-        labelDate.setTextColor(Color.BLACK);
-        tr.setBackgroundColor(backgroundColor);
         tr.setOnClickListener(new TableRowListener(col));
-        tl.addView(tr);
 
         if (col.hasAnyNormalType()) {
-            tr = (TableRow) inflater.inflate(R.layout.col_table_row_normal, tl, false);
-            tr.setBackgroundColor(backgroundColor);
-            tr.setOnClickListener(new TableRowListener(col));
-           
             AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
 
             boolean hasType = col.hasType(Type.REST);
@@ -311,22 +294,20 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             labelGlas.setText(hasType ? Type.GLAS.shortStrValue(this) : "");
             labelGlas.setBackgroundColor(hasType ? Type.GLAS.getColor(this, currentAreaType) : backgroundColor);
 
-            tl.addView(tr);
+            ((LinearLayout) tr.findViewById(R.id.row_normal)).setVisibility(View.VISIBLE);
         }
 
         if (col.hasAnyExtralType()) {
-            tr = (TableRow) inflater.inflate(R.layout.col_table_row_extras, tl, false);
-            tr.setBackgroundColor(backgroundColor);
-            tr.setOnClickListener(new TableRowListener(col));
             TextView label = (TextView) tr.findViewById(R.id.row_extras);
             label.setText(col.getTypesToString(this, true, false));
-            if(col.hasAnyNormalType()){
+            if (col.hasAnyNormalType()) {
                 LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                llp.setMargins(10, 0, 10, 15);
+                llp.setMargins(8, 0, 8, 15);
                 label.setLayoutParams(llp);
             }
-            tl.addView(tr);
+            ((TextView) tr.findViewById(R.id.row_extras)).setVisibility(View.VISIBLE);
         }
+        tl.addView(tr);
     }
 
     @Override

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">    
-    <gradient
-        android:startColor="@color/table_odd_row_darker"
-        android:endColor="@color/table_even_row"
-        android:angle="90"
-        >
-    </gradient>
-</shape>
