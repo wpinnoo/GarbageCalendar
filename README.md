@@ -1,4 +1,4 @@
-GarbageCalendar [![Stories in Ready](https://badge.waffle.io/wpinnoo/GarbageCalendar.png?label=ready)](https://waffle.io/wpinnoo/GarbageCalendar)  [![Analytics](https://ga-beacon.appspot.com/UA-XXXXX-X/your-repo/page-name)](https://github.com/igrigorik/ga-beacon)
+GarbageCalendar [![Stories in Ready](https://badge.waffle.io/wpinnoo/GarbageCalendar.png?label=ready)](https://waffle.io/wpinnoo/GarbageCalendar)  [![Analytics](https://ga-beacon.appspot.com/UA-46815416-1/GarbageCalendar/README.md)](https://github.com/igrigorik/ga-beacon)
 ===============
 
 GarbageCalendar for Android gives you a nice overview of the garbage collections in your street (currently only in Ghent).   
