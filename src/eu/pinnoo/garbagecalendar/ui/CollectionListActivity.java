@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -268,6 +270,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             tr.findViewById(R.id.col_table_date_padding).setVisibility(View.GONE);
             tr.findViewById(R.id.col_table_date_shadow_bottom).setVisibility(View.GONE);
         }
+        
         TextView labelDate = (TextView) tr.findViewById(R.id.row_date);
         labelDate.setText(date);
         labelDate.setPadding(5, 5, 5, 5);
@@ -280,7 +283,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             tr = (TableRow) inflater.inflate(R.layout.col_table_row_normal, tl, false);
             tr.setBackgroundColor(backgroundColor);
             tr.setOnClickListener(new TableRowListener(col));
-
+           
             AreaType currentAreaType = UserData.getInstance().getAddress().getSector().getType();
 
             boolean hasType = col.hasType(Type.REST);
@@ -317,6 +320,11 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             tr.setOnClickListener(new TableRowListener(col));
             TextView label = (TextView) tr.findViewById(R.id.row_extras);
             label.setText(col.getTypesToString(this, true, false));
+            if(col.hasAnyNormalType()){
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                llp.setMargins(10, 0, 10, 15);
+                label.setLayoutParams(llp);
+            }
             tl.addView(tr);
         }
     }
