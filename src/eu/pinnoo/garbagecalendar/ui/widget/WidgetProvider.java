@@ -101,7 +101,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Collection col = null;
             while (it.hasNext()) {
                 col = it.next();
-                if (col.getDate().after(dayToBeShown.getTime())) {
+                if (col.getDate().after(dayToBeShown.getTime()) && col.hasAnyNormalType()) {
                     break;
                 }
             }
