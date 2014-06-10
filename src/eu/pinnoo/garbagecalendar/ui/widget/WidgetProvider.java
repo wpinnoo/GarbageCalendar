@@ -1,5 +1,5 @@
 /* 
- * Copyright 2013 Wouter Pinnoo
+ * Copyright 2014 Wouter Pinnoo
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Collection col = null;
             while (it.hasNext()) {
                 col = it.next();
-                if (col.getDate().after(dayToBeShown.getTime())) {
+                if (col.getDate().after(dayToBeShown.getTime()) && col.hasAnyNormalType()) {
                     break;
                 }
             }
