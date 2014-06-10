@@ -40,7 +40,7 @@ public class Collection implements Serializable {
         } catch (ParseException ex) {
             this.date = new Date();
         }
-        this.types = parseGarbageType(col.Fractie);
+        this.types = parseGarbageType(col.fractie);
         this.sector = new Sector(col.sector);
     }
 

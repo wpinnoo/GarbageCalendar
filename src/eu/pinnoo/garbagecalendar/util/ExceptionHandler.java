@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.pinnoo.garbagecalendar.data;
+package eu.pinnoo.garbagecalendar.util;
 
-import com.google.gson.annotations.SerializedName;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class PrimitiveCollection {
+public class ExceptionHandler {
 
-    @SerializedName("Sector")
-    public String sector;
-    
-    @SerializedName("Datum")
-    public String datum;
-    
-    @SerializedName("Fractie")
-    public String fractie;
+    public static String getDetailedMessage(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
 }

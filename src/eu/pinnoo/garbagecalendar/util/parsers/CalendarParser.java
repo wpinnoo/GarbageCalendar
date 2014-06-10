@@ -25,10 +25,13 @@ import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.PrimitiveCollection;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.util.DateComparator;
+import eu.pinnoo.garbagecalendar.util.ExceptionHandler;
 import eu.pinnoo.garbagecalendar.util.Network;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,7 +57,7 @@ public class CalendarParser extends Parser {
                 Collection col = new Collection(prCol);
                 if (UserData.getInstance().getAddress().getSector().equals(col.getSector())) {
                     if (previousCollections.containsKey(prCol.datum)) {
-                        list.get(previousCollections.get(prCol.datum)).addTypes(Collection.parseGarbageType(prCol.Fractie));
+                        list.get(previousCollections.get(prCol.datum)).addTypes(Collection.parseGarbageType(prCol.fractie));
                     } else {
                         list.add(col);
                         previousCollections.put(prCol.datum, list.indexOf(col));
@@ -64,10 +67,10 @@ public class CalendarParser extends Parser {
             Collections.sort(list, new DateComparator());
             CollectionsData.getInstance().setCollections(list);
         } catch (NullPointerException e) {
-            Log.d(LocalConstants.LOG, e.getMessage());
+            Log.d(LocalConstants.LOG, ExceptionHandler.getDetailedMessage(e));
             return Result.UNKNOWN_ERROR;
         } catch (ClassCastException e) {
-            Log.d(LocalConstants.LOG, e.getMessage());
+            Log.d(LocalConstants.LOG, ExceptionHandler.getDetailedMessage(e));
             return Result.UNKNOWN_ERROR;
         }
         return Result.SUCCESSFUL;

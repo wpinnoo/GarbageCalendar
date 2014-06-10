@@ -18,6 +18,7 @@ package eu.pinnoo.garbagecalendar.util.parsers;
 import android.content.Context;
 import android.util.Log;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
+import eu.pinnoo.garbagecalendar.util.ExceptionHandler;
 import eu.pinnoo.garbagecalendar.util.Network;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public abstract class Parser {
         try {
             arr = downloadData();
         } catch (IOException e) {
-            Log.d(LocalConstants.LOG, e.getMessage());
+            Log.d(LocalConstants.LOG, ExceptionHandler.getDetailedMessage(e));
             return Result.CONNECTION_FAIL;
         }
         if (arr == null) {

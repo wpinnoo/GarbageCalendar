@@ -22,8 +22,9 @@ import com.google.gson.stream.JsonReader;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
-import eu.pinnoo.garbagecalendar.util.Network;
 import eu.pinnoo.garbagecalendar.data.PrimitiveAddress;
+import eu.pinnoo.garbagecalendar.util.ExceptionHandler;
+import eu.pinnoo.garbagecalendar.util.Network;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,10 +52,10 @@ public class StreetsParser extends Parser {
             }
             AddressData.getInstance().setAddresses(list);
         } catch (NullPointerException e) {
-            Log.d(LocalConstants.LOG, e.getMessage());
+            Log.d(LocalConstants.LOG, ExceptionHandler.getDetailedMessage(e));
             return Result.UNKNOWN_ERROR;
         } catch (ClassCastException e) {
-            Log.d(LocalConstants.LOG, e.getMessage());
+            Log.d(LocalConstants.LOG, ExceptionHandler.getDetailedMessage(e));
             return Result.UNKNOWN_ERROR;
         }
         return Result.SUCCESSFUL;
