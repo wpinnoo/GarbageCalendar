@@ -75,7 +75,7 @@
     <string name="about">About</string>
     <string name="aboutDescription">About this app</string>
     <string name="aboutMessage">Set your address in Preferences.\nCurrently, only addresses in Ghent are supported.</string>
-    <string name="aboutMessageAuthor">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2014\nGarbageCalendar.pinnoo.eu</string>
+    <string name="aboutMessageAuthor">This app is based on open data, available on data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2015\ngithub.com/wpinnoo/GarbageCalendar</string>
     
     <string name="preferences">Preferences</string>
     <string name="appsettings">App preferences</string>

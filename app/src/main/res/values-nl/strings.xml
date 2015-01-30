@@ -35,6 +35,7 @@
     <string name="grof_long">Grofvuil (op aanvraag)</string>
     
     <string name="close">Sluit</string>
+    <string name="extras">Extras</string>
     
     <string name="yourLocation">Jouw locatie</string>
     <string name="setAddress">Stel je adres eerst in bij Voorkeuren.</string>
@@ -73,7 +74,7 @@
     <string name="about">Over</string>
     <string name="aboutDescription">Over deze app</string>
     <string name="aboutMessage">Stel je adres in bij Voorkeuren.\n Momenteel worden enkel Gentse adressen ondersteund.</string>
-    <string name="aboutMessageAuthor">Deze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2014\nGarbageCalendar.pinnoo.eu</string>
+    <string name="aboutMessageAuthor">Deze app is gemaakt met open data, beschikbaar op data.gent.be.\n\n\u00A9 Wouter Pinnoo, 2015\ngithub.com/wpinnoo/GarbageCalendar</string>
     
     <string name="preferences">Voorkeuren</string>
     <string name="appsettings">App voorkeuren</string>
