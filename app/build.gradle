@@ -8,8 +8,8 @@ android {
         applicationId "eu.pinnoo.garbagecalendar"
         minSdkVersion 14
         targetSdkVersion 17
-        versionCode 7
-        versionName "1.0.5"
+        versionCode 8
+        versionName "1.0.6"
     }
     buildTypes {
         release {
