@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
@@ -82,15 +83,13 @@ public class CalendarParser extends Parser {
         ArrayList<PrimitiveCollection> list = new ArrayList<PrimitiveCollection>();
         InputStream inp = Network.getStream(getURL());
         JsonReader reader = new JsonReader(new InputStreamReader(inp, LocalConstants.ENCODING));
-        PrimitiveCollectionList results = new GsonBuilder().create().fromJson(reader, PrimitiveCollectionList.class);
-        list.addAll((java.util.Collection<PrimitiveCollection>) results.list);
+        ArrayList<PrimitiveCollection> results = new GsonBuilder().create().fromJson(reader, new TypeToken<ArrayList<PrimitiveCollection>>(){}.getType());
+        list.addAll(results);
         reader.close();
         return list;
     }
 
     public class PrimitiveCollectionList {
-
-        @SerializedName("IvagoOphaalkalender2014")
         public ArrayList<PrimitiveCollection> list;
     }
 }
