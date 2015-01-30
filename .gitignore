@@ -72,3 +72,16 @@ proguard/
 *.iml
 com_crashlytics_export_strings.xml
 crashlytics-build.properties
+.gradle
+local.properties
+.idea/workspace.xml
+.idea/libraries
+.DS_Store
+build
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/build

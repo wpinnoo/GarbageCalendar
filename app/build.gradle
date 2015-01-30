@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "eu.pinnoo.garbagecalendar"
+        minSdkVersion 14
+        targetSdkVersion 17
+        versionCode 7
+        versionName "1.0.5"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    repositories {
+        mavenCentral()
+    }
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
+    compile 'se.emilsjolander:stickylistheaders:2.5.2'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'joda-time:joda-time:2.3'
+    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.google.android.gms:play-services:6.5.87'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
