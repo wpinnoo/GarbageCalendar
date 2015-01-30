@@ -24,7 +24,8 @@
                       android:xlargeScreens="true" />
     <application android:label="@string/app_name"
                  android:icon="@drawable/ic_launcher"
-                 android:theme="@style/Theme.Sherlock.Light">
+                 android:theme="@android:style/Theme.Holo.Light"
+                android:name=".GarbageCalenderApplication">
         <activity android:name=".ui.CollectionListActivity"
                   android:label="@string/app_name"
                   android:configChanges="keyboardHidden|orientation">

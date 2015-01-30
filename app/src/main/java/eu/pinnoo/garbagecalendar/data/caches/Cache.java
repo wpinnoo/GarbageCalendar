@@ -16,7 +16,7 @@
 package eu.pinnoo.garbagecalendar.data.caches;
 
 import android.util.Log;
-import eu.pinnoo.garbagecalendar.data.LocalConstants;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import eu.pinnoo.garbagecalendar.data.LocalConstants;
 
 /**
  *

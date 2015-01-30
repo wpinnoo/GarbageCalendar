@@ -15,7 +15,6 @@
  */
 package eu.pinnoo.garbagecalendar.data;
 
-import android.content.Context;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 
 /**

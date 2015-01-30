@@ -17,19 +17,27 @@ package eu.pinnoo.garbagecalendar.ui.preferences;
 
 import android.os.Bundle;
 import android.preference.Preference;
+
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
-import eu.pinnoo.garbagecalendar.ui.AbstractSherlockPreferenceActivity;
+import eu.pinnoo.garbagecalendar.ui.AbstractPreferenceActivity;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class PreferenceActivity extends AbstractSherlockPreferenceActivity {
+public class PreferenceActivity extends AbstractPreferenceActivity
+{
+
+    @Override
+    protected String getActivityName()
+    {
+        return "PreferenceActivity";
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

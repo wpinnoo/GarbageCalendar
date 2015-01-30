@@ -20,7 +20,7 @@
           android:icon="@android:drawable/ic_menu_search"
           android:title="@string/address_search"
           android:showAsAction="ifRoom"
-          android:actionViewClass="com.actionbarsherlock.widget.SearchView"
+          android:actionViewClass="android.widget.SearchView"
     />
     <item android:id="@+id/refresh"
           android:icon="@drawable/ic_menu_refresh"

@@ -15,7 +15,6 @@
  */
 package eu.pinnoo.garbagecalendar.ui;
 
-import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
@@ -23,17 +22,25 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+
+import org.joda.time.DateTime;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AreaType;
 import eu.pinnoo.garbagecalendar.data.Collection;
@@ -44,34 +51,34 @@ import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
+import eu.pinnoo.garbagecalendar.ui.preferences.PreferenceActivity;
 import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import org.joda.time.DateTime;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class CollectionListActivity extends AbstractSherlockActivity implements PullToRefreshAttacher.OnRefreshListener {
+public class CollectionListActivity extends AbstractActivity {
 
     private volatile boolean loading = false;
-    private PullToRefreshAttacher attacher;
+    private SwipeRefreshLayout swipeContainer;
+
+    @Override
+    protected String getActivityName()
+    {
+        return "CollectionListActivity";
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collections);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
+        getActionBar().setDisplayHomeAsUpEnabled(false);
+        getActionBar().setHomeButtonEnabled(false);
 
         AddressCache.initialize(this);
         CollectionCache.initialize(this);
@@ -79,9 +86,18 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
         clearCachedIfRequired();
 
-        attacher = PullToRefreshAttacher.get(this);
-        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.col_table_scrollview);
-        ptrLayout.setPullToRefreshAttacher(attacher, (PullToRefreshAttacher.OnRefreshListener) this);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.col_table_scrollview);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadCollections(true, true);
+                swipeContainer.setRefreshing(false);
+            }
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     @Override
@@ -99,7 +115,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.col_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -183,7 +199,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         loading = false;
-                                        attacher.setRefreshComplete();
+                                        swipeContainer.setRefreshing(false);
                                         finish();
                                     }
                                 }).create().show();
@@ -194,7 +210,7 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
                             createGUI();
                             break;
                     }
-                    attacher.setRefreshComplete();
+                    swipeContainer.setRefreshing(false);
                     loading = false;
                 }
             }.execute(new CalendarParser());
@@ -321,11 +337,6 @@ public class CollectionListActivity extends AbstractSherlockActivity implements 
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        loadCollections(true, true);
     }
 
     private void updateAllWidgets() {

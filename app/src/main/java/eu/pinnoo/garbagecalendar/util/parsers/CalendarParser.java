@@ -16,9 +16,18 @@
 package eu.pinnoo.garbagecalendar.util.parsers;
 
 import android.util.Log;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
@@ -27,14 +36,6 @@ import eu.pinnoo.garbagecalendar.data.UserData;
 import eu.pinnoo.garbagecalendar.util.DateComparator;
 import eu.pinnoo.garbagecalendar.util.ExceptionHandler;
 import eu.pinnoo.garbagecalendar.util.Network;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 /**
  *

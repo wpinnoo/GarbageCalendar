@@ -15,9 +15,10 @@
  */
 package eu.pinnoo.garbagecalendar.data.util;
 
-import eu.pinnoo.garbagecalendar.data.Address;
 import java.io.Serializable;
 import java.util.Comparator;
+
+import eu.pinnoo.garbagecalendar.data.Address;
 
 /**
  *

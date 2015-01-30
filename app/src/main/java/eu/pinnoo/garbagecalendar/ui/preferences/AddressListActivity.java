@@ -24,15 +24,20 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.Address;
 import eu.pinnoo.garbagecalendar.data.AddressData;
@@ -42,31 +47,35 @@ import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
 import eu.pinnoo.garbagecalendar.data.util.AddressComparator;
-import eu.pinnoo.garbagecalendar.ui.AbstractSherlockListActivity;
+import eu.pinnoo.garbagecalendar.ui.AbstractActivity;
 import eu.pinnoo.garbagecalendar.ui.widget.WidgetProvider;
 import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
-import static eu.pinnoo.garbagecalendar.util.parsers.Parser.Result.NO_INTERNET_CONNECTION;
 import eu.pinnoo.garbagecalendar.util.parsers.StreetsParser;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AddressListActivity extends AbstractSherlockListActivity implements SearchView.OnQueryTextListener {
+public class AddressListActivity extends AbstractActivity implements SearchView.OnQueryTextListener {
 
     private List<Address> list;
     private AddressAdapter adapter;
-    private ListView lv;
+    private StickyListHeadersListView lv;
     private volatile boolean loading = false;
+
+    @Override
+    protected String getActivityName()
+    {
+        return "AddressListActivity";
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.addresses);
 
         AddressCache.initialize(this);
@@ -75,7 +84,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
 
         clearCachedIfRequired();
 
-        lv = getListView();
+        lv = (StickyListHeadersListView) findViewById(R.id.stickyheaderslistview);
         lv.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> av, View view, int i, long l) {
                 submitAddress(i);
@@ -172,7 +181,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         list.addAll(AddressData.getInstance().getAddresses());
         Collections.sort(list, new AddressComparator());
         adapter = new AddressAdapter(this, R.layout.address_table_row, list);
-        setListAdapter(adapter);
+        lv.setAdapter(adapter);
     }
 
     public void submitAddress(int position) {
@@ -180,7 +189,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
                 .edit()
                 .putBoolean(LocalConstants.CacheName.COL_REFRESH_NEEDED.toString(), true)
                 .commit();
-        UserData.getInstance().setAddress((Address) getListView().getItemAtPosition(position));
+        UserData.getInstance().setAddress((Address) lv.getItemAtPosition(position));
         updateAllWidgets();
         finish();
     }
@@ -195,7 +204,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getSupportMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.address_list_menu, menu);
 
         MenuItem item = menu.findItem(R.id.address_search);
@@ -203,7 +212,7 @@ public class AddressListActivity extends AbstractSherlockListActivity implements
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
         searchView.setSearchableInfo(info);
-        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
+        searchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);
     }

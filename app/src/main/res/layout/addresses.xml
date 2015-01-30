@@ -19,10 +19,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/stickyheaderslistviewcontainer">
 
-    <com.emilsjolander.components.stickylistheaders.StickyListHeadersListView
-        android:id="@+id/android:list"
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+        android:id="@+id/stickyheaderslistview"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1" 

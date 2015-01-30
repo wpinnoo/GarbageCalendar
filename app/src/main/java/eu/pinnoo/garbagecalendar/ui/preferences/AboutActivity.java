@@ -21,19 +21,28 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
-import eu.pinnoo.garbagecalendar.ui.AbstractSherlockActivity;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import eu.pinnoo.garbagecalendar.ui.AbstractActivity;
 
 /**
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public class AboutActivity extends AbstractSherlockActivity {
+public class AboutActivity extends AbstractActivity
+{
+
+    @Override
+    protected String getActivityName()
+    {
+        return "AboutActivity";
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

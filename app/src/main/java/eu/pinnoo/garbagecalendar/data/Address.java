@@ -16,8 +16,10 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
-import eu.pinnoo.garbagecalendar.R;
+
 import java.io.Serializable;
+
+import eu.pinnoo.garbagecalendar.R;
 
 /**
  *

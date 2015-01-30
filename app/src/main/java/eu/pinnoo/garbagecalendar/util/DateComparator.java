@@ -15,8 +15,9 @@
  */
 package eu.pinnoo.garbagecalendar.util;
 
-import eu.pinnoo.garbagecalendar.data.Collection;
 import java.util.Comparator;
+
+import eu.pinnoo.garbagecalendar.data.Collection;
 
 /**
  *

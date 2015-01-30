@@ -24,14 +24,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
-import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
-import eu.pinnoo.garbagecalendar.R;
-import eu.pinnoo.garbagecalendar.data.Address;
+
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import eu.pinnoo.garbagecalendar.R;
+import eu.pinnoo.garbagecalendar.data.Address;
 
 /**
  *

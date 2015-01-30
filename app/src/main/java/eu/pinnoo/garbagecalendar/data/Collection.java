@@ -16,12 +16,14 @@
 package eu.pinnoo.garbagecalendar.data;
 
 import android.content.Context;
-import eu.pinnoo.garbagecalendar.R;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import eu.pinnoo.garbagecalendar.R;
 
 /**
  *

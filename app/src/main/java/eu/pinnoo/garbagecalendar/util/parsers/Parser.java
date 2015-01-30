@@ -17,11 +17,13 @@ package eu.pinnoo.garbagecalendar.util.parsers;
 
 import android.content.Context;
 import android.util.Log;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.util.ExceptionHandler;
 import eu.pinnoo.garbagecalendar.util.Network;
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  *

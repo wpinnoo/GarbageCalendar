@@ -24,10 +24,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.widget.RemoteViews;
+
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+
 import eu.pinnoo.garbagecalendar.R;
 import eu.pinnoo.garbagecalendar.data.AreaType;
-import static eu.pinnoo.garbagecalendar.data.AreaType.L;
-import static eu.pinnoo.garbagecalendar.data.AreaType.V;
 import eu.pinnoo.garbagecalendar.data.Collection;
 import eu.pinnoo.garbagecalendar.data.CollectionsData;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
@@ -40,12 +43,8 @@ import eu.pinnoo.garbagecalendar.ui.CollectionListActivity;
 import eu.pinnoo.garbagecalendar.ui.preferences.AddressListActivity;
 import eu.pinnoo.garbagecalendar.util.parsers.CalendarParser;
 import eu.pinnoo.garbagecalendar.util.parsers.Parser.Result;
-import static eu.pinnoo.garbagecalendar.util.parsers.Parser.Result.UNKNOWN_ERROR;
 import eu.pinnoo.garbagecalendar.util.tasks.CacheTask;
 import eu.pinnoo.garbagecalendar.util.tasks.ParserTask;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

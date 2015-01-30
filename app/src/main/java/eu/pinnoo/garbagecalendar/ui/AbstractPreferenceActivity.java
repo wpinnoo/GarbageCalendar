@@ -20,12 +20,16 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.MenuItem;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.GoogleAnalytics;
+import android.view.MenuItem;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import eu.pinnoo.garbagecalendar.GarbageCalenderApplication;
 import eu.pinnoo.garbagecalendar.data.LocalConstants;
 import eu.pinnoo.garbagecalendar.data.caches.AddressCache;
 import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
@@ -35,7 +39,10 @@ import eu.pinnoo.garbagecalendar.data.caches.UserAddressCache;
  *
  * @author Wouter Pinnoo <pinnoo.wouter@gmail.com>
  */
-public abstract class AbstractSherlockPreferenceActivity extends SherlockPreferenceActivity {
+public abstract class AbstractPreferenceActivity extends PreferenceActivity
+{
+
+    protected abstract String getActivityName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,19 +53,15 @@ public abstract class AbstractSherlockPreferenceActivity extends SherlockPrefere
             googleAnalytics.setAppOptOut(true);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance().activityStop(this);
+        Tracker t = ((GarbageCalenderApplication) this.getApplication()).getTracker(GarbageCalenderApplication.TrackerName.APP_TRACKER);
+        t.setScreenName(getActivityName());
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
     @Override
@@ -95,7 +98,7 @@ public abstract class AbstractSherlockPreferenceActivity extends SherlockPrefere
 
     protected int getVersionCode() {
         try {
-            ComponentName componentName = new ComponentName(this, AbstractSherlockPreferenceActivity.class);
+            ComponentName componentName = new ComponentName(this, AbstractPreferenceActivity.class);
             PackageInfo info = getPackageManager().getPackageInfo(componentName.getPackageName(), 0);
             return info.versionCode;
         } catch (PackageManager.NameNotFoundException e) {

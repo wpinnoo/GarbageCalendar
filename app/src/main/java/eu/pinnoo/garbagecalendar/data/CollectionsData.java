@@ -15,9 +15,10 @@
  */
 package eu.pinnoo.garbagecalendar.data;
 
-import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 import java.util.ArrayList;
 import java.util.List;
+
+import eu.pinnoo.garbagecalendar.data.caches.CollectionCache;
 
 /**
  *

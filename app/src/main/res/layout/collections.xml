@@ -15,7 +15,7 @@
 ~ limitations under the License.
 -->
   
-<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/col_table_scrollview"
     android:layout_width="fill_parent"
@@ -36,5 +36,5 @@
             android:id="@+id/col_table" >
         </eu.pinnoo.garbagecalendar.ui.NowLayout>
     </ScrollView>
-</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
 
