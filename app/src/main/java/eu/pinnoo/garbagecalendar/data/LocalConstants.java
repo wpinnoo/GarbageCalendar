@@ -25,10 +25,10 @@ import java.text.SimpleDateFormat;
  */
 public class LocalConstants {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final String ENCODING = "iso-8859-1";
     public static final String CALENDAR_URL = "https://raw.githubusercontent.com/wpinnoo/GarbageCalendar/master/extra/IvagoOphaalkalender2015.json";
-    public static final String STREETS_URL = "http://datatank.gent.be/MilieuEnNatuur/IVAGO-Stratenlijst.json";
+    public static final String STREETS_URL = "https://raw.githubusercontent.com/wpinnoo/GarbageCalendar/master/extra/IVAGO-Stratenlijst.json";
     public static final String LOG = "eu.pinnoo.garbagecalendar";
 
     public enum DateFormatType {
